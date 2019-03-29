@@ -235,4 +235,14 @@ class Invoice extends AdminModel
 
         return array_keys(config('invoices.countries'))[0];
     }
+
+    public function getPaymentMethodNameAttribute()
+    {
+        return config('invoices.payment_methods.'.$this->payment_method, '-');
+    }
+
+    public function getCountryNameAttribute()
+    {
+        return config('invoices.countries.'.$this->country, '-');
+    }
 }

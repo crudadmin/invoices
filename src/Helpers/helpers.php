@@ -1,5 +1,6 @@
 <?php
 
+use Gogol\Invoices\Model\Invoice;
 use Gogol\Invoices\Model\InvoicesSetting;
 
 function priceFormat($number){
@@ -16,5 +17,10 @@ function getSettings($key = null)
     });
 
     return $key && $settings ? $settings->{$key} : $settings;
+}
+
+function invoice($data = null)
+{
+    return new Invoice($data);
 }
 ?>

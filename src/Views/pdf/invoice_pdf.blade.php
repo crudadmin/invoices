@@ -67,8 +67,8 @@ table.po tr.p td {padding:5px; font-size: 12px}
   </tr>
     <tr>
     <td>{{ $settings->country }}</td>
-    <td class="bl2">{{ $invoice->getSelectOption('country') }}</td>
-    <td class="br2">{{ $invoice->getSelectOption('country') }}</td>
+    <td class="bl2">{{ $invoice->country_name }}</td>
+    <td class="br2">{{ $invoice->country_name }}</td>
   </tr>
   <tr>
     <td>&nbsp;</td>
@@ -101,7 +101,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
   <tr>
     <td>Čislo účtu: {{ $settings->account }}</td>
     <td>Spôsob úhrady:</td>
-    <td>{{ $invoice->getSelectOption('payment_method') }}</td>
+    <td>{{ $invoice->payment_method_name }}</td>
   </tr>
 
   <tr>
