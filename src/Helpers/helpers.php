@@ -7,6 +7,14 @@ function priceFormat($number){
     return number_format($number, 2, '.', ' ');
 }
 
+function getDefaultInvoiceLanguage()
+{
+    if ( count(config('invoices.countries')) == 0 )
+        return;
+
+    return array_keys(config('invoices.countries'))[0];
+}
+
 function getSettings($key = null)
 {
     if ( app()->runningInConsole() )

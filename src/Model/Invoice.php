@@ -11,7 +11,6 @@ use Gogol\Invoices\Traits\InvoiceProcessTrait;
 use Gogol\Admin\Fields\Group;
 use Gogol\Admin\Models\Model as AdminModel;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Validation\Rule;
 
 class Invoice extends AdminModel
 {
@@ -76,7 +75,7 @@ class Invoice extends AdminModel
                     'city' => 'name:Mesto|fillBy:client|placeholder:Zadajte mesto|required|hidden|max:90',
                     'zipcode' => 'name:PSČ|fillBy:client|placeholder:Zadajte PSČ|default:080 01|required|hidden|max:90',
                     'street' => 'name:Ulica|fillBy:client|placeholder:Zadajte ulicu|required|hidden|max:90',
-                    'country' => 'name:Štát|fillBy:client|type:select|default:'.$this->getDefaultLang().'|hidden|required|max:90',
+                    'country' => 'name:Štát|fillBy:client|type:select|default:'.getDefaultInvoiceLanguage().'|hidden|required|max:90',
                 ]),
             ]),
             'email_sent' => 'name:Notifikácia|type:json|removeFromForm',
@@ -152,73 +151,78 @@ class Invoice extends AdminModel
         return $attributes;
     }
 
+    /*
+     * Return type of invoice
+     */
     public function getTypeNameAttribute()
     {
         return config('invoices.invoice_types.'.$this->type.'.name', '') . ' č.';
     }
 
+    /*
+     * Return prefix of invoice number
+     */
     public function getNumberPrefixAttribute()
     {
         return config('invoices.invoice_types.'.$this->type.'.prefix', '');
     }
 
+    /*
+     * Return full invoice number
+     */
     public function getNumberAttribute($value)
     {
         return $this->numberPrefix . $value;
     }
 
+    /*
+     * Return proform of invoice
+     */
     public function proformInvoice()
     {
         return $this->belongsTo(Invoice::class, 'id', 'proform_id')->where('type', 'invoice');
     }
 
+    /*
+     * Return original invoice of return invoice
+     */
     public function returnInvoice()
     {
         return $this->belongsTo(Invoice::class, 'id', 'return_id');
     }
 
-    public function vsRuleUnique($row)
+    /*
+     * Check if given/saved email is checked
+     */
+    public function isEmailChecked($email = null)
     {
-        return Rule::unique('invoices')->ignore($row)->where(function($query) use($row) {
-            $query->whereNull('deleted_at');
-
-            if ( ! $row )
-                return;
-
-            //Also except invoice/proform
-            if ( $row->proform_id )
-                $query->where('id', '!=', $row->proform_id);
-            else
-                $query->where('proform_id', '!=', $row->getKey());
-        });
+        return is_array($this->email_sent) && in_array($email ?: $this->email, $this->email_sent);
     }
 
-    public function isEmailChecked()
-    {
-        return is_array($this->email_sent) && in_array($this->email, $this->email_sent);
-    }
-
-    public function getPdf($regenerate = false)
+    /**
+     * Get pdf file of invoice
+     * If pdf is not actual or generater, then regenerate pdf and re-save filename into db
+     * @param  boolean $regenerate force regeneration of PDF
+     */
+    public function getPdf($force_regenerate = false)
     {
         //Regenerate invoice if needed
-        $this->generatePDF(true, $regenerate);
+        $this->generatePDF(true, $force_regenerate);
 
         return $this->pdf;
     }
 
-    protected function getDefaultLang()
-    {
-        if ( count(config('invoices.countries')) == 0 )
-            return;
-
-        return array_keys(config('invoices.countries'))[0];
-    }
-
+    /*
+     * Returns payment method in text value
+     */
     public function getPaymentMethodNameAttribute()
     {
         return config('invoices.payment_methods.'.$this->payment_method, '-');
     }
 
+    /*
+     * Returns country name in text value
+     */
     public function getCountryNameAttribute()
     {
         return config('invoices.countries.'.$this->country, '-');

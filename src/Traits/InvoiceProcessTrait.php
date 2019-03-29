@@ -6,14 +6,34 @@ use Gogol\Invoices\Mail\SendInvoiceEmail;
 use Carbon\Carbon;
 use Gogol\Admin\Helpers\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 use Mpdf\Mpdf;
 
 trait InvoiceProcessTrait
 {
     /*
+     * Set unique rule for variable symbol field
+     */
+    protected function vsRuleUnique($row)
+    {
+        return Rule::unique('invoices')->ignore($row)->where(function($query) use($row) {
+            $query->whereNull('deleted_at');
+
+            if ( ! $row )
+                return;
+
+            //Also except invoice/proform
+            if ( $row->proform_id )
+                $query->where('id', '!=', $row->proform_id);
+            else
+                $query->where('proform_id', '!=', $row->getKey());
+        });
+    }
+
+    /*
      * Return snapshot in sha1 of actual invoice
      */
-    public function getSnapshotSha()
+    private function getSnapshotSha()
     {
         //Get just used and allowed columns for snapshot
         $allowed_invoice_columns = array_diff_key($this->getFields(), array_flip(['pdf', 'snapshot_sha', 'email_sent']));
@@ -29,7 +49,12 @@ trait InvoiceProcessTrait
         return sha1($invoice_data . $items_data);
     }
 
-    public function generatePDF($auto_save = true, $regenerate = false)
+    /**
+     * Generate PDF of invoice
+     * @param  boolean $auto_save        auto save pdf filename
+     * @param  boolean $force_regenerate forced regeneration of pdf
+     */
+    public function generatePDF($auto_save = true, $force_regenerate = false)
     {
         $snapshot_sha = $this->getSnapshotSha();
         $snapshot_sha_short = substr($snapshot_sha, -10);
@@ -38,7 +63,7 @@ trait InvoiceProcessTrait
         $filename = $this->number . '-' . $snapshot_sha_short . '.pdf';
 
         //Check if we can generate new invoice by checking old and new data hash
-        if ( $this->pdf && $this->pdf->exists() && $regenerate === false && $this->snapshot_sha == $snapshot_sha )
+        if ( $this->pdf && $this->pdf->exists() && $force_regenerate === false && $this->snapshot_sha == $snapshot_sha )
             return;
 
         //Generate pdf
@@ -109,7 +134,12 @@ trait InvoiceProcessTrait
         return $invoice;
     }
 
-
+    /**
+     * Clone items from given invoice to actual invoice
+     * @param  [type]  $row     copy from invoice
+     * @param  [type]  $invoice copy to invoice
+     * @param  boolean $return  set as return items, price will be multipled by -1
+     */
     private function cloneItems($row, $invoice, $return = false)
     {
         foreach ($row->items()->get() as $item)
@@ -145,6 +175,9 @@ trait InvoiceProcessTrait
         $this->price_vat = $price_vat;
     }
 
+    /*
+     * Generate invoice number increment
+     */
     public function setInvoiceNumber()
     {
         $last_invoice = $this->newQuery()
@@ -162,12 +195,18 @@ trait InvoiceProcessTrait
         $this->number = date('Y') . str_pad($next_number, 5, 0, STR_PAD_LEFT);
     }
 
+    /*
+     * Automatically set payment date
+     */
     public function setPaymentDate()
     {
         if ( ! $this->payment_date )
             $this->payment_date = Carbon::now()->addDays(getSettings('payment_term') ?: 0);
     }
 
+    /*
+     * Send email with invoice on given/saved email adress
+     */
     public function sendEmail($email = null, $message = null)
     {
         Mail::to($email ?: $this->email)->send(new SendInvoiceEmail($this, $message));
@@ -176,6 +215,9 @@ trait InvoiceProcessTrait
         $this->checkSentEmail($email);
     }
 
+    /*
+     * Check given email as sent
+     */
     public function checkSentEmail($email = null)
     {
         $this->update([ 'email_sent' => array_unique(array_merge((array)$this->email_sent, [ $email ?: $this->email ])) ]);
