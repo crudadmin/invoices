@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Package with full Invoices feature into CrudAdmin",
     "keywords": ["crudadmin", "invoices", "admin", "laravel"],
-    "homepage": "marekgogol.sk",
+    "homepage": "https://marekgogol.sk",
     "license": "MIT",
     "authors": [
         { "name": "Marek Gogoľ", "email": "info@marekgogol.sk" }
