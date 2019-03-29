@@ -43,7 +43,7 @@ class Invoice extends AdminModel
             'Nastavenia dokladu' => Group::fields([
                 'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|max:20',
                 'number' => 'name:Č. dokladu|removeFromForm|index|max:30',
-                'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.$this->getPrefixes('invoice').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
+                'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
                 'proform' => 'name:Proforma|belongsTo:invoices,id|invisible',
                 'vs' => [ 'name' => 'Variabilný symbol', 'placeholder' => 'Zadajte variabilný symbol', 'required' => true, 'max' => 12, $this->vsRuleUnique($row) ],
                 'payment_method' => 'name:Spôsob platby|type:select|default:sepa',
@@ -87,7 +87,9 @@ class Invoice extends AdminModel
     public function options()
     {
         return [
-            'type' => config('invoices.invoice_types'),
+            'type' => array_map(function($item){
+                return $item['name'];
+            }, config('invoices.invoice_types', [])),
             'payment_method' => config('invoices.payment_methods'),
             'country' => config('invoices.countries'),
         ];
@@ -132,12 +134,6 @@ class Invoice extends AdminModel
         SendInvoiceEmailButton::class,
     ];
 
-    protected $prefixes = [
-        'invoice' => 'FV-',
-        'return' => 'DP-',
-        'proform' => 'PF-',
-    ];
-
     public function scopeAdminRows($query)
     {
         $query->with('proformInvoice:id,proform_id,number,pdf,type');
@@ -158,22 +154,12 @@ class Invoice extends AdminModel
 
     public function getTypeNameAttribute()
     {
-        if ( $this->type == 'invoice' )
-            return 'Faktúra (daňový doklad) č.';
-
-        if ( $this->type == 'return' )
-            return 'Dobropis č.';
-
-        if ( $this->type == 'proform' )
-            return 'Proforma č.';
+        return config('invoices.invoice_types.'.$this->type.'.name', '') . ' č.';
     }
 
     public function getNumberPrefixAttribute()
     {
-        if ( array_key_exists($this->type, $this->prefixes) )
-            return $this->prefixes[$this->type];
-
-        return '';
+        return config('invoices.invoice_types.'.$this->type.'.prefix', '');
     }
 
     public function getNumberAttribute($value)
@@ -218,14 +204,6 @@ class Invoice extends AdminModel
         $this->generatePDF(true, $regenerate);
 
         return $this->pdf;
-    }
-
-    public function getPrefixes($prefix = null)
-    {
-        if ( $prefix )
-            return array_key_exists($prefix, $this->prefixes) ? $this->prefixes[$prefix] : '';
-
-        return $this->prefixes;
     }
 
     protected function getDefaultLang()

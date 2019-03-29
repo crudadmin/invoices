@@ -59,7 +59,7 @@ export default {
 
             this.$set('row.return_number', value);
 
-            this.$root.$http.get('../api/invoices/get-by-number', { number : value })
+            this.$root.$http.get('./invoices/get-by-number', { number : value })
                 .then(response => {
                     var invoice = response.data;
 

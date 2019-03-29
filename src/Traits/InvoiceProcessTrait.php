@@ -38,7 +38,7 @@ trait InvoiceProcessTrait
         $filename = $this->number . '-' . $snapshot_sha_short . '.pdf';
 
         //Check if we can generate new invoice by checking old and new data hash
-        if ( $regenerate === false && $this->snapshot_sha == $snapshot_sha )
+        if ( $this->pdf && $this->pdf->exists() && $regenerate === false && $this->snapshot_sha == $snapshot_sha )
             return;
 
         //Generate pdf
