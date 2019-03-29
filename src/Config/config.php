@@ -4,7 +4,7 @@ return [
     //Types of invoices
     'invoice_types' => [
         'proform' => 'Proforma',
-        'invoice' => 'Ostra faktúra',
+        'invoice' => 'Ostrá faktúra',
         'return' => 'Dobropis',
     ],
 
