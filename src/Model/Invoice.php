@@ -11,6 +11,7 @@ use Gogol\Invoices\Traits\InvoiceProcessTrait;
 use Gogol\Admin\Fields\Group;
 use Gogol\Admin\Models\Model as AdminModel;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 
 class Invoice extends AdminModel
 {
@@ -44,7 +45,7 @@ class Invoice extends AdminModel
                 'number' => 'name:Č. dokladu|removeFromForm|index|max:30',
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
                 'proform' => 'name:Proforma|belongsTo:invoices,id|invisible',
-                'vs' => [ 'name' => 'Variabilný symbol', 'placeholder' => 'Zadajte variabilný symbol', 'required' => true, 'max' => 12, $this->vsRuleUnique($row) ],
+                'vs' => [ 'name' => 'Variabilný symbol', 'placeholder' => 'Zadajte variabilný symbol', 'required' => true, $this->vsRuleUnique($row) ],
                 'payment_method' => 'name:Spôsob platby|type:select|default:sepa',
                 Group::fields([
                     'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getSettings('payment_term').' dní)',
@@ -176,6 +177,22 @@ class Invoice extends AdminModel
     }
 
     /*
+     * Return payment method in text value
+     */
+    public function getPaymentMethodNameAttribute()
+    {
+        return config('invoices.payment_methods.'.$this->payment_method, '-');
+    }
+
+    /*
+     * Return country name in text value
+     */
+    public function getCountryNameAttribute()
+    {
+        return config('invoices.countries.'.$this->country, '-');
+    }
+
+    /*
      * Return proform of invoice
      */
     public function proformInvoice()
@@ -189,14 +206,6 @@ class Invoice extends AdminModel
     public function returnInvoice()
     {
         return $this->belongsTo(Invoice::class, 'id', 'return_id');
-    }
-
-    /*
-     * Check if given/saved email is checked
-     */
-    public function isEmailChecked($email = null)
-    {
-        return is_array($this->email_sent) && in_array($email ?: $this->email, $this->email_sent);
     }
 
     /**
@@ -213,18 +222,55 @@ class Invoice extends AdminModel
     }
 
     /*
-     * Returns payment method in text value
+     * Generate invoice
      */
-    public function getPaymentMethodNameAttribute()
+    public function createInvoice()
     {
-        return config('invoices.payment_methods.'.$this->payment_method, '-');
+        $invoice = $this->replicate();
+        $invoice->type = 'invoice';
+        $invoice->proform_id = $this->getKey();
+        $invoice->paid_at = Carbon::now();
+        $invoice->payment_date = $this->payment_date < Carbon::now()->setTime(0, 0, 0) ? Carbon::now() : $this->payment_date;
+        $invoice->snapshot_sha = null;
+        $invoice->email_sent = null;
+        $invoice->save();
+
+        //Clone proform items
+        $this->cloneItems($this, $invoice);
+
+        //Generate pdf and save it
+        $invoice->setRelations([]);
+        $invoice->generatePdf(false);
+        $invoice->save();
+
+        return $invoice;
     }
 
     /*
-     * Returns country name in text value
+     * Generate return invoice
      */
-    public function getCountryNameAttribute()
+    public function createReturn()
     {
-        return config('invoices.countries.'.$this->country, '-');
+        $invoice = $this->replicate();
+        $invoice->type = 'return';
+        $invoice->return_id = $this->getKey();
+        $invoice->vs = 'DP' . $invoice->vs;
+        $invoice->paid_at = null;
+        $invoice->payment_date = Carbon::now();
+        $invoice->price = -$invoice->price;
+        $invoice->price_vat = -$invoice->price_vat;
+        $invoice->snapshot_sha = null;
+        $invoice->email_sent = null;
+        $invoice->save();
+
+        //Clone proform items
+        $this->cloneItems($this, $invoice, true);
+
+        //Generate pdf and save it
+        $invoice->setRelations([]);
+        $invoice->generatePdf(false);
+        $invoice->save();
+
+        return $invoice;
     }
 }

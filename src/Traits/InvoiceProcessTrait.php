@@ -3,10 +3,10 @@
 namespace Gogol\Invoices\Traits;
 
 use Gogol\Invoices\Mail\SendInvoiceEmail;
-use Carbon\Carbon;
 use Gogol\Admin\Helpers\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 use Mpdf\Mpdf;
 
 trait InvoiceProcessTrait
@@ -33,7 +33,7 @@ trait InvoiceProcessTrait
     /*
      * Return snapshot in sha1 of actual invoice
      */
-    private function getSnapshotSha()
+    protected function getSnapshotSha()
     {
         //Get just used and allowed columns for snapshot
         $allowed_invoice_columns = array_diff_key($this->getFields(), array_flip(['pdf', 'snapshot_sha', 'email_sent']));
@@ -87,60 +87,13 @@ trait InvoiceProcessTrait
             $this->save();
     }
 
-    public function createInvoice()
-    {
-        $invoice = $this->replicate();
-        $invoice->type = 'invoice';
-        $invoice->proform_id = $this->getKey();
-        $invoice->paid_at = Carbon::now();
-        $invoice->payment_date = $this->payment_date < Carbon::now()->setTime(0, 0, 0) ? Carbon::now() : $this->payment_date;
-        $invoice->snapshot_sha = null;
-        $invoice->email_sent = null;
-        $invoice->save();
-
-        //Clone proform items
-        $this->cloneItems($this, $invoice);
-
-        //Generate pdf and save it
-        $invoice->setRelations([]);
-        $invoice->generatePdf(false);
-        $invoice->save();
-
-        return $invoice;
-    }
-
-    public function createReturn()
-    {
-        $invoice = $this->replicate();
-        $invoice->type = 'return';
-        $invoice->return_id = $this->getKey();
-        $invoice->vs = 'DP' . $invoice->vs;
-        $invoice->paid_at = null;
-        $invoice->payment_date = Carbon::now();
-        $invoice->price = -$invoice->price;
-        $invoice->price_vat = -$invoice->price_vat;
-        $invoice->snapshot_sha = null;
-        $invoice->email_sent = null;
-        $invoice->save();
-
-        //Clone proform items
-        $this->cloneItems($this, $invoice, true);
-
-        //Generate pdf and save it
-        $invoice->setRelations([]);
-        $invoice->generatePdf(false);
-        $invoice->save();
-
-        return $invoice;
-    }
-
     /**
      * Clone items from given invoice to actual invoice
      * @param  [type]  $row     copy from invoice
      * @param  [type]  $invoice copy to invoice
      * @param  boolean $return  set as return items, price will be multipled by -1
      */
-    private function cloneItems($row, $invoice, $return = false)
+    protected function cloneItems($row, $invoice, $return = false)
     {
         foreach ($row->items()->get() as $item)
         {
@@ -213,6 +166,14 @@ trait InvoiceProcessTrait
 
         //Save that email has been sent
         $this->checkSentEmail($email);
+    }
+
+    /*
+     * Check if given/saved email is checked
+     */
+    public function isEmailChecked($email = null)
+    {
+        return is_array($this->email_sent) && in_array($email ?: $this->email, $this->email_sent);
     }
 
     /*
