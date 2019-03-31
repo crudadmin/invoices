@@ -36,14 +36,23 @@ trait InvoiceProcessTrait
     protected function getSnapshotSha()
     {
         //Get just used and allowed columns for snapshot
-        $allowed_invoice_columns = array_diff_key($this->getFields(), array_flip(['pdf', 'snapshot_sha', 'email_sent']));
+        $not_allowed = array_flip(['pdf', 'snapshot_sha', 'email_sent']);
+        $allowed_invoice_columns = array_diff_key($this->getFields(), $not_allowed);
 
         //Get just allowed data from invoice
-        $invoice_data = json_encode(array_intersect_key($this->toArray(), $allowed_invoice_columns));
+        $invoice_data = array_intersect_key($this->toArray(), $allowed_invoice_columns);
+        $invoice_data = array_filter($invoice_data);
+        ksort($invoice_data);
+
+        $invoice_data = json_encode($invoice_data);
 
         //Get data from invoice items, and hide update_at attribute
-        $items_data = $this->items->each(function($model){
-            $model->setHidden(['updated_at']);
+        $items_data = $this->items->map(function($item){
+            $item = array_filter($item->setHidden(['updated_at'])->toArray());
+
+            ksort($item);
+
+            return $item;
         })->tojson();
 
         return sha1($invoice_data . $items_data);
