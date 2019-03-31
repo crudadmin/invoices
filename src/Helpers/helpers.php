@@ -15,7 +15,7 @@ function getDefaultInvoiceLanguage()
     return array_keys(config('invoices.countries'))[0];
 }
 
-function getSettings($key = null)
+function getSettings($key = null, $default = null)
 {
     if ( app()->runningInConsole() )
         return;
@@ -24,7 +24,7 @@ function getSettings($key = null)
         return InvoicesSetting::first();
     });
 
-    return $key && $settings ? $settings->{$key} : $settings;
+    return $key && $settings ? ($settings->{$key} ?: $default) : ($settings ?: $default);
 }
 
 function invoice($data = null)

@@ -30,6 +30,8 @@ class Invoice extends AdminModel
     protected $publishable = false;
     protected $sortable = false;
 
+    protected $group = 'invoices';
+
     /*
      * Automatic form and database generation
      * @name - field name
@@ -81,6 +83,7 @@ class Invoice extends AdminModel
             ]),
             'email_sent' => 'name:Notifikácia|type:json|removeFromForm',
             'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
+            'guid' => 'name:GUID|max:50|invisible',
         ];
     }
 
@@ -193,7 +196,39 @@ class Invoice extends AdminModel
     }
 
     /*
-     * Return proform of invoice
+     * Check if is proform invoice type
+     */
+    public function getIsProformAttribute()
+    {
+        return $this->isType('proform');
+    }
+
+    /*
+     * Check if is invoice type
+     */
+    public function getIsInvoiceAttribute()
+    {
+        return $this->isType('invoice');
+    }
+
+    /*
+     * Check if is return invoice type
+     */
+    public function getIsReturnAttribute()
+    {
+        return $this->isType('return');
+    }
+
+    /*
+     * Check type of invoice
+     */
+    public function isType($type)
+    {
+        return $this->type == $type;
+    }
+
+    /*
+     * Return invoice of proform
      */
     public function proformInvoice()
     {

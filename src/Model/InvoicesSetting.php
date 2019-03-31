@@ -45,7 +45,7 @@ class InvoicesSetting extends AdminModel
             ]),
             Group::fields([
                 'Bankove údaje' => Group::half([
-                    'account' => 'name:Č. účtu|max:90|required',
+                    'account' => 'name:Č. účtu|placeholder:0123456789/0000|max:90|required',
                     'iban' => 'name:IBAN|max:90|required',
                     'swift' => 'name:Swift|max:90|required',
                 ]),
@@ -65,6 +65,21 @@ class InvoicesSetting extends AdminModel
                 'email_message' => 'name:Správa v emaili',
                 'email_greeting' => 'name:Pozdrav|required',
             ]),
+        ];
+    }
+
+    public function getAccountNumberAttribute()
+    {
+        $account = explode('/', str_replace(' ', '', preg_replace('/\-|\||\.|\_/', '/', $this->account)));
+
+        //Sort by value length
+        usort($account, function($a, $b) {
+            return strlen($b) - strlen($a);
+        });
+
+        return [
+            'account' => isset($account[0]) ? $account[0] : null,
+            'code' => isset($account[1]) ? $account[1] : null,
         ];
     }
 

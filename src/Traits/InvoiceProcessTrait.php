@@ -192,6 +192,35 @@ trait InvoiceProcessTrait
     {
         $this->update([ 'email_sent' => array_unique(array_merge((array)$this->email_sent, [ $email ?: $this->email ])) ]);
     }
+
+    /*
+     * Return GUID of invoice
+     */
+    public function getGUID(){
+        if ( $this->guid )
+            return $this->guid;
+
+        if (function_exists('com_create_guid')){
+            $guid = com_create_guid();
+        }else{
+            mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
+            $charid = strtoupper(md5(uniqid(rand(), true)));
+            $hyphen = chr(45);
+            $uuid = chr(123)
+                .substr($charid, 0, 8).$hyphen
+                .substr($charid, 8, 4).$hyphen
+                .substr($charid,12, 4).$hyphen
+                .substr($charid,16, 4).$hyphen
+                .substr($charid,20,12)
+                .chr(125);
+            $guid = $uuid;
+        }
+
+        $this->guid = $guid;
+        $this->save();
+
+        return $guid;
+    }
 }
 
 ?>
