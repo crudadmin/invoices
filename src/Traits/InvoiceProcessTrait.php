@@ -149,7 +149,7 @@ trait InvoiceProcessTrait
                              ->first();
 
         //Get last invoice increment
-        $invoice_count = ! $last_invoice ? 0 : (int) $last_invoice->getOriginal('number');
+        $invoice_count = ! $last_invoice ? 0 : (int)substr($last_invoice->getOriginal('number'), 4);
 
         //Set invoice ID
         $next_number = $invoice_count + 1;
