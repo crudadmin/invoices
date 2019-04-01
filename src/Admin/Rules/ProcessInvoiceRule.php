@@ -11,6 +11,11 @@ use Gogol\Admin\Models\Model as AdminModel;
 class ProcessInvoiceRule extends AdminRule
 {
     /*
+     * Allow events also in frontend
+     */
+    public $frontend = true;
+
+    /*
      * Firing callback on create row
      */
     public function fire(AdminModel $row)

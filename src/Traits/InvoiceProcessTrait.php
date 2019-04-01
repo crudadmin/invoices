@@ -143,7 +143,7 @@ trait InvoiceProcessTrait
     public function setInvoiceNumber()
     {
         //If number is already set
-        if ( $this->number )
+        if ( $this->getOriginal('number') )
             return;
 
         $last_invoice = $this->newQuery()

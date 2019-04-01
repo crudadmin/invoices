@@ -9,6 +9,11 @@ use Ajax;
 
 class ProcessInvoiceItemRule extends AdminRule
 {
+    /*
+     * Allow events also in frontend
+     */
+    public $frontend = true;
+
     //On all events
     public function fire(AdminModel $row)
     {
