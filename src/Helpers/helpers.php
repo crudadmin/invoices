@@ -27,8 +27,8 @@ function getSettings($key = null, $default = null)
     return $key && $settings ? ($settings->{$key} ?: $default) : ($settings ?: $default);
 }
 
-function invoice($data = null)
+function invoice($data = [])
 {
-    return new Invoice($data);
+    return new Invoice($data ?: []);
 }
 ?>
