@@ -11,7 +11,12 @@ return [
     /*
      * Allow clients support in invoices
      */
-    'allow_client' => false,
+    'clients' => false,
+
+    /*
+     * Allow delivery adress in invoice
+     */
+    'delivery' => false,
 
     /*
      * Countries

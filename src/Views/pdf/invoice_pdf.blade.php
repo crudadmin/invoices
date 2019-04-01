@@ -48,27 +48,27 @@ table.po tr.p td {padding:5px; font-size: 12px}
   <tr>
     <td width="36%"><small><u>Dodávateľ</u></small>:</td>
     <td class="bt2top bl2"><small><u>Fakturačné údaje:</u></small></td>
-    <td class="bt2top br2"><small><u>Dodacia adresa:</u></small></td>
+    <td class="bt2top br2"><small><u>{{ config('invoices.delivery') ? 'Dodacia adresa:' : '' }}</u></small></td>
   </tr>
   <tr>
     <td><strong>{{ $settings->name }}</strong></td>
     <td class="bl2"><strong>{{ $invoice->company_name }}</strong></td>
-    <td class="br2">{{ $invoice->company_name }}</td>
+    <td class="br2">{{ $invoice->delivery_company_name }}</td>
   </tr>
   <tr>
     <td>{{ $settings->street }}</td>
     <td class="bl2">{{ $invoice->street }}</td>
-    <td class="br2">{{ $invoice->street }}</td>
+    <td class="br2">{{ $invoice->delivery_street }}</td>
   </tr>
   <tr>
     <td>{{ $settings->zipcode }}, {{ $settings->city }}</td>
     <td class="bl2">{{ $invoice->zipcode }}, {{ $invoice->city }}</td>
-    <td class="br2">{{ $invoice->zipcode }}, {{ $invoice->city }}</td>
+    <td class="br2">{{ config('invoices.delivery') ? $invoice->delivery_zipcode . ', ' . $invoice->delivery_city : '' }}</td>
   </tr>
     <tr>
     <td>{{ $settings->country }}</td>
     <td class="bl2">{{ $invoice->country_name }}</td>
-    <td class="br2">{{ $invoice->country_name }}</td>
+    <td class="br2">{{ $invoice->delivery_country_name }}</td>
   </tr>
   <tr>
     <td>&nbsp;</td>
