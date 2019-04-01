@@ -47,7 +47,7 @@ class Invoice extends AdminModel
                 'number' => 'name:Č. dokladu|removeFromForm|index|max:30',
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
                 'proform' => 'name:Proforma|belongsTo:invoices,id|invisible',
-                'vs' => [ 'name' => 'Variabilný symbol', 'digits_between' => '0,10', 'placeholder' => 'Zadajte variabilný symbol', 'required' => true, $this->vsRuleUnique($row) ],
+                'vs' => [ 'name' => 'Variabilný symbol', 'digits_between' => '0,10', 'max' => 10, 'index' => true, 'placeholder' => 'Zadajte variabilný symbol', 'required' => true, $this->vsRuleUnique($row) ],
                 'payment_method' => 'name:Spôsob platby|type:select|default:sepa',
                 Group::fields([
                     'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getSettings('payment_term').' dní)',
@@ -287,9 +287,10 @@ class Invoice extends AdminModel
     public function createReturn()
     {
         $invoice = $this->replicate();
+        $invoice->setInvoiceNumber();
         $invoice->type = 'return';
         $invoice->return_id = $this->getKey();
-        $invoice->vs = 'DP' . $invoice->vs;
+        $invoice->setNewVs($this->getOriginal('number'));
         $invoice->paid_at = null;
         $invoice->payment_date = Carbon::now();
         $invoice->price = -$invoice->price;

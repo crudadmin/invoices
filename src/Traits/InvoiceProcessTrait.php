@@ -142,6 +142,10 @@ trait InvoiceProcessTrait
      */
     public function setInvoiceNumber()
     {
+        //If number is already set
+        if ( $this->number )
+            return;
+
         $last_invoice = $this->newQuery()
                              ->whereRaw('YEAR(created_at) = YEAR(NOW())')
                              ->whereType($this->type)
@@ -220,6 +224,19 @@ trait InvoiceProcessTrait
         $this->save();
 
         return $guid;
+    }
+
+    /*
+     * Set new vs and check if can be setted
+     * if vs exists, then regenerate new unexisting vs
+     */
+    public function setNewVs($number = null)
+    {
+        //Check if VS exists, if yes, then generate random
+        while ($this->newQuery()->where('vs', $number)->exists())
+            $number = 9 . rand(000000000, 999999999);
+
+        $this->vs = $number;
     }
 }
 
