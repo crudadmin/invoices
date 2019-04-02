@@ -278,6 +278,10 @@ class Invoice extends AdminModel
         $invoice->generatePdf(false);
         $invoice->save();
 
+        //Change paid status after generating proform
+        if ( ! $this->paid_at )
+            $this->update(['paid_at' => Carbon::now()]);
+
         return $invoice;
     }
 
