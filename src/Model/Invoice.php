@@ -43,7 +43,7 @@ class Invoice extends AdminModel
     {
         return [
             'Nastavenia dokladu' => Group::fields([
-                'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|max:20',
+                'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
                 'number' => 'name:Č. dokladu|removeFromForm|index|max:30',
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
                 'proform' => 'name:Proforma|belongsTo:invoices,id|invisible',

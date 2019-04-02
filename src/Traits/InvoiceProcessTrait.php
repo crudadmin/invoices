@@ -138,6 +138,14 @@ trait InvoiceProcessTrait
     }
 
     /*
+     * Separate invoices by type
+     */
+    public function getInvoiceNumberCategory()
+    {
+        return $this->type;
+    }
+
+    /*
      * Generate invoice number increment
      */
     public function setInvoiceNumber()
@@ -148,7 +156,7 @@ trait InvoiceProcessTrait
 
         $last_invoice = $this->newQuery()
                              ->whereRaw('YEAR(created_at) = YEAR(NOW())')
-                             ->whereType($this->type)
+                             ->whereIn('type', array_wrap($this->getInvoiceNumberCategory()))
                              ->latest()
                              ->first();
 
