@@ -296,7 +296,7 @@ class Invoice extends AdminModel
         $invoice->return_id = $this->getKey();
         $invoice->setNewVs($this->getOriginal('number'));
         $invoice->paid_at = null;
-        $invoice->payment_date = Carbon::now();
+        $invoice->payment_date = Carbon::now()->addDays(getSettings('payment_term') ?: 0);
         $invoice->price = -$invoice->price;
         $invoice->price_vat = -$invoice->price_vat;
         $invoice->snapshot_sha = null;
