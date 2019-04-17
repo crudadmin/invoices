@@ -36,7 +36,7 @@ trait InvoiceProcessTrait
     protected function getSnapshotSha()
     {
         //Get just used and allowed columns for snapshot
-        $not_allowed = array_flip(['pdf', 'snapshot_sha', 'email_sent']);
+        $not_allowed = array_flip(['pdf', 'snapshot_sha', 'email_sent', 'email']);
         $allowed_invoice_columns = array_diff_key($this->getFields(), $not_allowed);
 
         //Get just allowed data from invoice
