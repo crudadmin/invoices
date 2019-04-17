@@ -47,7 +47,7 @@ class Invoice extends AdminModel
                 'number' => 'name:Č. dokladu|removeFromForm|index|max:30',
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
                 'proform' => 'name:Proforma|belongsTo:invoices,id|invisible',
-                'vs' => [ 'name' => 'Variabilný symbol', 'digits_between' => '0,10', 'max' => 10, 'index' => true, 'placeholder' => 'Zadajte variabilný symbol', 'required' => true, $this->vsRuleUnique($row) ],
+                'vs' => [ 'name' => 'Variabilný symbol', 'title' => 'Pri prázdnej hodnote bude vygenerovaný automaticky', 'digits_between' => '0,10', 'max' => 10, 'index' => true, 'placeholder' => 'Zadajte variabilný symbol', 'required' => isset($row) ? true : false, $this->vsRuleUnique($row) ],
                 'payment_method' => 'name:Spôsob platby|type:select|default:sepa',
                 Group::fields([
                     'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getSettings('payment_term').' dní)',
@@ -254,6 +254,16 @@ class Invoice extends AdminModel
         $this->generatePDF(true, $force_regenerate);
 
         return $this->pdf;
+    }
+
+    public function make(string $type, $data = null)
+    {
+        $data['type'] = $type;
+
+        if ( $data instanceof AdminModel )
+            $data = $data->toArray();
+
+        return new static($data);
     }
 
     /*

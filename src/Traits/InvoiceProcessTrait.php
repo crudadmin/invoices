@@ -241,8 +241,8 @@ trait InvoiceProcessTrait
     public function setNewVs($number = null)
     {
         //Check if VS exists, if yes, then generate random
-        while ($this->newQuery()->where('vs', $number)->exists())
-            $number = 9 . rand(000000000, 999999999);
+        while (empty($number) || $this->newQuery()->where('vs', $number)->exists())
+            $number = date('Ym') . rand(0000, 9999);
 
         $this->vs = $number;
     }

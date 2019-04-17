@@ -26,5 +26,8 @@ class ProcessInvoiceRule extends AdminRule
     public function creating(AdminModel $row)
     {
         $row->setInvoiceNumber();
+
+        if ( ! $row->vs )
+            $row->setNewVs();
     }
 }
