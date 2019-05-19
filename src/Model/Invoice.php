@@ -95,6 +95,7 @@ class Invoice extends AdminModel
             }, config('invoices.invoice_types', [])),
             'payment_method' => config('invoices.payment_methods'),
             'country' => config('invoices.countries'),
+            'return' => [],
         ];
     }
 

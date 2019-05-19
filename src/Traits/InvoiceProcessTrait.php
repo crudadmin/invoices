@@ -16,7 +16,7 @@ trait InvoiceProcessTrait
      */
     protected function vsRuleUnique($row)
     {
-        return Rule::unique('invoices')->ignore($row)->where(function($query) use($row) {
+        return Rule::unique('invoices')->ignore($row ? $row->getKey() : null)->where(function($query) use($row) {
             $query->whereNull('deleted_at');
 
             if ( ! $row )

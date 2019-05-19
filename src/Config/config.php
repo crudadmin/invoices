@@ -39,6 +39,11 @@ return [
     ],
 
     /*
+     * Set default invoice item vat
+     */
+    'default_item_vat' => 0,
+
+    /*
      * When this property is true
      * you can open invoice in admin panel, and refresh response
      * without changing data in invoice and regeneraiting it

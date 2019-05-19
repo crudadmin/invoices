@@ -7,6 +7,7 @@ use Gogol\Invoices\Model\InvoicesExport;
 use Gogol\Admin\Helpers\File;
 use Illuminate\Http\Request;
 use \ZipArchive;
+use Admin;
 
 class InvoiceController extends Controller
 {
@@ -19,7 +20,7 @@ class InvoiceController extends Controller
 
     public function generateInvoicePdf($id)
     {
-        $invoice = Invoice::findOrFail($id);
+        $invoice = Admin::getModel('Invoice')->findOrFail($id);
 
         if ( ! ($pdf = $invoice->getPdf(config('invoices.testing_pdf', false))) )
             abort(404);
@@ -63,7 +64,7 @@ class InvoiceController extends Controller
 
     public function downloadExport(InvoicesExport $export)
     {
-        $invoices = Invoice::whereDate('created_at', '>=', $export->from)
+        $invoices = Admin::getModel('Invoice')->whereDate('created_at', '>=', $export->from)
                            ->whereDate('created_at', '<=', $export->to)
                            ->whereIn('type', $export->types ?: [])
                            ->with(['items', 'proformInvoice'])

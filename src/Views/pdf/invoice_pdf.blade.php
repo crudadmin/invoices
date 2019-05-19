@@ -61,9 +61,9 @@ table.po tr.p td {padding:5px; font-size: 12px}
     <td class="br2">{{ $invoice->delivery_street }}</td>
   </tr>
   <tr>
-    <td>{{ $settings->zipcode }}, {{ $settings->city }}</td>
-    <td class="bl2">{{ $invoice->zipcode }}, {{ $invoice->city }}</td>
-    <td class="br2">{{ config('invoices.delivery') ? $invoice->delivery_zipcode . ', ' . $invoice->delivery_city : '' }}</td>
+    <td>{{ implode(', ', array_filter([$settings->zipcode, $settings->city])) }}</td>
+    <td class="bl2">{{ implode(', ', array_filter([$invoice->zipcode, $invoice->city])) }}</td>
+    <td class="br2">{{ config('invoices.delivery') ? implode(', ', array_filter([$invoice->delivery_zipcode, $invoice->delivery_city])) : '' }}</td>
   </tr>
     <tr>
     <td>{{ $settings->country }}</td>

@@ -42,7 +42,7 @@ class InvoicesItem extends AdminModel
             'quantity' => 'name:Množstvo|type:integer|required|default:1|min:1',
             Group::fields([
                 'price' => 'name:Cena/ks bez DPH|type:decimal|component:SetVatPrice|required_without:price_vat',
-                'vat' => 'name:DPH %|type:select|options:0,20|default:0|required',
+                'vat' => 'name:DPH %|type:select|options:0,20|default:'.config('invoices.default_item_vat', 0).'|required',
                 'price_vat' => 'name:Cena/ks s DPH|type:decimal|component:SetVatPrice|required_without:price',
             ])->inline(),
         ];
