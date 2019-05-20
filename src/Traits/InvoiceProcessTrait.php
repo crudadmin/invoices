@@ -46,9 +46,9 @@ trait InvoiceProcessTrait
 
         $invoice_data = json_encode($invoice_data);
 
-        //Get data from invoice items, and hide update_at attribute
+        //Get data from invoice items, and hide updated_at attribute
         $items_data = $this->items->map(function($item){
-            $item = array_filter($item->setHidden(['updated_at'])->toArray());
+            $item = array_filter($item->setHidden(['id', 'updated_at', 'created_at'])->toArray());
 
             ksort($item);
 
@@ -129,8 +129,8 @@ trait InvoiceProcessTrait
 
         foreach ($this->items as $item)
         {
-            $price += ($item->quantity * $item->price);
-            $price_vat += ($item->quantity * $item->price_vat);
+            $price += calculateWithoutVat($item->quantity * $item->price_vat, $item->vat);
+            $price_vat += $item->quantity * $item->price_vat;
         }
 
         $this->price = $price;

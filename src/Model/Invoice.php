@@ -138,6 +138,10 @@ class Invoice extends AdminModel
         SendInvoiceEmailButton::class,
     ];
 
+    protected $casts = [
+        'vs' => 'integer',
+    ];
+
     public function scopeAdminRows($query)
     {
         $query->with('proformInvoice:id,proform_id,number,pdf,type');

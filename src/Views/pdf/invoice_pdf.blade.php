@@ -183,7 +183,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
       }
 
       $with_tax[$item->vat] += $item->price_vat * $item->quantity;
-      $without_tax[$item->vat] += $item->price * $item->quantity;
+      $without_tax[$item->vat] += calculateWithoutVat($item->price_vat * $item->quantity, $item->vat);
     @endphp
   @endforeach
 </table>

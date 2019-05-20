@@ -2,9 +2,10 @@
 
 namespace Gogol\Invoices\Model;
 
-use Gogol\Invoices\Admin\Rules\ProcessInvoiceItemRule;
 use Gogol\Admin\Fields\Group;
 use Gogol\Admin\Models\Model as AdminModel;
+use Gogol\Invoices\Admin\Rules\ProcessInvoiceItemRule;
+use Gogol\Invoices\Admin\Rules\ProcessInvoicePriceRule;
 
 class InvoicesItem extends AdminModel
 {
@@ -56,5 +57,6 @@ class InvoicesItem extends AdminModel
 
     protected $rules = [
         ProcessInvoiceItemRule::class,
+        ProcessInvoicePriceRule::class,
     ];
 }

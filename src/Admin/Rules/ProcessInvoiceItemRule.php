@@ -20,21 +20,12 @@ class ProcessInvoiceItemRule extends AdminRule
         $this->reloadItemPrice($row);
     }
 
-    //When item will be successfully saved in db, then refresh invoice price
-    public function fired(AdminModel $row)
-    {
-        $invoice = $row->invoice;
-
-        $invoice->reloadInvoicePrice();
-        $invoice->save();
-    }
-
     private function reloadItemPrice($row)
     {
         if ( ! $row->price )
-            $row->price = $row->price_vat / (1 + ($row->vat / 100));
+            $row->price = calculateWithoutVat($row->price_vat, $row->vat);
 
-        $row->price_vat = $row->price * (1 + ($row->vat / 100));
-
+        if ( ! $row->price_vat )
+            $row->price_vat = calculateWithVat($row->price, $row->vat);
     }
 }
