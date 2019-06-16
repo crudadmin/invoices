@@ -64,7 +64,7 @@ class Invoice extends AdminModel
                 'pdf' => 'name:Doklad|type:file|extension:pdf|removeFromForm',
             ]),
             'Fakturačné údaje' => Group::fields([
-                'client' => 'name:Klient|'.(config('invoices.clients', false) ? 'belongsTo:clients,company_name' : 'type:imaginary').'|hidden|canAdd',
+                'client_id' => 'name:Klient|'.(config('invoices.clients', false) ? 'belongsTo:clients,company_name' : 'type:imaginary').'|hidden|canAdd',
                 'Firemné údaje' => Group::half([
                     Group::fields([
                         'company_name' => 'name:Meno a priezivsko / Firma|fillBy:client|placeholder:Zadajte názov odoberateľa|required|max:90',
