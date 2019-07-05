@@ -2,13 +2,13 @@
     <div class="form-group">
         <label>{{ field.name }}</label>
 
-        <input type="integer" step="any" :name="key" :value="value" @keyup="onChange" @change="reloadPrices" :placeholder="field.name" class="form-control">
+        <input type="integer" step="any" :name="field_key" :value="value" @keyup="onChange" @change="reloadPrices" :placeholder="field.name" class="form-control">
     </div>
 </template>
 
 <script type="text/javascript">
 export default {
-    props : ['key', 'field', 'row', 'model'],
+    props : ['field_key', 'field', 'row', 'model'],
 
     data(){
         return {
@@ -16,8 +16,8 @@ export default {
         }
     },
 
-    ready(){
-        if ( this.key.substr(-3) != 'vat' )
+    mounted(){
+        if ( this.field_key.substr(-3) != 'vat' )
         {
             this.$watch('row.vat', function(value){
                 this.reloadPrices(this.row.price||0);
@@ -44,10 +44,10 @@ export default {
             if ( typeof value == 'string' )
                 value = value.replace(',', '.');
 
-            if ( this.key.substr(-3) == 'vat' )
-                this.$set('row.price', parseFloat((parseFloat(value)||0) / (1 + (vat / 100))).toFixed(2) )
+            if ( this.field_key.substr(-3) == 'vat' )
+                this.$set(this.row, 'price', parseFloat((parseFloat(value)||0) / (1 + (vat / 100))).toFixed(2) )
             else
-                this.$set('row.price_vat', parseFloat((parseFloat(value)||0) * (1 + (vat / 100))).toFixed(2) )
+                this.$set(this.row, 'price_vat', parseFloat((parseFloat(value)||0) * (1 + (vat / 100))).toFixed(2) )
         },
     }
 }

@@ -5,14 +5,14 @@
         <div class="input-group">
             <span data-toggle="tooltip" :title="row.return_number && row.return_id ? 'Faktúra bola nájdená' : 'Faktúra nebola nájdená'" class="input-group-addon" :style="statusStyle">FV-</span>
             <input :disabled="row.id" type="text" :name="return_number" :value="row.return_number" @keyup="onChangeNumber" :placeholder="year + '...'" class="form-control">
-            <input type="hidden" :name="key" :value="row.return_number ? row.return_id||'-' : ''" class="form-control">
+            <input type="hidden" :name="field_key" :value="row.return_number ? row.return_id||'-' : ''" class="form-control">
         </div>
     </div>
 </template>
 
 <script type="text/javascript">
 export default {
-    props : ['key', 'field', 'row', 'model', 'history_changed'],
+    props : ['field_key', 'field', 'row', 'model', 'history_changed'],
 
     data(){
         return {

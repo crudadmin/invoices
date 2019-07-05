@@ -6,12 +6,12 @@
 export default {
     props : ['model', 'row', 'rows'],
 
-    ready(){
+    mounted(){
         /*
          * You can watch actual field value, or other form fields in row variable
          */
         this.$watch('row.id', function(value){
-            this.$set('model.fields.type.removeFromForm', value ? true : false);
+            this.$set(this.model, 'fields.type.removeFromForm', value ? true : false);
         });
     }
 }

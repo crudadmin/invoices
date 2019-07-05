@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->mergeAdminConfigs();
 
-        Admin::addModelPath('Gogol\Invoices\Model', __dir__ . '/../Model/**');
+        Admin::registerAdminModels(__dir__ . '/../Model/**', 'Gogol\Invoices\Model');
 
         //Boot providers after this provider boot
         $this->bootProviders([
