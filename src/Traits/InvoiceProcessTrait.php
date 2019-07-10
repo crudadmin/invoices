@@ -157,7 +157,7 @@ trait InvoiceProcessTrait
         $last_invoice = $this->newQuery()
                              ->whereRaw('YEAR(created_at) = YEAR(NOW())')
                              ->whereIn('type', array_wrap($this->getInvoiceNumberCategory()))
-                             ->latest()
+                             ->latest('id')
                              ->first();
 
         //Get last invoice increment
