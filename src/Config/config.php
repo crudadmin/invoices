@@ -13,7 +13,7 @@ return [
 
     //Types of invoices
     'invoice_types' => [
-        'proform' => [ 'prefix' => 'PF-', 'name' => 'Proforma' ],
+        'proform' => [ 'prefix' => 'PF-', 'name' => 'Proforma faktúra' ],
         'invoice' => [ 'prefix' => 'FV-', 'name' => 'Faktúra (daňový doklad)' ],
         'return' => [ 'prefix' => 'DP-', 'name' => 'Dobropis' ],
     ],
