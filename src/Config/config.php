@@ -1,6 +1,16 @@
 <?php
 
 return [
+    /*
+     * Logo path
+     */
+    'logo_path' => resource_path('/images/logo.png'),
+
+    /*
+     * Mark path
+     */
+    'signature_path' => resource_path('/images/signature.png'),
+
     //Types of invoices
     'invoice_types' => [
         'proform' => [ 'prefix' => 'PF-', 'name' => 'Proforma' ],

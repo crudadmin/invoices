@@ -30,7 +30,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
 <body>
 <table width="100%" border="0">
   <tr>
-    <td width="43%"><img src="{{ public_path('/images/logo.png') }}" height="40px" type="" alt=""></td>
+    <td width="43%"><img src="{{ config('invoices.logo_path') }}" height="40px" type="" alt=""></td>
     <td width="57%" align="right">
       <h1>{{ $invoice->typeName }} <strong>{{ $invoice->number }}</strong></h1>
       @if ( $invoice->type == 'invoice' && $invoice->proform )
@@ -190,8 +190,12 @@ table.po tr.p td {padding:5px; font-size: 12px}
 
 <table width="100%" border="0" class="po">
   <tr style="width: 100%">
-    <td style="width: 50%">
+    <td style="width: 50%; padding-top: 30px">
       <p>Doklad vystavil: {{ $settings->sign }}</p>
+      <br>
+      @if ( $signature = config('invoices.signature_path') )
+      <img src="{{ $signature }}" width="180px">
+      @endif
     </td>
     <td style="width: 50%">
       <table width="100%" border="0" class="po">
