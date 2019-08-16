@@ -3,7 +3,7 @@
 namespace Gogol\Invoices\Traits;
 
 use Gogol\Invoices\Mail\SendInvoiceEmail;
-use Gogol\Admin\Helpers\File;
+use Admin\Helpers\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;

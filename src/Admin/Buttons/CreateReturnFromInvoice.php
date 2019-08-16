@@ -2,8 +2,8 @@
 
 namespace Gogol\Invoices\Admin\Buttons;
 
-use Gogol\Admin\Helpers\Button;
-use Gogol\Admin\Models\Model as AdminModel;
+use Admin\Helpers\Button;
+use Admin\Eloquent\AdminModel;
 
 class CreateReturnFromInvoice extends Button
 {

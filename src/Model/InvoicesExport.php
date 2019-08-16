@@ -2,7 +2,7 @@
 
 namespace Gogol\Invoices\Model;
 
-use Gogol\Admin\Models\Model as AdminModel;
+use Admin\Eloquent\AdminModel;
 use Gogol\Invoices\Admin\Buttons\ExportInvoicesButton;
 
 class InvoicesExport extends AdminModel

@@ -2,8 +2,8 @@
 
 namespace Gogol\Invoices\Model;
 
-use Gogol\Admin\Fields\Group;
-use Gogol\Admin\Models\Model as AdminModel;
+use Admin\Fields\Group;
+use Admin\Eloquent\AdminModel;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceItemRule;
 use Gogol\Invoices\Admin\Rules\ProcessInvoicePriceRule;
 

@@ -3,8 +3,8 @@
 namespace Gogol\Invoices\Admin\Buttons;
 
 use Carbon\Carbon;
-use Gogol\Admin\Helpers\Button;
-use Gogol\Admin\Models\Model as AdminModel;
+use Admin\Helpers\Button;
+use Admin\Eloquent\AdminModel;
 use Validator;
 
 class CreateInvoiceFromProform extends Button

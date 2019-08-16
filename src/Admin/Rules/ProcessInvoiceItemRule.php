@@ -2,8 +2,8 @@
 
 namespace Gogol\Invoices\Admin\Rules;
 
-use Gogol\Admin\Models\Model as AdminModel;
-use Gogol\Admin\Models\AdminRule;
+use Admin\Eloquent\AdminModel;
+use Admin\Models\AdminRule;
 use Admin;
 use Ajax;
 

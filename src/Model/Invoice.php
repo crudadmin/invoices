@@ -8,8 +8,8 @@ use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceRule;
 use Gogol\Invoices\Traits\InvoiceProcessTrait;
-use Gogol\Admin\Fields\Group;
-use Gogol\Admin\Models\Model as AdminModel;
+use Admin\Fields\Group;
+use Admin\Eloquent\AdminModel;
 use Illuminate\Notifications\Notifiable;
 use Carbon\Carbon;
 

@@ -4,7 +4,7 @@ namespace Gogol\Invoices\Controllers;
 
 use Gogol\Invoices\Model\Invoice;
 use Gogol\Invoices\Model\InvoicesExport;
-use Gogol\Admin\Helpers\File;
+use Admin\Helpers\File;
 use Illuminate\Http\Request;
 use \ZipArchive;
 use Admin;

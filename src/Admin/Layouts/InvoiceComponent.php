@@ -2,7 +2,7 @@
 
 namespace Gogol\Invoices\Admin\Layouts;
 
-use \Gogol\Admin\Helpers\Layout;
+use \Admin\Helpers\Layout;
 
 class InvoiceComponent extends Layout
 {
