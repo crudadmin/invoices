@@ -1,8 +1,5 @@
 <?php
 
-use Gogol\Invoices\Model\Invoice;
-use Gogol\Invoices\Model\InvoicesSetting;
-
 function priceFormat($number){
     return number_format($number, 2, '.', ' ');
 }
@@ -31,7 +28,7 @@ function getSettings($key = null, $default = null)
         return;
 
     $settings = Admin::cache('invoices.settings', function(){
-        return InvoicesSetting::first();
+        return Admin::getModel('InvoicesSetting')->first();
     });
 
     return $key && $settings ? ($settings->{$key} ?: $default) : ($settings ?: $default);
@@ -39,6 +36,6 @@ function getSettings($key = null, $default = null)
 
 function invoice($data = [])
 {
-    return new Invoice($data ?: []);
+    return Admin::getModel('Invoice')->fill($data ?: []);
 }
 ?>
