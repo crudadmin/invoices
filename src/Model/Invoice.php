@@ -65,21 +65,30 @@ class Invoice extends AdminModel
             ]),
             'Fakturačné údaje' => Group::fields([
                 'client_id' => 'name:Klient|'.(config('invoices.clients', false) ? 'belongsTo:clients,company_name' : 'type:imaginary').'|hidden|canAdd',
-                'Firemné údaje' => Group::half([
-                    Group::fields([
-                        'company_name' => 'name:Meno a priezivsko / Firma|fillBy:client|placeholder:Zadajte názov odoberateľa|required|max:90',
-                        'email' => 'name:Email|fillBy:client|placeholder:Slúži pre odoslanie faktúry na email|email',
-                    ])->inline(),
-                    'company_id' => 'name:IČO|type:string|fillBy:client|placeholder:Zadajte IČO|hidden',
-                    'tax_id' => 'name:DIČ|type:string|fillBy:client|placeholder:Zadajte DIČ|hidden',
-                    'vat_id' => 'name:IČ DPH|type:string|fillBy:client|placeholder:Zadajte IČ DPH|hidden',
-                ]),
-                'Fakturačná adresa' => Group::half([
-                    'city' => 'name:Mesto|fillBy:client|placeholder:Zadajte mesto|required|hidden|max:90',
-                    'zipcode' => 'name:PSČ|fillBy:client|placeholder:Zadajte PSČ|default:080 01|required|hidden|max:90',
-                    'street' => 'name:Ulica|fillBy:client|placeholder:Zadajte ulicu|required|hidden|max:90',
-                    'country' => 'name:Štát|fillBy:client|type:select|default:'.getDefaultInvoiceLanguage().'|hidden|required|max:90',
-                ]),
+                Group::fields([
+                    'Firemné údaje' => Group::half([
+                        Group::fields([
+                            'company_name' => 'name:Meno a priezivsko / Firma|fillBy:client|placeholder:Zadajte názov odoberateľa|required|max:90',
+                            'email' => 'name:Email|fillBy:client|placeholder:Slúži pre odoslanie faktúry na email|email',
+                        ])->inline(),
+                        'company_id' => 'name:IČO|type:string|fillBy:client|placeholder:Zadajte IČO|hidden',
+                        'tax_id' => 'name:DIČ|type:string|fillBy:client|placeholder:Zadajte DIČ|hidden',
+                        'vat_id' => 'name:IČ DPH|type:string|fillBy:client|placeholder:Zadajte IČ DPH|hidden',
+                    ]),
+                    'Fakturačná adresa' => Group::half([
+                        'city' => 'name:Mesto|fillBy:client|placeholder:Zadajte mesto|required|hidden|max:90',
+                        'zipcode' => 'name:PSČ|fillBy:client|placeholder:Zadajte PSČ|default:080 01|required|hidden|max:90',
+                        'street' => 'name:Ulica|fillBy:client|placeholder:Zadajte ulicu|required|hidden|max:90',
+                        'country' => 'name:Štát|fillBy:client|type:select|default:'.getDefaultInvoiceLanguage().'|hidden|required|max:90',
+                    ]),
+                    config('invoices.delivery') ? Group::half([
+                        'delivery_company_name' => 'name:Meno a priezvisko / Firma|max:90',
+                        'delivery_city' => 'name:Mesto/Obec|fillBy:client|max:90',
+                        'delivery_street' => 'name:Ulica|fillBy:client|max:90',
+                        'delivery_zipcode' => 'name:PSČ|fillBy:client|default:08001|max:10|hidden',
+                        'delivery_country' => 'name:Štát|fillBy:client|type:select|default:'.getDefaultInvoiceLanguage().'|hidden|required|max:90',
+                    ])->name('Doručovacia adresa')->add('hidden')->id('delivery') : [],
+                ])->inline(),
             ]),
             'email_sent' => 'name:Notifikácia|type:json|removeFromForm',
             'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
@@ -95,6 +104,7 @@ class Invoice extends AdminModel
             }, config('invoices.invoice_types', [])),
             'payment_method' => config('invoices.payment_methods'),
             'country' => config('invoices.countries'),
+            'delivery_country' => config('invoices.countries'),
             'return' => [],
         ];
     }
@@ -198,6 +208,14 @@ class Invoice extends AdminModel
     public function getCountryNameAttribute()
     {
         return config('invoices.countries.'.$this->country, '-');
+    }
+
+    /*
+     * Return country name in text value
+     */
+    public function getDeliveryCountryNameAttribute()
+    {
+        return config('invoices.countries.'.$this->delivery_country, '-');
     }
 
     /*
