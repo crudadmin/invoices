@@ -3,7 +3,7 @@
 namespace Gogol\Invoices\Admin\Rules;
 
 use Admin\Eloquent\AdminModel;
-use Admin\Models\AdminRule;
+use Admin\Eloquent\AdminRule;
 use Admin;
 use Ajax;
 

@@ -5,7 +5,7 @@ namespace Gogol\Invoices\Admin\Rules;
 use Admin;
 use Ajax;
 use Carbon\Carbon;
-use Admin\Models\AdminRule;
+use Admin\Eloquent\AdminRule;
 use Admin\Eloquent\AdminModel;
 
 class ProcessInvoiceRule extends AdminRule
