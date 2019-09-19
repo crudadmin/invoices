@@ -102,7 +102,7 @@ class Invoice extends AdminModel
     protected $settings = [
         'increments' => false,
         'autoreset' => false,
-        'refresh_interval' => 3000,
+        'search.enabled' => true,
         'buttons.insert' => 'Nový doklad',
         'title' => [
             'insert' => 'Nový doklad',
