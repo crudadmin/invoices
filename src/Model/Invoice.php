@@ -48,7 +48,7 @@ class Invoice extends AdminModel
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
                 'proform' => 'name:Proforma|belongsTo:invoices,id|invisible',
                 'vs' => [ 'name' => 'Variabilný symbol', 'title' => 'Pri prázdnej hodnote bude vygenerovaný automaticky', 'digits_between' => '0,10', 'max' => 10, 'index' => true, 'placeholder' => 'Zadajte variabilný symbol', 'required' => isset($row) ? true : false, $this->vsRuleUnique($row) ],
-                'payment_method' => 'name:Spôsob platby|type:select|default:sepa',
+                'payment_method' => 'name:Spôsob platby|belongsTo:payments_methods,name',
                 Group::fields([
                     'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getInvoiceSettings('payment_term').' dní)',
                     'paid_at' => 'name:Zaplatené dňa|type:date|format:d.m.Y|title:Zadajte dátum zaplatenia faktúry',
@@ -72,21 +72,21 @@ class Invoice extends AdminModel
                             'email' => 'name:Email|fillBy:client|placeholder:Slúži pre odoslanie faktúry na email|email',
                         ])->inline(),
                         'company_id' => 'name:IČO|type:string|fillBy:client|placeholder:Zadajte IČO|hidden',
-                        'tax_id' => 'name:DIČ|type:string|fillBy:client|placeholder:Zadajte DIČ|hidden',
-                        'vat_id' => 'name:IČ DPH|type:string|fillBy:client|placeholder:Zadajte IČ DPH|hidden',
+                        'company_tax_id' => 'name:DIČ|type:string|fillBy:client|placeholder:Zadajte DIČ|hidden',
+                        'company_vat_id' => 'name:IČ DPH|type:string|fillBy:client|placeholder:Zadajte IČ DPH|hidden',
                     ]),
                     'Fakturačná adresa' => Group::half([
                         'city' => 'name:Mesto|fillBy:client|placeholder:Zadajte mesto|required|hidden|max:90',
                         'zipcode' => 'name:PSČ|fillBy:client|placeholder:Zadajte PSČ|default:080 01|required|hidden|max:90',
                         'street' => 'name:Ulica|fillBy:client|placeholder:Zadajte ulicu|required|hidden|max:90',
-                        'country' => 'name:Štát|fillBy:client|type:select|default:'.getDefaultInvoiceLanguage().'|hidden|required|max:90',
+                        'country' => 'name:Štát|fillBy:client|belongsTo:countries,name|default:defaultByOption:default,1|hidden|required|max:90',
                     ]),
                     config('invoices.delivery') ? Group::half([
                         'delivery_company_name' => 'name:Meno a priezvisko / Firma|max:90',
-                        'delivery_city' => 'name:Mesto/Obec|fillBy:client|max:90',
-                        'delivery_street' => 'name:Ulica|fillBy:client|max:90',
-                        'delivery_zipcode' => 'name:PSČ|fillBy:client|default:08001|max:10|hidden',
-                        'delivery_country' => 'name:Štát|fillBy:client|type:select|default:'.getDefaultInvoiceLanguage().'|hidden|required|max:90',
+                        'delivery_city' => 'name:Mesto/Obec|max:90',
+                        'delivery_street' => 'name:Ulica|max:90',
+                        'delivery_zipcode' => 'name:PSČ|default:08001|max:10|hidden',
+                        'delivery_country' => 'name:Štát|belongsTo:countries,name|default:defaultByOption:default,1|hidden|max:90',
                     ])->name('Doručovacia adresa')->add('hidden')->id('delivery') : [],
                 ])->inline(),
             ]),
@@ -102,9 +102,6 @@ class Invoice extends AdminModel
             'type' => array_map(function($item){
                 return $item['name'];
             }, config('invoices.invoice_types', [])),
-            'payment_method' => config('invoices.payment_methods'),
-            'country' => config('invoices.countries'),
-            'delivery_country' => config('invoices.countries'),
             'return' => [],
         ];
     }
@@ -127,7 +124,7 @@ class Invoice extends AdminModel
             'company_name.name' => 'Odberateľ',
             'company_name.after' => 'vs',
             'vs.name' => 'VS.',
-            'email.before' => 'payment_method',
+            'email.before' => 'payment_method_id',
             'email_sent.before' => 'pdf',
             'email_sent.encode' => false,
             'pdf.encode' => false,
@@ -192,30 +189,6 @@ class Invoice extends AdminModel
     public function getNumberAttribute($value)
     {
         return $this->numberPrefix . $value;
-    }
-
-    /*
-     * Return payment method in text value
-     */
-    public function getPaymentMethodNameAttribute()
-    {
-        return config('invoices.payment_methods.'.$this->payment_method, '-');
-    }
-
-    /*
-     * Return country name in text value
-     */
-    public function getCountryNameAttribute()
-    {
-        return config('invoices.countries.'.$this->country, '-');
-    }
-
-    /*
-     * Return country name in text value
-     */
-    public function getDeliveryCountryNameAttribute()
-    {
-        return config('invoices.countries.'.$this->delivery_country, '-');
     }
 
     /*

@@ -59,7 +59,14 @@ class InvoicesSetting extends AdminModel
                 'register' => 'name:Registrácia|required',
                 'sign' => 'name:Doklad vystavil|required',
                 'payment_term' => 'name:Splatnosť faktúr|type:integer|min:0|default:30',
-                'vat' => 'name:Platca dph|type:checkbox|default:0',
+                Group::fields([
+                    'vat' => 'name:Platca dph|type:checkbox|default:0',
+                    'invoice_color' => 'name:RGB ramčeka faktúry|max:11',
+                ])->inline(),
+                Group::fields([
+                'logo' => 'name:Logo|type:file|image',
+                'signature' => 'name:Podpis|type:file|image',
+            ])->inline(),
             ]),
             'Nastavenia emailu' => Group::half([
                 'email_message' => 'name:Správa v emaili',
@@ -81,6 +88,11 @@ class InvoicesSetting extends AdminModel
             'account' => isset($account[0]) ? $account[0] : null,
             'code' => isset($account[1]) ? $account[1] : null,
         ];
+    }
+
+    public function getInvoiceColorAttribute($value)
+    {
+        return '#'.str_replace('#', '', $value);
     }
 
 }

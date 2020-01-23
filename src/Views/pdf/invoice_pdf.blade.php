@@ -6,6 +6,7 @@
 <style type="text/css">
 body, table {font-family: tahoma; font-size: 11px; color: black; margin:0; padding:0}
 h1 {font-family: tahoma; font-size: 15px; color: #000; font-weight:normal}
+h1.h-title {font-family: tahoma; font-size: 48px; color: #000; font-weight:bold;color: {{ getInvoiceSettings()->invoice_color ?: '#3a92c3' }};}
 h2 {font-family: tahoma; font-size: 15px}
 table {border-spacing:0}
 table.aa tr td {padding: 5px 5px 5px 5px;}
@@ -16,10 +17,10 @@ table.po tr.p td {padding:5px; font-size: 12px}
 .br {border-right: solid 1px #eee}
 .bb {border-bottom: solid 1px #eee}
 .bw {border-right: solid 1px #eee}
-.bl2 {border-left: solid 2px #3a92c3;}
-.bb2 {border-bottom: solid 2px #3a92c3}
-.br2 {border-right: solid 2px #3a92c3}
-.bt2top {border-top: solid 2px #3a92c3}
+.bl2 {border-left: solid 2px {{ getInvoiceSettings()->invoice_color ?: '#3a92c3'  }}}
+.bb2 {border-bottom: solid 2px {{ getInvoiceSettings()->invoice_color ?: '#3a92c3'  }}}
+.br2 {border-right: solid 2px {{ getInvoiceSettings()->invoice_color ?: '#3a92c3'  }}}
+.bt2top {border-top: solid 2px {{ getInvoiceSettings()->invoice_color ?: '#3a92c3'  }}}
 .ct {text-align:center}
 .py {width:60px}
 .fp {height:100px; width:100%; position:absolute; bottom:30px; left:0; display:table-cell; vertical-align:middle; text-align:center}
@@ -30,7 +31,13 @@ table.po tr.p td {padding:5px; font-size: 12px}
 <body>
 <table width="100%" border="0">
   <tr>
-    <td width="43%"><img src="{{ config('invoices.logo_path') }}" height="40px" type="" alt=""></td>
+    <td width="43%">
+      @if ( $image = getInvoiceSettings()->logo )
+      <img src="{{ $image->resize(null, 100, null, true)->path }}" height="40px" type="" alt="">
+      @else
+      <h1 class="h-title">{{ env('APP_NAME') }}</h1>
+      @endif
+    </td>
     <td width="57%" align="right">
       <h1>{{ $invoice->typeName }} <strong>{{ $invoice->number }}</strong></h1>
       @if ( $invoice->type == 'invoice' && $invoice->proform )
@@ -67,8 +74,8 @@ table.po tr.p td {padding:5px; font-size: 12px}
   </tr>
     <tr>
     <td>{{ $settings->country }}</td>
-    <td class="bl2">{{ $invoice->country_name }}</td>
-    <td class="br2">{{ $invoice->delivery_country_name }}</td>
+    <td class="bl2">{{ $invoice->country ? $invoice->country->name : '' }}</td>
+    <td class="br2">{{ $invoice->delivery_country ? $invoice->delivery_country->name : '' }}</td>
   </tr>
   <tr>
     <td>&nbsp;</td>
@@ -101,7 +108,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
   <tr>
     <td>Čislo účtu: {{ $settings->account }}</td>
     <td>Spôsob úhrady:</td>
-    <td>{{ $invoice->payment_method_name }}</td>
+    <td>{{ $invoice->payment_method->name }}</td>
   </tr>
 
   <tr>
@@ -193,8 +200,8 @@ table.po tr.p td {padding:5px; font-size: 12px}
     <td style="width: 50%; padding-top: 30px">
       <p>Doklad vystavil: {{ $settings->sign }}</p>
       <br>
-      @if ( $signature = config('invoices.signature_path') )
-      <img src="{{ $signature }}" width="180px">
+      @if ( $image = getInvoiceSettings()->signature )
+      <img src="{{ $image->resize(null, 180, null, true)->path }}" height="180px">
       @endif
     </td>
     <td style="width: 50%">

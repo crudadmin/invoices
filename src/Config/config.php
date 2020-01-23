@@ -1,16 +1,6 @@
 <?php
 
 return [
-    /*
-     * Logo path
-     */
-    'logo_path' => resource_path('/images/logo.png'),
-
-    /*
-     * Mark path
-     */
-    'signature_path' => resource_path('/images/signature.png'),
-
     //Types of invoices
     'invoice_types' => [
         'proform' => [ 'prefix' => 'PF-', 'name' => 'Proforma faktúra' ],
@@ -27,26 +17,6 @@ return [
      * Allow delivery adress in invoice
      */
     'delivery' => false,
-
-    /*
-     * Countries
-     */
-    'countries' => [
-        'sk' => 'Slovenská republika',
-        'cz' => 'Česká republika',
-        'pl' => 'Poľsko',
-        'hu' => 'Maďarsko',
-        'at' => 'Rakúsko',
-    ],
-
-    /*
-     * Available payment methods
-     */
-    'payment_methods' => [
-        'sepa' => 'Bankovým prevodom',
-        'cart' => 'Platba kartou',
-        'cash' => 'V hotovosti',
-    ],
 
     /*
      * Set default invoice item vat
