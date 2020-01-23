@@ -78,7 +78,7 @@ trait InvoiceProcessTrait
         //Generate pdf
         $mpdf = new Mpdf();
         $mpdf->WriteHTML(view('invoices::pdf.invoice_pdf', [
-            'settings' => getSettings(),
+            'settings' => getInvoiceSettings(),
             'invoice' => $this,
             'items' => $this->items,
         ])->render());
@@ -175,7 +175,7 @@ trait InvoiceProcessTrait
     public function setPaymentDate()
     {
         if ( ! $this->payment_date )
-            $this->payment_date = Carbon::now()->addDays(getSettings('payment_term') ?: 0);
+            $this->payment_date = Carbon::now()->addDays(getInvoiceSettings('payment_term') ?: 0);
     }
 
     /*

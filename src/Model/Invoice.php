@@ -50,7 +50,7 @@ class Invoice extends AdminModel
                 'vs' => [ 'name' => 'Variabilný symbol', 'title' => 'Pri prázdnej hodnote bude vygenerovaný automaticky', 'digits_between' => '0,10', 'max' => 10, 'index' => true, 'placeholder' => 'Zadajte variabilný symbol', 'required' => isset($row) ? true : false, $this->vsRuleUnique($row) ],
                 'payment_method' => 'name:Spôsob platby|type:select|default:sepa',
                 Group::fields([
-                    'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getSettings('payment_term').' dní)',
+                    'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getInvoiceSettings('payment_term').' dní)',
                     'paid_at' => 'name:Zaplatené dňa|type:date|format:d.m.Y|title:Zadajte dátum zaplatenia faktúry',
                     'created_at' => 'name:Vystavené dňa|type:datetime|format:d.m.Y H:i:s|required|default:CURRENT_TIMESTAMP',
                 ])->inline(),
@@ -329,7 +329,7 @@ class Invoice extends AdminModel
         $invoice->return_id = $this->getKey();
         $invoice->setNewVs($this->getOriginal('number'));
         $invoice->paid_at = null;
-        $invoice->payment_date = Carbon::now()->addDays(getSettings('payment_term') ?: 0);
+        $invoice->payment_date = Carbon::now()->addDays(getInvoiceSettings('payment_term') ?: 0);
         $invoice->price = -$invoice->price;
         $invoice->price_vat = -$invoice->price_vat;
         $invoice->snapshot_sha = null;

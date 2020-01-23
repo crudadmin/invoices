@@ -1,7 +1,7 @@
 @component('mail::message')
 # {{ sprintf(_('Dobrý deň %s,'), $invoice->company_name) }}
 
-{{ getSettings()->email_message }}
+{{ getInvoiceSettings()->email_message }}
 
 @if ( !empty($message) )
 @component('mail::panel')
@@ -13,5 +13,5 @@
     {{ sprintf(_('Stiahnuť %s'), $invoice->typeName . ' ' . $invoice->number) }}
 @endcomponent
 
-{{ getSettings()->email_greeting }}<br>
+{{ getInvoiceSettings()->email_greeting }}<br>
 @endcomponent

@@ -1,5 +1,5 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' ?>
-<MoneyData ICAgendy="{{ getSettings('company_id') }}" KodAgendy="" HospRokOd="{{ $export->from->format('Y-m-d') }}" HospRokDo="{{ $export->to->format('Y-m-d') }}" description="faktúry prijaté a vystavené" ExpZkratka="_FP+FV" ExpDate="2017-09-16" ExpTime="10:39:00" VyberZaznamu="0">
+<MoneyData ICAgendy="{{ getInvoiceSettings('company_id') }}" KodAgendy="" HospRokOd="{{ $export->from->format('Y-m-d') }}" HospRokDo="{{ $export->to->format('Y-m-d') }}" description="faktúry prijaté a vystavené" ExpZkratka="_FP+FV" ExpDate="2017-09-16" ExpTime="10:39:00" VyberZaznamu="0">
     <SeznamFaktVyd>
         @foreach( $invoices as $invoice )
         <FaktVyd>
@@ -22,7 +22,7 @@
             <PlnenDPH>0</PlnenDPH>
             <VarSymbol>{{ $invoice->vs }}</VarSymbol>
             <CObjednavk>{{ $invoice->order_id ?: $invoice->vs }}</CObjednavk>
-            <Ucet>{{ getSettings('bank_name') }}</Ucet>
+            <Ucet>{{ getInvoiceSettings('bank_name') }}</Ucet>
             <Druh>{{ $invoice->isInvoice || $invoice->isReturn ? 'N' : 'L' }}</Druh>
             <Dobropis>0</Dobropis>
             @if ( $invoice->isInvoice )
@@ -158,21 +158,21 @@
             </SeznamPolozek>
             @endif
             <MojeFirma>
-                <Nazev>{{ getSettings('company_name') }}</Nazev>
+                <Nazev>{{ getInvoiceSettings('company_name') }}</Nazev>
                 <Adresa>
-                    <Ulice>{{ getSettings('street') }}</Ulice>
-                    <Misto>{{ getSettings('city') }}</Misto>
-                    <PSC>{{ getSettings('zipcode') }}</PSC>
-                    <Stat>{{ getSettings('country') }}</Stat>
-                    <KodStatu>{{ getSettings('country_code', 'SK') }}</KodStatu>
+                    <Ulice>{{ getInvoiceSettings('street') }}</Ulice>
+                    <Misto>{{ getInvoiceSettings('city') }}</Misto>
+                    <PSC>{{ getInvoiceSettings('zipcode') }}</PSC>
+                    <Stat>{{ getInvoiceSettings('country') }}</Stat>
+                    <KodStatu>{{ getInvoiceSettings('country_code', 'SK') }}</KodStatu>
                 </Adresa>
-                <ObchNazev>{{ getSettings('company_name') }}</ObchNazev>
+                <ObchNazev>{{ getInvoiceSettings('company_name') }}</ObchNazev>
                 <ObchAdresa>
-                    <Ulice>{{ getSettings('street') }}</Ulice>
-                    <Misto>{{ getSettings('city') }}</Misto>
-                    <PSC>{{ getSettings('zipcode') }}</PSC>
-                    <Stat>{{ getSettings('country') }}</Stat>
-                    <KodStatu>{{ getSettings('country_code', 'SK') }}</KodStatu>
+                    <Ulice>{{ getInvoiceSettings('street') }}</Ulice>
+                    <Misto>{{ getInvoiceSettings('city') }}</Misto>
+                    <PSC>{{ getInvoiceSettings('zipcode') }}</PSC>
+                    <Stat>{{ getInvoiceSettings('country') }}</Stat>
+                    <KodStatu>{{ getInvoiceSettings('country_code', 'SK') }}</KodStatu>
                 </ObchAdresa>
                 <Tel>
                     <Pred></Pred>
@@ -189,16 +189,16 @@
                     <Cislo></Cislo>
                 </Mobil>
                 <EMail></EMail>
-                <WWW>{{ getSettings('www') }}</WWW>
-                <ICO>{{ getSettings('company_id') }}</ICO>
-                <DIC>{{ getSettings('tax_id') }}</DIC>
-                <DanIC>{{ getSettings('vat_id', getSettings('tax_id')) }}</DanIC>
-                <Banka>{{ getSettings('bank_name') }}</Banka>
-                <Ucet>{{ getSettings()->accountNumber['account'] }}</Ucet>
-                <KodBanky>{{ getSettings()->accountNumber['code'] }}</KodBanky>
+                <WWW>{{ getInvoiceSettings('www') }}</WWW>
+                <ICO>{{ getInvoiceSettings('company_id') }}</ICO>
+                <DIC>{{ getInvoiceSettings('tax_id') }}</DIC>
+                <DanIC>{{ getInvoiceSettings('vat_id', getInvoiceSettings('tax_id')) }}</DanIC>
+                <Banka>{{ getInvoiceSettings('bank_name') }}</Banka>
+                <Ucet>{{ getInvoiceSettings()->accountNumber['account'] }}</Ucet>
+                <KodBanky>{{ getInvoiceSettings()->accountNumber['code'] }}</KodBanky>
                 <KodPartn></KodPartn>
                 <FyzOsoba>0</FyzOsoba>
-                <SpisovaZnacka>{{ getSettings('register') . ' - ' . getSettings('input') }}</SpisovaZnacka>
+                <SpisovaZnacka>{{ getInvoiceSettings('register') . ' - ' . getInvoiceSettings('input') }}</SpisovaZnacka>
                 <MenaSymb>€</MenaSymb>
                 <MenaKod>EUR</MenaKod>
             </MojeFirma>

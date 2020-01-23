@@ -22,7 +22,7 @@ function getDefaultInvoiceLanguage()
     return array_keys(config('invoices.countries'))[0];
 }
 
-function getSettings($key = null, $default = null)
+function getInvoiceSettings($key = null, $default = null)
 {
     if ( app()->runningInConsole() )
         return;
