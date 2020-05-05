@@ -58,4 +58,9 @@ function getDefaultVatValue()
         return config('invoices.default_item_vat', 0);
     });
 }
+
+function canRoundSummary()
+{
+    return config('invoices.round_summary', true);
+}
 ?>

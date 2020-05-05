@@ -21,6 +21,8 @@ class InvoicesSetting extends AdminModel
 
     protected $single = true;
 
+    protected $icon = 'fa-file-invoice';
+
     /*
      * Automatic form and database generation
      * @name - field name

@@ -175,23 +175,28 @@ table.po tr.p td {padding:5px; font-size: 12px}
   @endphp
 
   @foreach( $items as $item )
-    <tr class="p">
-        <td class="bb bl" height="30" align="left">{{ $item->name }}</td>
-        <td class="bb">{{ $item->quantity }}</td>
-        <td class="bb" align="right">{{ priceFormat($item->price) }} €</td>
-        <td class="bb" align="right">{{ $item->vat }} %</td>
-        <td class="bb br" align="right">{{ priceFormat( $item->price_vat * $item->quantity ) }} €</td>
-    </tr>
-
     @php
       foreach ([&$with_tax, &$without_tax] as &$value) {
         if ( ! array_key_exists(''.$item->vat, $value) )
           $value[$item->vat] = 0;
       }
 
-      $with_tax[$item->vat] += $item->price_vat * $item->quantity;
+      //Round order item price by configuration
+      $itemTaxPrice = canRoundSummary() ? $item->price_vat * $item->quantity
+                                        : calculateWithVat($item->price * $item->quantity, $item->vat);
+
       $without_tax[$item->vat] += $item->price * $item->quantity;
+      $with_tax[$item->vat] += $itemTaxPrice;
     @endphp
+
+    <tr class="p">
+        <td class="bb bl" height="30" align="left">{{ $item->name }}</td>
+        <td class="bb">{{ $item->quantity }}</td>
+        <td class="bb" align="right">{{ priceFormat($item->price) }} €</td>
+        <td class="bb" align="right">{{ $item->vat }} %</td>
+        <td class="bb br" align="right">{{ priceFormat( $itemTaxPrice ) }} €</td>
+    </tr>
+
   @endforeach
 </table>
 
@@ -216,14 +221,16 @@ table.po tr.p td {padding:5px; font-size: 12px}
           <td bgcolor="#eee" align="right"><strong>S DPH</strong></td>
         </tr>
         @php
-          ksort($with_tax)
+          ksort($with_tax);
+
+          $totalWithVat = 0;
         @endphp
         @foreach( $with_tax as $tax => $price )
         <tr class="p">
           <td class="bb bl" align="right">{{ $tax }} %</td>
           <td class="bb" align="right">{{ priceFormat($without_tax[$tax]) }} €</td>
           <td class="bb" align="right">{{ priceFormat($price - $without_tax[$tax]) }} €</td>
-          <td class="bb br" align="right">{{ priceFormat($price) }} €</td>
+          <td class="bb br" align="right">{{ $totalWithVat += priceFormat($price) }} €</td>
         </tr>
         @endforeach
       </table>
@@ -234,7 +241,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
         </tr>
         <tr class="p">
           <td bgcolor="#eee" align="left"><h2><strong>Celkom k úhrade @if ( $invoice->paid_at ) (zaplatené)@endif</strong></h2></td>
-          <td bgcolor="#eee" align="right"><h2><strong>{{ priceFormat( ! $invoice->paid_at ? $invoice->price_vat : 0 ) }} €</strong></h2></td>
+          <td bgcolor="#eee" align="right"><h2><strong>{{ priceFormat( ! $invoice->paid_at ? $totalWithVat : 0 ) }} €</strong></h2></td>
         </tr>
       </table>
     </td>
