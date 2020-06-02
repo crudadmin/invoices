@@ -30,9 +30,12 @@ table.po tr.p td {padding:5px; font-size: 12px}
 <body>
 <table width="100%" border="0">
   <tr>
-    <td width="43%"><img src="{{ config('invoices.logo_path') }}" height="40px" type="" alt=""></td>
-    <td width="57%" align="right">
+    <td width="25%"><img src="{{ config('invoices.logo_path') }}" height="40px" type="" alt=""></td>
+    <td width="75%" align="right">
       <h1>{{ $invoice->typeName }} <strong>{{ $invoice->number }}</strong></h1>
+      @if ( $invoice->type == 'proform' )
+      <small style="font-size: 11px">Proforma faktúra neslúži ako daňový doklad. Faktúra (daňový doklad) bude vystavená po prijatí platby.</small>
+      @endif
       @if ( $invoice->type == 'invoice' && $invoice->proform )
       Tento doklad je úhradou proformy č. {{ $invoice->proform->number }}
       @elseif ( $invoice->type == 'return' && $invoice->return )
@@ -281,19 +284,6 @@ table.po tr.p td {padding:5px; font-size: 12px}
     @endif
   </tr>
 </table>
-
-
-
-<table width="100%" border="0" class="po">
-  <tr class="p">
-    <td height="14" colspan="3"><small>{{ $invoice->type == 'proform' ? 'Proforma faktúra neslúži ako daňový doklad. Faktúra (daňový doklad) bude vystavená po prijatí platby.' : '' }}</small></td>
-  </tr>
-  <tr class="p">
-    <td height="6" colspan="3" align="left"></td>
-  </tr>
-  <tr class="p"></tr>
-</table>
-
 
 </body>
 </html>

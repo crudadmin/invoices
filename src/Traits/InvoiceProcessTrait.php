@@ -78,7 +78,13 @@ trait InvoiceProcessTrait
             return;
 
         //Generate pdf
-        $mpdf = new Mpdf();
+        $mpdf = new Mpdf([
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'mirrorMargins' => true,
+        ]);
         $mpdf->WriteHTML(view('invoices::pdf.invoice_pdf', [
             'settings' => getSettings(),
             'invoice' => $this,
