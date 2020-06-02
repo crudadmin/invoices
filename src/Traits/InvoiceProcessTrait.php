@@ -2,12 +2,14 @@
 
 namespace Gogol\Invoices\Traits;
 
-use Gogol\Invoices\Mail\SendInvoiceEmail;
+use Carbon\Carbon;
 use Gogol\Admin\Helpers\File;
+use Gogol\Invoices\Mail\SendInvoiceEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
-use Carbon\Carbon;
 use Mpdf\Mpdf;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 
 trait InvoiceProcessTrait
 {
@@ -81,6 +83,7 @@ trait InvoiceProcessTrait
             'settings' => getSettings(),
             'invoice' => $this,
             'items' => $this->items,
+            'qrimage' => $this->getQRCodeImage()
         ])->render());
 
         //Create directory if does not exists
@@ -94,6 +97,19 @@ trait InvoiceProcessTrait
 
         if ( $auto_save !== false )
             $this->save();
+    }
+
+    public function getQRCodeImage()
+    {
+        $data = 'SPD*1.0*ACC:'.getSettings('iban').'*AM:'.$this->price_vat.'*CC:EUR*X-VS:'.$this->vs.'*MSG:QRPLATBA';
+
+        $options = new QROptions([
+            'addQuietzone' => false,
+        ]);
+
+        $image = (new QRCode($options))->render($data);
+
+        return $image;
     }
 
     /**
