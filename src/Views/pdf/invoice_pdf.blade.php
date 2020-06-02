@@ -113,7 +113,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
   <tr>
     <td>Čislo účtu: {{ $settings->account }}</td>
     <td>Spôsob úhrady:</td>
-    <td>{{ $invoice->payment_method->name }}</td>
+    <td>{{ $invoice->payment_method ? $invoice->payment_method->name : null }}</td>
   </tr>
 
   <tr>

@@ -16,8 +16,9 @@ function calculateWithVat($number, $vat)
 
 function getInvoiceSettings($key = null, $default = null)
 {
-    if ( app()->runningInConsole() )
+    if ( app()->runningInConsole() ) {
         return;
+    }
 
     $settings = Admin::cache('invoices.settings', function(){
         $model = Admin::getModel('InvoicesSetting');
