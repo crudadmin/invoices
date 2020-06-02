@@ -190,14 +190,30 @@ table.po tr.p td {padding:5px; font-size: 12px}
 
 <table width="100%" border="0" class="po">
   <tr style="width: 100%">
-    <td style="width: 50%; padding-top: 30px">
-      <p>Doklad vystavil: {{ $settings->sign }}</p>
-      <br>
-      @if ( $signature = config('invoices.signature_path') )
-      <img src="{{ $signature }}" width="180px">
-      @endif
+    <td style="width: 50%;" valign="top">
+      <table>
+        <tr>
+          <td width="50%">
+            @if ( isset($qrimage) )
+            <table style="border: 2px solid #eee; margin-top: 30px; padding: 10px">
+              <tr>
+                <td style="padding-bottom: 10px"><strong>QR Platba:</strong></td>
+              </tr>
+              <tr>
+                <td>
+                    <img src="{{ $qrimage }}" style="margin: 0;">
+                </td>
+              </tr>
+            </table>
+            @endif
+          </td>
+          <td width="50%">
+
+          </td>
+        </tr>
+      </table>
     </td>
-    <td style="width: 50%">
+    <td style="width: 50%" valign="top">
       <table width="100%" border="0" class="po">
         <tr>
           <td height="30" colspan="{{ $invoice->vat ? 4 : 3 }}">&nbsp;</td>
@@ -230,17 +246,26 @@ table.po tr.p td {padding:5px; font-size: 12px}
           <td bgcolor="#eee" align="right"><h2><strong>{{ priceFormat( ! $invoice->paid_at ? $invoice->price_vat : 0 ) }} €</strong></h2></td>
         </tr>
       </table>
+
+      <table style="margin-top: 10px;" width="100%">
+        <tr>
+          <td align="left" valign="top">
+            @if ( ! $settings->vat )
+            Nie sme platci DPH.
+            @endif
+          </td>
+          <td align="right" valign="top">
+            <p>Doklad vystavil: {{ $settings->sign }}</p>
+            <br>
+            @if ( $signature = config('invoices.signature_path') )
+            <img src="{{ $signature }}" width="180px">
+            @endif
+          </td>
+        </tr>
+      </table>
     </td>
   </tr>
 </table>
-
-@if ( ! $settings->vat )
-<table width="100%" border="0" style="margin-top: 10px">
-  <tr>
-    <td height="10" align="right">Nie sme platci DPH.</td>
-  </tr>
-</table>
-@endif
 
 <table width="100%" border="0" class="po ct">
   <tr>
