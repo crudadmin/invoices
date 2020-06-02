@@ -31,15 +31,20 @@ table.po tr.p td {padding:5px; font-size: 12px}
 <body>
 <table width="100%" border="0">
   <tr>
-    <td width="43%">
+    <td width="30%">
       @if ( $image = getInvoiceSettings()->logo )
       <img src="{{ $image->resize(null, 100, null, true)->path }}" height="40px" type="" alt="">
       @else
       <h1 class="h-title">{{ env('APP_NAME') }}</h1>
       @endif
     </td>
-    <td width="57%" align="right">
-      <h1>{{ $invoice->typeName }} <strong>{{ $invoice->number }}</strong></h1>
+    <td width="70%" align="right">
+      <h1>
+        {{ $invoice->typeName }} <strong>{{ $invoice->number }}</strong>
+        @if ( $invoice->type == 'proform' )
+        <br><small style="font-size: 11px">Proforma faktúra neslúži ako daňový doklad. Faktúra (daňový doklad) bude vystavená po prijatí platby.</small>
+        @endif
+      </h1>
       @if ( $invoice->type == 'invoice' && $invoice->proform )
       Tento doklad je úhradou proformy č. {{ $invoice->proform->number }}
       @elseif ( $invoice->type == 'return' && $invoice->return )
@@ -202,14 +207,30 @@ table.po tr.p td {padding:5px; font-size: 12px}
 
 <table width="100%" border="0" class="po">
   <tr style="width: 100%">
-    <td style="width: 50%; padding-top: 30px">
-      <p>Doklad vystavil: {{ $settings->sign }}</p>
-      <br>
-      @if ( $image = getInvoiceSettings()->signature )
-      <img src="{{ $image->resize(null, 180, null, true)->path }}" height="180px">
-      @endif
+    <td style="width: 50%;" valign="top">
+      <table>
+        <tr>
+          <td width="50%">
+            @if ( isset($qrimage) )
+            <table style="border: 2px solid #eee; margin-top: 30px; padding: 10px">
+              <tr>
+                <td style="padding-bottom: 10px"><strong>QR Platba:</strong></td>
+              </tr>
+              <tr>
+                <td>
+                    <img src="{{ $qrimage }}" style="margin: 0;">
+                </td>
+              </tr>
+            </table>
+            @endif
+          </td>
+          <td width="50%">
+
+          </td>
+        </tr>
+      </table>
     </td>
-    <td style="width: 50%">
+    <td style="width: 50%" valign="top">
       <table width="100%" border="0" class="po">
         <tr>
           <td height="30" colspan="{{ $invoice->vat ? 4 : 3 }}">&nbsp;</td>
@@ -244,17 +265,26 @@ table.po tr.p td {padding:5px; font-size: 12px}
           <td bgcolor="#eee" align="right"><h2><strong>{{ priceFormat( ! $invoice->paid_at ? $totalWithVat : 0 ) }} €</strong></h2></td>
         </tr>
       </table>
+
+      <table style="margin-top: 10px;" width="100%">
+        <tr>
+          <td align="left" valign="top">
+            @if ( ! $settings->vat )
+            Nie sme platci DPH.
+            @endif
+          </td>
+          <td align="right" valign="top">
+            @if ( $image = getInvoiceSettings()->signature )
+            <p>Doklad vystavil: {{ $settings->sign }}</p>
+            <br>
+            <img src="{{ $image->resize(null, 130, null, true)->path }}" height="180px">
+            @endif
+          </td>
+        </tr>
+      </table>
     </td>
   </tr>
 </table>
-
-@if ( ! $settings->vat )
-<table width="100%" border="0" style="margin-top: 10px">
-  <tr>
-    <td height="10" align="right">Nie sme platci DPH.</td>
-  </tr>
-</table>
-@endif
 
 <table width="100%" border="0" class="po ct">
   <tr>
@@ -270,19 +300,5 @@ table.po tr.p td {padding:5px; font-size: 12px}
     @endif
   </tr>
 </table>
-
-
-
-<table width="100%" border="0" class="po">
-  <tr class="p">
-    <td height="14" colspan="3"><small>{{ $invoice->type == 'proform' ? 'Proforma faktúra neslúži ako daňový doklad. Faktúra (daňový doklad) bude vystavená po prijatí platby.' : '' }}</small></td>
-  </tr>
-  <tr class="p">
-    <td height="6" colspan="3" align="left"></td>
-  </tr>
-  <tr class="p"></tr>
-</table>
-
-
 </body>
 </html>
