@@ -11,12 +11,12 @@ class SetDefault extends AdminRule
     //On all events
     public function fire(AdminModel $row)
     {
-        //If is set default tax, then reset all others taxs as default
+        //If is set default vat, then reset all others vats as default
         if ( $row->default == true ){
             $row->newQuery()->where('id', '!=', $row->getKey())->update(['default' => 0]);
         }
 
-        //If does not exist default tax
+        //If does not exist default vat
         else if ( $row->newQuery()->where('default', 1)->count() == 0 || $row->getOriginal('default') == 1 ) {
             $row->default = 1;
         }

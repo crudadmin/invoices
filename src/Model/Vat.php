@@ -6,7 +6,7 @@ use Admin\Eloquent\AdminModel;
 use Admin\Fields\Group;
 use Gogol\Invoices\Admin\Rules\SetDefault;
 
-class Tax extends AdminModel
+class Vat extends AdminModel
 {
     /*
      * Model created date, for ordering tables in database and in user interface
@@ -33,7 +33,7 @@ class Tax extends AdminModel
     {
         return [
             'name' => 'name:Názov|required',
-            'tax' => 'name:Sadzba DPH|type:decimal|required',
+            'vat' => 'name:Sadzba DPH|type:decimal|required',
             'default' => 'name:Predvolená DPH|type:checkbox|title:Bude platit pre zľavy, a všetký ceny bez definovanej DPH.',
         ];
     }

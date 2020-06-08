@@ -20,11 +20,14 @@ function getInvoiceSettings($key = null, $default = null)
         return;
     }
 
-    $settings = Admin::cache('invoices.settings', function(){
-        $model = Admin::getModel('InvoicesSetting');
+    $settings = null;
 
-        return $model && ($settings = $model->first()) ? $settings : $model;
-    });
+    //Return invoice settings
+    if ( $model = Admin::getModel('InvoicesSetting') ) {
+        $settings = Admin::cache('invoices.settings', function() use ($model) {
+            return $model && ($settings = $model->first()) ? $settings : $model;
+        });
+    }
 
     return $key && $settings ? ($settings->{$key} ?: $default) : ($settings ?: $default);
 }
@@ -36,11 +39,11 @@ function invoice($data = [])
 
 function getVatValues()
 {
-    return Admin::cache('invoices.taxes', function(){
-        $model = Admin::getModel('Tax');
+    return Admin::cache('invoices.vats', function(){
+        $model = Admin::getModel('Vat');
 
         if ( $model ) {
-            return $model->pluck('tax')->toArray();
+            return $model->pluck('vat')->toArray();
         }
 
         return config('invoices.vats', [0, 20]);
@@ -50,10 +53,10 @@ function getVatValues()
 function getDefaultVatValue()
 {
     return Admin::cache('invoices.defaultVat', function(){
-        $model = Admin::getModel('Tax');
+        $model = Admin::getModel('Vat');
 
         if ( $model && $defaultVat = $model->where('default', 1)->first() ) {
-            return $defaultVat->tax;
+            return $defaultVat->vat;
         }
 
         return config('invoices.default_item_vat', 0);
