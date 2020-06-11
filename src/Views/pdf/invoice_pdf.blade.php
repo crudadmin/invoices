@@ -251,7 +251,8 @@ table.po tr.p td {padding:5px; font-size: 12px}
           <td class="bb bl" align="right">{{ $tax }} %</td>
           <td class="bb" align="right">{{ priceFormat($without_tax[$tax]) }} €</td>
           <td class="bb" align="right">{{ priceFormat($price - $without_tax[$tax]) }} €</td>
-          <td class="bb br" align="right">{{ $totalWithVat += priceFormat($price) }} €</td>
+          <td class="bb br" align="right">{{ priceFormat($price) }} €</td>
+          <?php $totalWithVat += $price ?>
         </tr>
         @endforeach
       </table>
