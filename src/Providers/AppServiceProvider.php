@@ -2,9 +2,10 @@
 
 namespace Gogol\Invoices\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\Http\Kernel;
 use Admin;
+use Gogol\Invoices\Commands\ImportCountries;
+use Illuminate\Foundation\Http\Kernel;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -56,6 +57,10 @@ class AppServiceProvider extends ServiceProvider
 
         //Load routes
         $this->loadRoutesFrom(__DIR__.'/../Routes/routes.php');
+
+        $this->commands([
+            ImportCountries::class,
+        ]);
     }
 
     public function bootFacades()

@@ -55,4 +55,9 @@ class Country extends AdminModel
     protected $rules = [
         SetDefault::class,
     ];
+
+    public function setCodeAttribute($code)
+    {
+        $this->attributes['code'] = mb_strtolower($code);
+    }
 }
