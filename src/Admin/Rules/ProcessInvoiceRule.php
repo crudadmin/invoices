@@ -27,7 +27,8 @@ class ProcessInvoiceRule extends AdminRule
     {
         $row->setInvoiceNumber();
 
-        if ( ! $row->vs )
+        if ( ! $row->vs ) {
             $row->setNewVs();
+        }
     }
 }

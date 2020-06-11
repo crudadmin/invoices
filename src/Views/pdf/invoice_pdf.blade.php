@@ -275,8 +275,8 @@ table.po tr.p td {padding:5px; font-size: 12px}
             @endif
           </td>
           <td align="right" valign="top">
-            @if ( $image = getInvoiceSettings()->signature )
             <p>Doklad vystavil: {{ $settings->sign }}</p>
+            @if ( $image = getInvoiceSettings()->signature )
             <br>
             <img src="{{ $image->resize(null, 130, null, true)->path }}" height="180px">
             @endif
