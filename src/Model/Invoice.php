@@ -188,7 +188,9 @@ class Invoice extends AdminModel
      */
     public function getNumberAttribute($value)
     {
-        return $this->numberPrefix . $value;
+        if ( $value ) {
+            return $this->numberPrefix . $value;
+        }
     }
 
     /*
@@ -297,8 +299,8 @@ class Invoice extends AdminModel
     public function createReturn()
     {
         $invoice = $this->replicate();
-        $invoice->setInvoiceNumber();
         $invoice->type = 'return';
+        $invoice->setInvoiceNumber();
         $invoice->return_id = $this->getKey();
         $invoice->setNewVs($this->getOriginal('number'));
         $invoice->paid_at = null;

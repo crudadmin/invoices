@@ -94,12 +94,12 @@ table.po tr.p td {padding:5px; font-size: 12px}
   </tr>
   <tr>
     <td>DIČ: {{ $settings->tax_id }}</td>
-    <td width="32%" class="bl2">DIČ: {{ $invoice->tax_id }}</td>
+    <td width="32%" class="bl2">DIČ: {{ $invoice->company_tax_id }}</td>
     <td width="32%" class="br2"></td>
   </tr>
   <tr>
     <td>IČ DPH: {{ $settings->vat_id }}</td>
-    <td width="32%" class="bb2 bl2">IČ DPH: {{ $invoice->vat_id }}</td>
+    <td width="32%" class="bb2 bl2">IČ DPH: {{ $invoice->company_vat_id }}</td>
     <td width="32%" class="bb2 br2"></td>
   </tr>
   <tr>
