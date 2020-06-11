@@ -15,7 +15,6 @@
         "phpoffice/phpspreadsheet" : "^1.2.0",
         "propaganistas/laravel-phone": "^4.0",
         "crudadmin/crudadmin": "^3.0",
-        "chillerlan/php-qrcode": "^3.2"
         "chillerlan/php-qrcode": "^3.2",
         "umpirsky/country-list": "^2.0"
     },
