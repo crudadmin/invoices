@@ -46,4 +46,9 @@ return [
      * false => (1.11*1.2 => 1.33)*6=>7.98 in total
      */
     'round_summary' => true,
+
+    /*
+     * QR Code feature
+     */
+    'gqcode' => false,
 ];

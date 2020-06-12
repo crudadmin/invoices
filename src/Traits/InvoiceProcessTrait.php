@@ -107,6 +107,10 @@ trait InvoiceProcessTrait
 
     public function getQRCodeImage()
     {
+        if ( config('invoices.gqcode', true) !== true ){
+            return;
+        }
+
         $data = 'SPD*1.0*ACC:'.getInvoiceSettings('iban').'*AM:'.$this->price_vat.'*CC:EUR*X-VS:'.$this->vs.'*MSG:QRPLATBA';
 
         $options = new QROptions([
