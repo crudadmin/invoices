@@ -173,8 +173,10 @@ trait InvoiceProcessTrait
     public function setInvoiceNumber()
     {
         //If number is already set
-        if ( $this->getOriginal('number') )
+        if ( $this->getRawOriginal('number') )
             return;
+
+        $pad = config('invoices.numbers_length', 5);
 
         $last_invoice = $this->newQuery()
                              ->whereRaw('YEAR(created_at) = YEAR(NOW())')
@@ -183,12 +185,12 @@ trait InvoiceProcessTrait
                              ->first();
 
         //Get last invoice increment
-        $invoice_count = ! $last_invoice ? 0 : (int)substr($last_invoice->getOriginal('number'), 4);
+        $invoice_count = ! $last_invoice ? 0 : (int)substr($last_invoice->getRawOriginal('number'), 4);
 
         //Set invoice ID
-        $next_number = $invoice_count + 1;
+        $next_number = substr($invoice_count + 1, -$pad);
 
-        $this->number = date('Y') . str_pad($next_number, 5, 0, STR_PAD_LEFT);
+        $this->number = date('Y') . str_pad($next_number, $pad, 0, STR_PAD_LEFT);
     }
 
     /*
@@ -196,8 +198,9 @@ trait InvoiceProcessTrait
      */
     public function setPaymentDate()
     {
-        if ( ! $this->payment_date )
+        if ( ! $this->payment_date ) {
             $this->payment_date = Carbon::now()->addDays(getInvoiceSettings('payment_term') ?: 0);
+        }
     }
 
     /*

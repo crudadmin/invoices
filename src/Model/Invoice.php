@@ -305,7 +305,7 @@ class Invoice extends AdminModel
         $invoice->type = 'return';
         $invoice->setInvoiceNumber();
         $invoice->return_id = $this->getKey();
-        $invoice->setNewVs($this->getOriginal('number'));
+        $invoice->setNewVs($this->getRawOriginal('number'));
         $invoice->paid_at = null;
         $invoice->payment_date = Carbon::now()->addDays(getInvoiceSettings('payment_term') ?: 0);
         $invoice->price = -$invoice->price;
