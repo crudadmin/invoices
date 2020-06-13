@@ -33,7 +33,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
   <tr>
     <td width="30%">
       @if ( $image = getInvoiceSettings()->logo )
-      <img src="{{ $image->resize(null, config('invoices.logo_height', 130), null, true)->path }}" height="40px" type="" alt="">
+      <img src="{{ $image->resize(null, config('invoices.logo_height', $defaultLogoHeight = 60) * 2, null, true)->path }}" height="{{ config('invoices.logo_height', $defaultLogoHeight) }}px" type="" alt="">
       @else
       <h1 class="h-title">{{ env('APP_NAME') }}</h1>
       @endif
@@ -278,7 +278,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
             <p>Doklad vystavil: {{ $settings->sign }}</p>
             @if ( $image = getInvoiceSettings()->signature )
             <br>
-            <img src="{{ $image->resize(null, config('invoices.signature_height', 130), null, true)->path }}" height="180px">
+            <img src="{{ $image->resize(null, config('invoices.signature_height', $defaultSignatureHeight = 180) * 2, null, true)->path }}" height="{{ config('invoices.signature_height', $defaultSignatureHeight) }}px">
             @endif
           </td>
         </tr>
