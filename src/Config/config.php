@@ -51,5 +51,11 @@ return [
     /*
      * QR Code feature
      */
-    'gqcode' => false,
+    'qrcode' => false,
+
+    /*
+     * SK => paybysquare
+     * CZ => CZ Format
+     */
+    'qrcode_type' => 'sk',
 ];
