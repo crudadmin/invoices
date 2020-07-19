@@ -4,6 +4,7 @@ namespace Gogol\Invoices\Model;
 
 use Admin\Eloquent\AdminModel;
 use Admin\Fields\Group;
+use Gogol\Invoices\Admin\Rules\SetDefault;
 
 class PaymentsMethod extends AdminModel
 {
@@ -34,6 +35,7 @@ class PaymentsMethod extends AdminModel
     {
         return [
             'name' => 'name:Názov platby|max:40|required',
+            'default' => 'name:Predvolená možnosť platby|type:checkbox|title:Bude automatický vyplnená pri tvorbe novej faktúry.',
         ];
     }
 
@@ -41,5 +43,9 @@ class PaymentsMethod extends AdminModel
         'grid.default' => 'medium',
         'title.update' => ':name',
         'columns.id.hidden' => true,
+    ];
+
+    protected $rules = [
+        SetDefault::class,
     ];
 }

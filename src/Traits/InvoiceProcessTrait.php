@@ -9,6 +9,8 @@ use Gogol\Invoices\Mail\SendInvoiceEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Mpdf\Mpdf;
+use Throwable;
+use Log;
 
 trait InvoiceProcessTrait
 {
@@ -76,6 +78,13 @@ trait InvoiceProcessTrait
         if ( $this->pdf && $this->pdf->exists() && $force_regenerate === false && $this->snapshot_sha == $snapshot_sha )
             return;
 
+        //Try load all removed relationship rows
+        try {
+            $this->loadDeletedInvoiceAttributes();
+        } catch (Throwable $error){
+            Log::error($error);
+        }
+
         //Generate pdf
         $mpdf = new Mpdf([
             'margin_top' => 10,
@@ -102,6 +111,29 @@ trait InvoiceProcessTrait
 
         if ( $auto_save !== false )
             $this->save();
+    }
+
+    private function loadDeletedInvoiceAttributes()
+    {
+        foreach ($this->getFields() as $key => $field) {
+            if ( $this->hasFieldParam($key, 'belongsTo') == false ){
+                continue;
+            }
+
+            $relation = trim_end($key, '_id');
+
+            if (
+                $this->{$key} //Exists row id
+                && !$this->{$relation} //Row is not found, probably has been deleted
+                && @$this->getRelation($relation) //Relations builder must exists
+            ){
+                $this->load([
+                    $relation => function($query){
+                        $query->withTrashed()->withUnpublished();
+                    },
+                ]);
+            }
+        }
     }
 
     /**

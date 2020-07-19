@@ -4,6 +4,8 @@ namespace Gogol\Invoices\Helpers;
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use Throwable;
+use Log;
 
 class QRCodeGenerator
 {
@@ -23,7 +25,16 @@ class QRCodeGenerator
             return;
         }
 
-        $data = $this->{$this->qrGenerators[$qrType]}($invoice);
+        //IF extensions are not available
+        try {
+            if ( !($data = $this->{$this->qrGenerators[$qrType]}($invoice)) ) {
+                return;
+            }
+        } catch(Throwable $error){
+            Log::error($error);
+
+            return;
+        }
 
         $options = new QROptions([
             'addQuietzone' => false,
