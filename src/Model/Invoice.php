@@ -79,7 +79,7 @@ class Invoice extends AdminModel
                         'city' => 'name:Mesto|fillBy:client|placeholder:Zadajte mesto|required|hidden|max:90',
                         'zipcode' => 'name:PSČ|fillBy:client|placeholder:Zadajte PSČ|default:080 01|required|hidden|max:90',
                         'street' => 'name:Ulica|fillBy:client|placeholder:Zadajte ulicu|required|hidden|max:90',
-                        'country' => 'name:Štát|fillBy:client|belongsTo:countries,name|default:defaultByOption:default,1|hidden|required|max:90',
+                        'country' => 'name:Štát|fillBy:client|belongsTo:countries,name|default:defaultByOption:default,1|hidden|required',
                     ]),
                     config('invoices.delivery') ? Group::half([
                         'delivery_company_name' => 'name:Meno a priezvisko / Firma|max:90',

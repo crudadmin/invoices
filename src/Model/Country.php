@@ -60,4 +60,14 @@ class Country extends AdminModel
     {
         $this->attributes['code'] = mb_strtolower($code);
     }
+
+    public function onTableCreate()
+    {
+        //When roles table is created, set all users as super admins.
+        $this->create([
+            'name' => 'Slovensko',
+            'code' => 'sk',
+            'default' => true,
+        ]);
+    }
 }

@@ -2,9 +2,10 @@
 
 return [
     /*
-     * Logo path
+     * Logo and signature height in invoice
      */
-    'logo_path' => resource_path('/images/logo.png'),
+    'logo_height' => 60,
+    'signature_height' => 180,
 
     /*
      * Mark path
