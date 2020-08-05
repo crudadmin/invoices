@@ -42,13 +42,13 @@ table.po tr.p td {padding:5px; font-size: 12px}
       <h1>
         {{ $invoice->typeName }} <strong>{{ $invoice->number }}</strong>
         @if ( $invoice->type == 'proform' )
-        <br><small style="font-size: 11px">Proforma faktúra neslúži ako daňový doklad. Faktúra (daňový doklad) bude vystavená po prijatí platby.</small>
+        <br><small style="font-size: 11px">{{ _('Proforma faktúra neslúži ako daňový doklad. Faktúra (daňový doklad) bude vystavená po prijatí platby.') }}</small>
         @endif
       </h1>
       @if ( $invoice->type == 'invoice' && $invoice->proform )
-      Tento doklad je úhradou proformy č. {{ $invoice->proform->number }}
+      {{ _('Tento doklad je úhradou proformy č.') }} {{ $invoice->proform->number }}
       @elseif ( $invoice->type == 'return' && $invoice->return )
-      K faktúre č. {{ $invoice->return->number }}
+      {{ _('K faktúre č.') }} {{ $invoice->return->number }}
       @endif
     </td>
   </tr>
@@ -58,9 +58,9 @@ table.po tr.p td {padding:5px; font-size: 12px}
 </table>
 <table width="100%" border="0" cellpadding="0" cellspacing="0" class="aa">
   <tr>
-    <td width="36%"><small><u>Dodávateľ</u></small>:</td>
-    <td class="bt2top bl2"><small><u>Fakturačné údaje:</u></small></td>
-    <td class="bt2top br2"><small><u>{{ config('invoices.delivery') ? 'Dodacia adresa:' : '' }}</u></small></td>
+    <td width="36%"><small><u>{{ _('Dodávateľ') }}</u></small>:</td>
+    <td class="bt2top bl2"><small><u>{{ _('Fakturačné údaje') }}:</u></small></td>
+    <td class="bt2top br2"><small><u>{{ config('invoices.delivery') ? _('Dodacia adresa').':' : '' }}</u></small></td>
   </tr>
   <tr>
     <td><strong>{{ $settings->name }}</strong></td>
@@ -88,18 +88,18 @@ table.po tr.p td {padding:5px; font-size: 12px}
     <td class="br2">&nbsp;</td>
   </tr>
   <tr>
-    <td>IČO: {{ $settings->company_id }}</td>
-    <td width="32%" class="bl2">IČO: {{ $invoice->company_id }}</td>
+    <td>{{ _('IČO') }}: {{ $settings->company_id }}</td>
+    <td width="32%" class="bl2">{{ _('IČO') }}: {{ $invoice->company_id }}</td>
     <td width="32%" class="br2"></td>
   </tr>
   <tr>
-    <td>DIČ: {{ $settings->tax_id }}</td>
-    <td width="32%" class="bl2">DIČ: {{ $invoice->company_tax_id }}</td>
+    <td>{{ _('DIČ') }}: {{ $settings->tax_id }}</td>
+    <td width="32%" class="bl2">{{ _('DIČ') }}: {{ $invoice->company_tax_id }}</td>
     <td width="32%" class="br2"></td>
   </tr>
   <tr>
-    <td>IČ DPH: {{ $settings->vat_id }}</td>
-    <td width="32%" class="bb2 bl2">IČ DPH: {{ $invoice->company_vat_id }}</td>
+    <td>{{ _('IČ DPH') }}: {{ $settings->vat_id }}</td>
+    <td width="32%" class="bb2 bl2">{{ _('IČ DPH') }}: {{ $invoice->company_vat_id }}</td>
     <td width="32%" class="bb2 br2"></td>
   </tr>
   <tr>
@@ -107,23 +107,23 @@ table.po tr.p td {padding:5px; font-size: 12px}
   </tr>
 
   <tr>
-    <td><strong>Účet dodávateľa</strong></td>
+    <td><strong>{{ _('Účet dodávateľa') }}</strong></td>
   </tr>
 
   <tr>
-    <td>Čislo účtu: {{ $settings->account }}</td>
-    <td>{{ $invoice->payment_method ? 'Spôsob úhrady:' : '' }}</td>
+    <td>{{ _('Čislo účtu') }}: {{ $settings->account }}</td>
+    <td>{{ $invoice->payment_method ? (_('Spôsob úhrady').':') : '' }}</td>
     <td>{{ $invoice->payment_method ? $invoice->payment_method->name : null }}</td>
   </tr>
 
   <tr>
-    <td>IBAN: {{ $settings->iban }}</td>
-    <td><strong>Variabilný symbol:</strong></td>
+    <td>{{ _('IBAN') }}: {{ $settings->iban }}</td>
+    <td><strong>{{ _('Variabilný symbol') }}:</strong></td>
     <td><strong>{{ $invoice->vs }}</strong></td>
   </tr>
 
   <tr>
-    <td>SWIFT Kód: {{ $settings->swift }}</td>
+    <td>{{ _('SWIFT Kód') }}: {{ $settings->swift }}</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
@@ -133,12 +133,12 @@ table.po tr.p td {padding:5px; font-size: 12px}
   </tr>
 
   <tr>
-    <td>Register: {{ $settings->register }}</td>
+    <td>{{ _('Register') }}: {{ $settings->register }}</td>
     <td valign="top">Dátum vystavenia</td>
     <td valign="top">{{ $invoice->created_at->format('d.m.Y') }}</td>
   </tr>
   <tr>
-    <td>Číslo vložky: {{ $settings->input }}</td>
+    <td>{{ _('Číslo vložky') }}: {{ $settings->input }}</td>
     <td>{{ _('Dátum splatnosti') }}</td>
     <td>{{ $invoice->payment_date->format('d.m.Y') }}</td>
   </tr>
@@ -168,11 +168,11 @@ table.po tr.p td {padding:5px; font-size: 12px}
 
 <table width="100%" border="0" class="po">
   <tr class="n">
-    <td class="bw" height="30" bgcolor="#eee" align="left"><strong>Položky</strong></td>
-    <td class="bw" height="30" bgcolor="#eee" align="left"><strong>Počet ks</strong></td>
-    <td class="bw" bgcolor="#eee" align="right"><strong>Cena/ks bez DPH</strong></td>
-    <td class="bw" bgcolor="#eee" align="right"><strong>DPH</strong></td>
-    <td bgcolor="#eee" align="right"><strong>Cena spolu s DPH</strong></td>
+    <td class="bw" height="30" bgcolor="#eee" align="left"><strong>{{ _('Položky') }}</strong></td>
+    <td class="bw" height="30" bgcolor="#eee" align="left"><strong>{{ _('Počet ks') }}</strong></td>
+    <td class="bw" bgcolor="#eee" align="right"><strong>{{ _('Cena/ks bez DPH') }}</strong></td>
+    <td class="bw" bgcolor="#eee" align="right"><strong>{{ _('DPH') }}</strong></td>
+    <td bgcolor="#eee" align="right"><strong>{{ _('Cena spolu s DPH') }}</strong></td>
   </tr>
   @php
   $with_tax = [];
@@ -214,7 +214,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
             @if ( isset($qrimage) )
             <table style="border: 2px solid #eee; margin-top: 30px; padding: 10px">
               <tr>
-                <td style="padding-bottom: 10px"><strong>QR Platba:</strong></td>
+                <td style="padding-bottom: 10px"><strong>{{ _('QR Platba') }}:</strong></td>
               </tr>
               <tr>
                 <td>
@@ -236,10 +236,10 @@ table.po tr.p td {padding:5px; font-size: 12px}
           <td height="30" colspan="{{ $invoice->vat ? 4 : 3 }}">&nbsp;</td>
         </tr>
         <tr class="n">
-          <td class="bw" bgcolor="#eee" align="right"><strong>DPH</strong></td>
-          <td class="bw" bgcolor="#eee" align="right"><strong>Bez DPH</strong></td>
-          <td class="bw" bgcolor="#eee" align="right"><strong>DPH</strong></td>
-          <td bgcolor="#eee" align="right"><strong>S DPH</strong></td>
+          <td class="bw" bgcolor="#eee" align="right"><strong>{{ _('DPH') }}</strong></td>
+          <td class="bw" bgcolor="#eee" align="right"><strong>{{ _('Bez DPH') }}</strong></td>
+          <td class="bw" bgcolor="#eee" align="right"><strong>{{ _('DPH') }}</strong></td>
+          <td bgcolor="#eee" align="right"><strong>{{ _('S DPH') }}</strong></td>
         </tr>
         @php
           ksort($with_tax);
@@ -262,7 +262,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
           <td height="10" colspan="2">&nbsp;</td>
         </tr>
         <tr class="p">
-          <td bgcolor="#eee" align="left"><h2><strong>Celkom k úhrade @if ( $invoice->paid_at ) (zaplatené)@endif</strong></h2></td>
+          <td bgcolor="#eee" align="left"><h2><strong>{{ _('Celkom k úhrade') }} @if ( $invoice->paid_at ) {{ _('(zaplatené)') }}@endif</strong></h2></td>
           <td bgcolor="#eee" align="right"><h2><strong>{{ priceFormat( ! $invoice->paid_at ? $totalWithVat : 0 ) }} €</strong></h2></td>
         </tr>
       </table>
@@ -271,11 +271,11 @@ table.po tr.p td {padding:5px; font-size: 12px}
         <tr>
           <td align="left" valign="top">
             @if ( ! $settings->vat )
-            Nie sme platci DPH.
+            {{ _('Nie sme platci DPH.') }}
             @endif
           </td>
           <td align="right" valign="top">
-            <p>Doklad vystavil: {{ $settings->sign }}</p>
+            <p>{{ _('Doklad vystavil') }}: {{ $settings->sign }}</p>
             @if ( $image = getInvoiceSettings()->signature )
             <br>
             <img src="{{ $image->resize(null, config('invoices.signature_height') * 2, null, true)->path }}" height="{{ config('invoices.signature_height') }}px">
