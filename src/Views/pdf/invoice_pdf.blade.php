@@ -134,7 +134,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
 
   <tr>
     <td>{{ _('Register') }}: {{ $settings->register }}</td>
-    <td valign="top">Dátum vystavenia</td>
+    <td valign="top">{{ _('Dátum vystavenia') }}</td>
     <td valign="top">{{ $invoice->created_at->format('d.m.Y') }}</td>
   </tr>
   <tr>
