@@ -39,7 +39,7 @@ class InvoicesItem extends AdminModel
     public function fields()
     {
         return [
-            'name' => 'name:Názov položky|placeholder:Zadajte názov položky|limit:50|required|max:90',
+            'name' => 'name:Názov položky|placeholder:Zadajte názov položky|limit:50|required',
             'quantity' => 'name:Množstvo|type:integer|required|default:1|min:1',
             Group::fields([
                 'price' => 'name:Cena/ks bez DPH|type:decimal|component:SetVatPrice|required_without:price_vat',

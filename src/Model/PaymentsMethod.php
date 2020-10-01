@@ -42,7 +42,8 @@ class PaymentsMethod extends AdminModel
     protected $settings = [
         'grid.default' => 'medium',
         'title.update' => ':name',
-        'columns.id.hidden' => true,
+        'title.create' => 'Nová platobná metóda',
+        'buttons.create' => 'Nová platobná metóda',
     ];
 
     protected $rules = [
