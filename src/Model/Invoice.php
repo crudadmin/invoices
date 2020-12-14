@@ -47,17 +47,26 @@ class Invoice extends AdminModel
                 'number' => 'name:Č. dokladu|removeFromForm|index|max:30',
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
                 'proform' => 'name:Proforma|belongsTo:invoices,id|invisible',
-                'vs' => [ 'name' => 'Variabilný symbol', 'title' => 'Pri prázdnej hodnote bude vygenerovaný automaticky', 'digits_between' => '0,10', 'max' => 10, 'index' => true, 'placeholder' => 'Zadajte variabilný symbol', 'required' => isset($row) ? true : false, $this->vsRuleUnique($row) ],
-                'payment_method' => 'name:Spôsob platby|belongsTo:payments_methods,name|defaultByOption:default,1|required|canAdd',
+                'vs' => [
+                    'name' => 'Variabilný symbol',
+                    'title' => 'Pri prázdnej hodnote bude vygenerovaný automaticky',
+                    'digits_between' => '0,10',
+                    'max' => 10,
+                    'index' => true,
+                    'placeholder' => 'Zadajte variabilný symbol',
+                    'required' => isset($row) ? true : false,
+                    $this->vsRuleUnique($row)
+                ],
+                'payment_method' => 'name:Spôsob platby|belongsTo:payments_methods,name|defaultByOption:default,1|required|canAdd|hidden',
                 Group::fields([
-                    'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getInvoiceSettings('payment_term').' dní)',
-                    'paid_at' => 'name:Zaplatené dňa|type:date|format:d.m.Y|title:Zadajte dátum zaplatenia faktúry',
+                    'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getInvoiceSettings('payment_term').' dní)|hidden',
+                    'paid_at' => 'name:Zaplatené dňa|type:date|format:d.m.Y|title:Zadajte dátum zaplatenia faktúry|hidden',
                     'created_at' => 'name:Vystavené dňa|type:datetime|format:d.m.Y H:i:s|required|default:CURRENT_TIMESTAMP',
                 ])->inline(),
                 Group::fields([
                     'note' => 'name:Poznámka|type:text|hidden',
                     Group::fields([
-                        'price' => 'name:Cena bez DPH (€)|type:decimal|required|default:0',
+                        'price' => 'name:Cena bez DPH (€)|type:decimal|required|default:0|hidden',
                         'price_vat' => 'name:Cena s DPH (€)|type:decimal|required|default:0',
                     ])->add('removeFromForm')->inline()
                 ]),
@@ -69,7 +78,7 @@ class Invoice extends AdminModel
                     'Firemné údaje' => Group::half([
                         Group::fields([
                             'company_name' => 'name:Meno a priezivsko / Firma|fillBy:client|placeholder:Zadajte názov odoberateľa|required|max:90',
-                            'email' => 'name:Email|fillBy:client|placeholder:Slúži pre odoslanie faktúry na email|email',
+                            'email' => 'name:Email|fillBy:client|placeholder:Slúži pre odoslanie faktúry na email|hidden',
                         ])->inline(),
                         'company_id' => 'name:IČO|type:string|fillBy:client|placeholder:Zadajte IČO|hidden',
                         'company_tax_id' => 'name:DIČ|type:string|fillBy:client|placeholder:Zadajte DIČ|hidden',
@@ -110,6 +119,7 @@ class Invoice extends AdminModel
         'increments' => false,
         'autoreset' => false,
         'search.enabled' => true,
+        'xls' => true,
         'buttons.insert' => 'Nový doklad',
         'title' => [
             'insert' => 'Nový doklad',
@@ -124,7 +134,6 @@ class Invoice extends AdminModel
             'company_name.name' => 'Odberateľ',
             'company_name.after' => 'vs',
             'vs.name' => 'VS.',
-            'email.before' => 'payment_method_id',
             'email_sent.before' => 'pdf',
             'email_sent.encode' => false,
             'pdf.encode' => false,
