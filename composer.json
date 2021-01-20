@@ -10,11 +10,11 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "laravel/framework": "^6.0|^7.0",
+        "laravel/framework": "^6|^7|^8",
         "mpdf/mpdf": "^7.0|^8.0",
         "phpoffice/phpspreadsheet" : "^1.2.0",
         "propaganistas/laravel-phone": "^4.0",
-        "crudadmin/crudadmin": "^3.0",
+        "crudadmin/crudadmin": "^3.0|dev-3.0-dev",
         "chillerlan/php-qrcode": "^3.2",
         "umpirsky/country-list": "^2.0"
     },
