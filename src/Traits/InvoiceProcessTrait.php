@@ -196,19 +196,23 @@ trait InvoiceProcessTrait
 
         $pad = config('invoices.numbers_length', 5);
 
+        $prefixYearDate = $this->created_at ? $this->created_at : Carbon::now();
+
         $last_invoice = $this->newQuery()
-                             ->whereRaw('YEAR(created_at) = YEAR(NOW())')
+                             ->whereRaw('YEAR(created_at) = '.$prefixYearDate->format('Y'))
                              ->whereIn('type', array_wrap($this->getInvoiceNumberCategory()))
                              ->latest('id')
                              ->first();
 
+        $prefix = $prefixYearDate->format('Y');
+
         //Get last invoice increment
-        $invoice_count = ! $last_invoice ? 0 : (int)substr($last_invoice->getRawOriginal('number'), 4);
+        $invoice_count = ! $last_invoice ? 0 : (int)substr($last_invoice->getRawOriginal('number'), strlen($prefix));
 
         //Set invoice ID
         $next_number = substr($invoice_count + 1, -$pad);
 
-        $this->number = date('Y') . str_pad($next_number, $pad, 0, STR_PAD_LEFT);
+        $this->number = $prefix . str_pad($next_number, $pad, 0, STR_PAD_LEFT);
     }
 
     /*

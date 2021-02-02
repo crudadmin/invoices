@@ -61,7 +61,7 @@ class Invoice extends AdminModel
                 Group::fields([
                     'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getInvoiceSettings('payment_term').' dní)|hidden',
                     'paid_at' => 'name:Zaplatené dňa|type:date|format:d.m.Y|title:Zadajte dátum zaplatenia faktúry|hidden',
-                    'created_at' => 'name:Vystavené dňa|type:datetime|format:d.m.Y H:i:s|required|default:CURRENT_TIMESTAMP',
+                    'created_at' => 'name:Vystavené dňa|type:datetime|format:d.m.Y H:i:s|title:Tento údaj určuje, do ktorého daňového obdobia bude faktúra zarataná.|required|default:CURRENT_TIMESTAMP',
                 ])->inline(),
                 Group::fields([
                     'note' => 'name:Poznámka|type:text|hidden',

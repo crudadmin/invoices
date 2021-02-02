@@ -31,4 +31,18 @@ class ProcessInvoiceRule extends AdminRule
             $row->setNewVs();
         }
     }
+
+    public function updating(AdminModel $row)
+    {
+        $this->checkCreationYearChange($row);
+    }
+
+    private function checkCreationYearChange($row)
+    {
+        $previousDate = new Carbon($row->getRawOriginal('created_at'));
+
+        if ( $row->created_at->format('Y') != $previousDate->format('Y') ){
+            Ajax::error(_('Zmena roku vytvorenia na už zaučtovanej faktúre nie je možná. Ak chcete faktúru zaučtovať do prechadzajúceho obdobia, zmažte faktúru a vytvorte ju odznova.'));
+        }
+    }
 }
