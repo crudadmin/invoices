@@ -58,4 +58,9 @@ return [
      * CZ => CZ Format
      */
     'qrcode_type' => 'sk',
+
+    /*
+     * Multiple subjects support
+     */
+    'multi_subjects' => false,
 ];

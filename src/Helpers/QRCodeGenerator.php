@@ -47,7 +47,7 @@ class QRCodeGenerator
 
     public function generateCzechQRCode($invoice)
     {
-        $data = 'SPD*1.0*ACC:'.getInvoiceSettings('iban').'*AM:'.$invoice->price_vat.'*CC:EUR*X-VS:'.$invoice->vs.'*MSG:QRPLATBA';
+        $data = 'SPD*1.0*ACC:'.$invoice->subject->iban.'*AM:'.$invoice->price_vat.'*CC:EUR*X-VS:'.$invoice->vs.'*MSG:QRPLATBA';
 
         return $data;
     }
@@ -73,8 +73,8 @@ class QRCodeGenerator
                 '',                                     // REFERENCNA HODNOTA PRIJMATELA
                 '',                                     // POZNAMKA
                 '1',
-                getInvoiceSettings('iban'),             // IBAN
-                getInvoiceSettings('swift'),            // SWIFT
+                $invoice->subject->iban,             // IBAN
+                $invoice->subject->swift,            // SWIFT
                 '0',
                 '0',
             ))

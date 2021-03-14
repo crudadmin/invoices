@@ -43,6 +43,7 @@ class Invoice extends AdminModel
     {
         return [
             'Nastavenia dokladu' => Group::fields([
+                'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|component:SetDefaultSubject|required',
                 'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
                 'number' => 'name:Č. dokladu|removeFromForm|index|max:30',
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
@@ -316,7 +317,7 @@ class Invoice extends AdminModel
         $invoice->return_id = $this->getKey();
         $invoice->setNewVs($this->getRawOriginal('number'));
         $invoice->paid_at = null;
-        $invoice->payment_date = Carbon::now()->addDays(getInvoiceSettings('payment_term') ?: 0);
+        $invoice->payment_date = Carbon::now()->addDays($this->subject->payment_term);
         $invoice->price = -$invoice->price;
         $invoice->price_vat = -$invoice->price_vat;
         $invoice->snapshot_sha = null;

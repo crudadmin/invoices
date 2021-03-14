@@ -6,7 +6,7 @@
 <style type="text/css">
 body, table {font-family: tahoma; font-size: 11px; color: black; margin:0; padding:0}
 h1 {font-family: tahoma; font-size: 15px; color: #000; font-weight:normal}
-h1.h-title {font-family: tahoma; font-size: 48px; color: #000; font-weight:bold;color: {{ getInvoiceSettings()->invoice_color ?: '#3a92c3' }};}
+h1.h-title {font-family: tahoma; font-size: {{ config('invoices.logo_size', 48) }}px; color: #000; font-weight:bold;color: {{ $settings->invoice_color ?: '#3a92c3' }};}
 h2 {font-family: tahoma; font-size: 15px}
 table {border-spacing:0}
 table.aa tr td {padding: 5px 5px 5px 5px;}
@@ -17,10 +17,10 @@ table.po tr.p td {padding:5px; font-size: 12px}
 .br {border-right: solid 1px #eee}
 .bb {border-bottom: solid 1px #eee}
 .bw {border-right: solid 1px #eee}
-.bl2 {border-left: solid 2px {{ getInvoiceSettings()->invoice_color ?: '#3a92c3'  }}}
-.bb2 {border-bottom: solid 2px {{ getInvoiceSettings()->invoice_color ?: '#3a92c3'  }}}
-.br2 {border-right: solid 2px {{ getInvoiceSettings()->invoice_color ?: '#3a92c3'  }}}
-.bt2top {border-top: solid 2px {{ getInvoiceSettings()->invoice_color ?: '#3a92c3'  }}}
+.bl2 {border-left: solid 2px {{ $settings->invoice_color ?: '#3a92c3'  }}}
+.bb2 {border-bottom: solid 2px {{ $settings->invoice_color ?: '#3a92c3'  }}}
+.br2 {border-right: solid 2px {{ $settings->invoice_color ?: '#3a92c3'  }}}
+.bt2top {border-top: solid 2px {{ $settings->invoice_color ?: '#3a92c3'  }}}
 .ct {text-align:center}
 .py {width:60px}
 .fp {height:100px; width:100%; position:absolute; bottom:30px; left:0; display:table-cell; vertical-align:middle; text-align:center}
@@ -32,7 +32,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
 <table width="100%" border="0">
   <tr>
     <td width="30%">
-      @if ( $image = getInvoiceSettings()->logo )
+      @if ( $image = $settings->logo )
       <img src="{{ $image->resize(null, config('invoices.logo_height') * 2, null, true)->path }}" height="{{ config('invoices.logo_height') }}px" type="" alt="">
       @else
       <h1 class="h-title">{{ env('APP_NAME') }}</h1>
@@ -276,7 +276,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
           </td>
           <td align="right" valign="top">
             <p>{{ _('Doklad vystavil') }}: {{ $settings->sign }}</p>
-            @if ( $image = getInvoiceSettings()->signature )
+            @if ( $image = $settings->signature )
             <br>
             <img src="{{ $image->resize(null, config('invoices.signature_height') * 2, null, true)->path }}" height="{{ config('invoices.signature_height') }}px">
             @endif

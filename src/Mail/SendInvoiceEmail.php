@@ -35,6 +35,7 @@ class SendInvoiceEmail extends Mailable
         return $this->markdown('invoices::mail.invoice_email', [
                         'invoice' => $this->invoice,
                         'message' => $this->message,
+                        'settings' => $this->invoice->subject,
                     ])
                     ->subject($this->invoice->typeName . ' ' . $this->invoice->number)
                     ->attach($this->invoice->getPdf()->path, [

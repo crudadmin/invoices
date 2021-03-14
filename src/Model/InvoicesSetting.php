@@ -19,9 +19,14 @@ class InvoicesSetting extends AdminModel
 
     protected $group = 'settings';
 
-    protected $single = true;
-
     protected $icon = 'fa-file-invoice';
+
+    protected $reversed = true;
+
+    public function single()
+    {
+        return config('invoices.multi_subjects', false) == false;
+    }
 
     /*
      * Automatic form and database generation

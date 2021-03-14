@@ -41,6 +41,7 @@ class InvoicesExport extends AdminModel
      * ... other validation methods from laravel
      */
     protected $fields = [
+        'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|required',
         'from' => 'name:Exportovať od|placeholder:Vrátane dátumu|type:date|required',
         'to' => 'name:Exportovať do|placeholder:Vrátane dátumu|type:date|required',
         'types' => 'name:Exportovať typy dokladov|type:select|limit:100|multiple|required|max:20',

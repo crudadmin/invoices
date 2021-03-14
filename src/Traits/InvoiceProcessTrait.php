@@ -94,7 +94,7 @@ trait InvoiceProcessTrait
             'mirrorMargins' => true,
         ]);
         $mpdf->WriteHTML(view('invoices::pdf.invoice_pdf', [
-            'settings' => getInvoiceSettings(),
+            'settings' => $this->subject,
             'invoice' => $this,
             'items' => $this->items,
             'qrimage' => QRCodeGenerator::generate($this),
@@ -199,6 +199,7 @@ trait InvoiceProcessTrait
         $prefixYearDate = $this->created_at ? $this->created_at : Carbon::now();
 
         $last_invoice = $this->newQuery()
+                             ->where('subject_id', $this->subject_id)
                              ->whereRaw('YEAR(created_at) = '.$prefixYearDate->format('Y'))
                              ->whereIn('type', array_wrap($this->getInvoiceNumberCategory()))
                              ->latest('id')
@@ -221,7 +222,7 @@ trait InvoiceProcessTrait
     public function setPaymentDate()
     {
         if ( ! $this->payment_date ) {
-            $this->payment_date = Carbon::now()->addDays(getInvoiceSettings('payment_term') ?: 0);
+            $this->payment_date = Carbon::now()->addDays($this->subject->payment_term ?: 0);
         }
     }
 
