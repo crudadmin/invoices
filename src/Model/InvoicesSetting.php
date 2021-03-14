@@ -23,6 +23,10 @@ class InvoicesSetting extends AdminModel
 
     protected $reversed = true;
 
+    protected $sortable = false;
+
+    protected $publishable = false;
+
     public function single()
     {
         return config('invoices.multi_subjects', false) == false;
