@@ -26,6 +26,10 @@ table.po tr.p td {padding:5px; font-size: 12px}
 .fp {height:100px; width:100%; position:absolute; bottom:30px; left:0; display:table-cell; vertical-align:middle; text-align:center}
 .fh {height:100px; width:100%; text-align:center}
 @media print {.fh {height:100px; width:100%; position:absolute; bottom:30px; left:0; display:table-cell; vertical-align:middle; text-align:center}}
+@php
+  $signatureHeight = $settings->signature_height ?: config('invoices.signature_height');
+  $logoHeight = $settings->logo_height ?: config('invoices.logo_height');
+@endphp
 </style>
 </head>
 <body>
@@ -33,7 +37,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
   <tr>
     <td width="30%">
       @if ( $image = $settings->logo )
-      <img src="{{ $image->resize(null, config('invoices.logo_height') * 2, null, true)->path }}" height="{{ config('invoices.logo_height') }}px" type="" alt="">
+      <img src="{{ $image->resize(null, $logoHeight * 2, null, true)->path }}" height="{{ $logoHeight }}px" type="" alt="">
       @else
       <h1 class="h-title">{{ env('APP_NAME') }}</h1>
       @endif
@@ -276,12 +280,15 @@ table.po tr.p td {padding:5px; font-size: 12px}
           </td>
           <td align="right" valign="top">
             <p>{{ _('Doklad vystavil') }}: {{ $settings->sign }}</p>
-            @if ( $image = $settings->signature )
-            <br>
-            <img src="{{ $image->resize(null, config('invoices.signature_height') * 2, null, true)->path }}" height="{{ config('invoices.signature_height') }}px">
-            @endif
           </td>
         </tr>
+        @if ( $image = $settings->signature )
+        <tr>
+          <td colspan="2" align="right">
+            <img src="{{ $image->resize(null, $signatureHeight * 2, null, true)->path }}" height="{{ $signatureHeight }}px">
+          </td>
+        </tr>
+        @endif
       </table>
     </td>
   </tr>

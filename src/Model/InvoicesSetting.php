@@ -74,10 +74,14 @@ class InvoicesSetting extends AdminModel
                     'vat' => 'name:Platca dph|type:checkbox|default:0',
                     'invoice_color' => 'name:RGB ramčeka faktúry|max:11',
                 ])->inline(),
-                Group::fields([
-                'logo' => 'name:Logo|type:file|image',
-                'signature' => 'name:Podpis|type:file|image',
-            ])->inline(),
+                Group::half([
+                    'logo' => 'name:Logo|type:file|image',
+                    'logo_height' => 'name:Výška loga (px)|type:integer|required|default:60',
+                ]),
+                Group::half([
+                    'signature' => 'name:Podpis|type:file|image',
+                    'signature_height' => 'name:Výška podpisu (px)|type:integer|required|default:180',
+                ]),
             ]),
             'Nastavenia emailu' => Group::half([
                 'email_message' => 'name:Správa v emaili',
