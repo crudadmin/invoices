@@ -271,8 +271,14 @@ class Invoice extends AdminModel
     {
         $data['type'] = $type;
 
-        if ( $data instanceof AdminModel )
+        //Add default subject if is missing
+        if ( !isset($data['subject_id']) || !$data['subject_id'] ){
+            $data['subject_id'] = getInvoiceSettings()->getKey();
+        }
+
+        if ( $data instanceof AdminModel ) {
             $data = $data->toArray();
+        }
 
         return new static($data);
     }
