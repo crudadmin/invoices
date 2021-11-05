@@ -46,7 +46,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
       <h1>
         {{ $invoice->typeName }} <strong>{{ $invoice->number }}</strong>
         @if ( $invoice->type == 'proform' )
-        <br><small style="font-size: 11px">{{ _('Proforma faktúra neslúži ako daňový doklad. Faktúra (daňový doklad) bude vystavená po prijatí platby.') }}</small>
+        <br><small style="font-size: 11px">{!! _('Proforma faktúra neslúži ako daňový doklad.<br>Faktúra (daňový doklad) bude vystavená po prijatí platby.') !!}</small>
         @endif
       </h1>
       @if ( $invoice->type == 'invoice' && $invoice->proform )
@@ -134,6 +134,10 @@ table.po tr.p td {padding:5px; font-size: 12px}
 
   <tr>
     <td></td>
+    @if ( $invoice->delivery_at )
+    <td valign="top">{{ _('Dátum dodania') }}</td>
+    <td valign="top">{{ $invoice->delivery_at->format('d.m.Y') }}</td>
+    @endif
   </tr>
 
   <tr>

@@ -59,11 +59,14 @@ class Invoice extends AdminModel
                     $this->vsRuleUnique($row)
                 ],
                 'payment_method' => 'name:Spôsob platby|belongsTo:payments_methods,name|defaultByOption:default,1|required|canAdd|hidden',
-                Group::fields([
+                Group::inline([
                     'payment_date' => 'name:Dátum splatnosti|type:date|format:d.m.Y|title:Vypočítava sa automatický od dátumu vytvorenia +('.getInvoiceSettings('payment_term').' dní)|hidden',
                     'paid_at' => 'name:Zaplatené dňa|type:date|format:d.m.Y|title:Zadajte dátum zaplatenia faktúry|hidden',
+                ]),
+                Group::inline([
+                    'delivery_at' => 'name:Dodané dňa|type:datetime|format:d.m.Y|required|default:CURRENT_TIMESTAMP',
                     'created_at' => 'name:Vystavené dňa|type:datetime|format:d.m.Y H:i:s|title:Tento údaj určuje, do ktorého daňového obdobia bude faktúra zarataná.|required|default:CURRENT_TIMESTAMP',
-                ])->inline(),
+                ]),
                 Group::fields([
                     'note' => 'name:Poznámka|type:text|hidden',
                     Group::fields([
@@ -280,6 +283,10 @@ class Invoice extends AdminModel
             $data = $data->toArray();
         }
 
+        if ( !($data['delivery_at'] ?? null) ){
+            $data['delivery_at'] = Carbon::now();
+        }
+
         return new static($data);
     }
 
@@ -306,8 +313,9 @@ class Invoice extends AdminModel
         $invoice->save();
 
         //Change paid status after generating proform
-        if ( ! $this->paid_at )
+        if ( ! $this->paid_at ) {
             $this->update(['paid_at' => Carbon::now()]);
+        }
 
         return $invoice;
     }
