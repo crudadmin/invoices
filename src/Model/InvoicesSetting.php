@@ -64,7 +64,7 @@ class InvoicesSetting extends AdminModel
                     'email' => 'name:Email|email',
                     'phone' => 'name:Tel. číslo',
                 ]),
-            ]),
+            ])->add('hidden'),
             'Nastavenia faktúry' => Group::half([
                 'input' => 'name:Číslo vložky|required',
                 'register' => 'name:Registrácia|required',
@@ -82,11 +82,11 @@ class InvoicesSetting extends AdminModel
                     'signature' => 'name:Podpis|type:file|image',
                     'signature_height' => 'name:Výška podpisu (px)|type:integer|required|default:180',
                 ]),
-            ]),
+            ])->add('hidden'),
             'Nastavenia emailu' => Group::half([
                 'email_message' => 'name:Správa v emaili',
                 'email_greeting' => 'name:Pozdrav|required',
-            ]),
+            ])->add('hidden'),
         ];
     }
 
