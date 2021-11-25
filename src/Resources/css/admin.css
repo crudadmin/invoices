@@ -1,1 +1,10 @@
 .td-email_sent { text-align: center; }
+
+.invoices-field .input-group-addon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    border: 1px solid #e8e8e8;
+    border-right: 0;
+}

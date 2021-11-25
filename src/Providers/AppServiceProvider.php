@@ -11,6 +11,7 @@ class AppServiceProvider extends ServiceProvider
 {
     protected $providers = [
         PublishServiceProvider::class,
+        EventsServiceProvider::class
     ];
 
     protected $facades = [
