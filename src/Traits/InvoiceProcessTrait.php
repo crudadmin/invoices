@@ -8,9 +8,10 @@ use Facades\Gogol\Invoices\Helpers\QRCodeGenerator;
 use Gogol\Invoices\Mail\SendInvoiceEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
+use Log;
 use Mpdf\Mpdf;
 use Throwable;
-use Log;
+use chillerlan\QRCode\QROptions;
 
 trait InvoiceProcessTrait
 {
@@ -293,6 +294,14 @@ trait InvoiceProcessTrait
             $number = date('Ym') . rand(0000, 9999);
 
         $this->vs = $number;
+    }
+
+    public function getInvoiceQrCodeOptions()
+    {
+        return new QROptions([
+            'addQuietzone' => false,
+            'scale' => 4,
+        ]);
     }
 }
 

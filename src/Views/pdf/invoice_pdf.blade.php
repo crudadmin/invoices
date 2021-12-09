@@ -216,27 +216,18 @@ table.po tr.p td {padding:5px; font-size: 12px}
 <table width="100%" border="0" class="po">
   <tr style="width: 100%">
     <td style="width: 50%;" valign="top">
-      <table>
-        <tr>
-          <td width="50%">
-            @if ( isset($qrimage) )
-            <table style="border: 2px solid #eee; margin-top: 30px; padding: 10px">
-              <tr>
-                <td style="padding-bottom: 10px"><strong>{{ _('QR Platba') }}:</strong></td>
-              </tr>
-              <tr>
-                <td>
-                    <img src="{{ $qrimage }}" style="margin: 0;">
-                </td>
-              </tr>
-            </table>
-            @endif
-          </td>
-          <td width="50%">
-
-          </td>
-        </tr>
-      </table>
+        @if ( isset($qrimage) )
+        <table style="border: 2px solid #eee; margin-top: 30px; padding: 5px">
+          <tr>
+            <td style="padding-bottom: 10px"><strong>{{ _('QR Platba') }}:</strong></td>
+          </tr>
+          <tr>
+            <td>
+                <img src="{{ $qrimage }}" style="margin: 0;max-width: {{ config('invoices.qrcode_width', 75) }}px">
+            </td>
+          </tr>
+        </table>
+        @endif
     </td>
     <td style="width: 50%" valign="top">
       <table width="100%" border="0" class="po">

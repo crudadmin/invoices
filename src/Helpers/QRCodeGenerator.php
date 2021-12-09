@@ -36,9 +36,7 @@ class QRCodeGenerator
             return;
         }
 
-        $options = new QROptions([
-            'addQuietzone' => false,
-        ]);
+        $options = $invoice->getInvoiceQrCodeOptions();
 
         $image = (new QRCode($options))->render($data);
 

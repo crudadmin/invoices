@@ -52,6 +52,7 @@ return [
      * QR Code feature
      */
     'qrcode' => false,
+    'qrcode_width' => 75,
 
     /*
      * SK => paybysquare
