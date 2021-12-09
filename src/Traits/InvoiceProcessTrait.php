@@ -93,7 +93,16 @@ trait InvoiceProcessTrait
             'margin_left' => 10,
             'margin_right' => 10,
             'mirrorMargins' => true,
+            'defaultfooterline' => false,
         ]);
+
+        $mpdf->setFooter('<table style="width: 100%">
+            <tr>
+                <!-- <td align="left" style="font-style: normal">'.$this->number.'</td> -->
+                <td align="right" style="font-weight: bold; font-style: normal">{PAGENO} / {nbpg}</td>
+            </tr>
+        </table>');
+
         $mpdf->WriteHTML(view('invoices::pdf.invoice_pdf', [
             'settings' => $this->subject,
             'invoice' => $this,
