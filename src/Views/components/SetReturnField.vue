@@ -29,7 +29,6 @@ export default {
             return (new Date()).getFullYear();
         },
         statusStyle(){
-            console.log('wuala', this.row.return_number);
             if ( ! this.row.return_number ) {
                 return {};
             }
@@ -57,8 +56,6 @@ export default {
             var value = e.target.value;
 
             this.$set(this.row, 'return_number', value);
-
-            console.log('ujha', value, this.row.return_number);
 
             this.$root.$http.get('/admin/invoices/get-by-number?number='+value)
                 .then(response => {
