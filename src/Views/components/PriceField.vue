@@ -3,15 +3,15 @@
         <div class="row">
             <div class="col-md-4">
                 <label>{{ field.name }} <span class="required" v-if="required">*</span></label>
-                <input type="number" step=".01" :name="field_key" :value="valueOrDefault" @keyup="onChange" class="form-control" :readonly="disabled || readonly">
+                <input type="number" step="any" :name="field_key" :value="valueOrDefault" @keyup="changeNoVatPrice" class="form-control" :readonly="disabled || readonly">
             </div>
             <div class="col-md-4">
                 <label>DPH</label>
-                <input type="number" step=".01" :value="vatSize" disabled class="form-control">
+                <input type="number" :step="inputStep" :value="vatSize" disabled class="form-control">
             </div>
             <div class="col-md-4">
                 <label>Cena s DPH</label>
-                <input type="number" step=".01" :name="field_key+'_vat'" :value="vatPrice" @keyup="changePrice" @change="recalculateWithoutVatPrice" class="form-control" :readonly="disabled || readonly">
+                <input type="number" :step="inputStep" :name="field_key+'_vat'" :value="vatPrice" @keyup="changeVatPrice" @change="recalculateWithoutVatPrice" class="form-control" :readonly="disabled || readonly">
             </div>
         </div>
     </div>
@@ -36,6 +36,24 @@ export default {
     },
 
     computed: {
+        decimalSettings(){
+            let defaultDecimals = parseInt((this.field.decimal_length||'').split(',')[1])||2,
+                settings = {
+                    round_without_vat : this.model.getSettings('decimals.round_without_vat', true),
+                    places : this.model.getSettings('decimals.places', defaultDecimals),
+                    rounding : this.model.getSettings('decimals.rounding', defaultDecimals),
+                };
+
+            //Get from store settings
+            if ( this.getFreshModel('stores') ){
+                return {
+                    ...settings,
+                    ...this.getFreshModel('stores').getSettings('decimals', {}),
+                };
+            }
+
+            return settings;
+        },
         valueOrDefault(){
             //We want rewrite value only if is initial null state
             if ( _.isNil(this.field.value) ) {
@@ -44,11 +62,14 @@ export default {
 
             return this.field.value;
         },
+        inputStep(){
+            return '.'+_.repeat(0, this.decimalSettings.places - 1)+'1';
+        },
         vatSize(){
-            return (this.field.value * (this.vat / 100)).toFixed(2);
+            return (this.field.value * (this.vat / 100)).toFixed(this.decimalSettings.places);
         },
         vatPrice(){
-            return (this.field.value * (1 + (this.vat / 100))).toFixed(2);
+            return (this.field.value * (1 + (this.vat / 100))).toFixed(this.decimalSettings.places);
         },
         value(){
             return this.field.value || this.field.default || 0;
@@ -56,6 +77,22 @@ export default {
     },
 
     methods: {
+        changeNoVatPrice(e){
+            this.field.value = e.target.value;
+        },
+        changeVatPrice : _.debounce(function(e){
+            this.recalculateWithoutVatPrice(e);
+        }, 1500),
+        recalculateWithoutVatPrice(e){
+            let rounding = this.decimalSettings.rounding;
+
+            //If decimal rounding is disabled, we want save one more decimal here.
+            if ( this.decimalSettings.round_without_vat === false ){
+                rounding++;
+            }
+
+            this.field.value = _.round(e.target.value / (1 + (this.vat / 100)), rounding);
+        },
         getFieldPrefix(){
             var fieldPrefix = this.field_key.split('_').slice(0, -1).join('_');
 
@@ -68,15 +105,6 @@ export default {
             var field = this.getFieldPrefix()+(this.hasStaticFieldVat() ? 'vat' : 'vat_id');
 
             return this.model.fields[field] ? field : 'vat_id';
-        },
-        onChange(e){
-            this.field.value = e.target.value;
-        },
-        changePrice : _.debounce(function(e){
-            this.recalculateWithoutVatPrice(e);
-        }, 1500),
-        recalculateWithoutVatPrice(e){
-            this.field.value = (e.target.value / (1 + (this.vat / 100))).toFixed(2);
         },
         onVatChange(){
             this.$watch('row.'+this.getVatFieldKey(), this.changeVatValue);
