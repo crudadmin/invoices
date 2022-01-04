@@ -287,9 +287,11 @@ class Invoice extends AdminModel
             $data['delivery_at'] = Carbon::now();
         }
 
-        //If number has been given from model, we need reset it.
-        if ( isset($data['number']) ){
-            unset($data['number']);
+        //Remove uneccessary columns from invoice
+        foreach (['deleted_at', 'created_at', 'updated_at', 'client_id', 'number', 'number_prefix'] as $column) {
+            if ( array_key_exists($column, $data) ) {
+                unset($data[$column]);
+            }
         }
 
         return new static($data);
