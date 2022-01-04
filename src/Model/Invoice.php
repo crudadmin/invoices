@@ -43,14 +43,19 @@ class Invoice extends AdminModel
     {
         return [
             'Nastavenia dokladu' => Group::fields([
-                'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|component:SetDefaultSubject|required',
-                'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
-                'number' => 'name:Č. dokladu|removeFromForm|index|max:30',
+                Group::inline([
+                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|component:SetDefaultSubject|required',
+                    'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
+                    Group::inline([
+                        'number_manual' => 'name:Manuálne číslo dokladu|type:checkbox|default:0|hidden',
+                        'number' => 'name:Č. dokladu|index|hidden|removeFromFormIfNot:number_manual,1|max:30',
+                    ])
+                ]),
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
                 'proform' => 'name:Proforma|belongsTo:invoices,id|invisible',
                 'vs' => [
                     'name' => 'Variabilný symbol',
-                    'title' => 'Pri prázdnej hodnote bude vygenerovaný automaticky',
+                    'title' => 'Pri prázdnej hodnote vygenerovaný automaticky',
                     'digits_between' => '0,10',
                     'max' => 10,
                     'index' => true,
@@ -168,7 +173,7 @@ class Invoice extends AdminModel
         $query->with('proformInvoice:id,proform_id,number,pdf,type');
     }
 
-    public function setAdminAttributes($attributes)
+    public function setAdminRowsAttributes($attributes)
     {
         $attributes['number'] = $this->number;
 
