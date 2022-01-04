@@ -287,6 +287,11 @@ class Invoice extends AdminModel
             $data['delivery_at'] = Carbon::now();
         }
 
+        //If number has been given from model, we need reset it.
+        if ( isset($data['number']) ){
+            unset($data['number']);
+        }
+
         return new static($data);
     }
 
