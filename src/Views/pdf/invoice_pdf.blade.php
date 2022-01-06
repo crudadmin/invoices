@@ -103,9 +103,24 @@ table.po tr.p td {padding:5px; font-size: 12px}
   </tr>
   <tr>
     <td>{{ _('IČ DPH') }}: {{ $settings->vat_id }}</td>
-    <td width="32%" class="bb2 bl2">{{ _('IČ DPH') }}: {{ $invoice->company_vat_id }}</td>
-    <td width="32%" class="bb2 br2"></td>
+    <td width="32%" class="{{ count($additionalRows) == 0 ? 'bb2' : '' }} bl2">{{ _('IČ DPH') }}: {{ $invoice->company_vat_id }}</td>
+    <td width="32%" class="{{ count($additionalRows) == 0 ? 'bb2' : '' }} br2"></td>
   </tr>
+  @foreach($additionalRows as $i => $row)
+  <tr>
+    <td>
+      @if ( $row['supplier'] ?? null )
+      {!! $row['supplier'] !!}
+      @endif
+    </td>
+    <td width="32%" class="{{ $i + 1 == count($additionalRows) ? 'bb2' : '' }} bl2">
+      @if ( $row['customer'] ?? null )
+      {!! $row['customer'] !!}
+      @endif
+    </td>
+    <td width="32%" class="{{ $i + 1 == count($additionalRows) ? 'bb2' : '' }} br2"></td>
+  </tr>
+  @endforeach
   <tr>
     <td colspan="3">&nbsp;</td>
   </tr>

@@ -108,6 +108,7 @@ trait InvoiceProcessTrait
             'invoice' => $this,
             'items' => $this->items,
             'qrimage' => QRCodeGenerator::generate($this),
+            'additionalRows' => $this->getAdditionalRows(),
         ])->render());
 
         //Create directory if does not exists
@@ -121,6 +122,26 @@ trait InvoiceProcessTrait
 
         if ( $auto_save !== false )
             $this->save();
+    }
+
+    private function getAdditionalRows()
+    {
+        $supplierRows = config('invoices.additional_rows.supplier') ?: function(){};
+        $supplierRows = $supplierRows($this, $this->subject) ?: [];
+
+        $customerRows = config('invoices.additional_rows.customer') ?: function(){};
+        $customerRows = $customerRows($this, $this->subject) ?: [];
+
+        $totalRows = max(count($supplierRows), count($customerRows));
+        $rows = [];
+        for ($i=0; $i < $totalRows; $i++) {
+            $rows[] = [
+                'supplier' => $supplierRows[$i] ?? null,
+                'customer' => $customerRows[$i] ?? null,
+            ];
+        }
+
+        return $rows;
     }
 
     private function loadDeletedInvoiceAttributes()
