@@ -2,16 +2,18 @@
 
 namespace Gogol\Invoices\Model;
 
+use Admin;
+use Admin\Eloquent\AdminModel;
+use Admin\Fields\Group;
+use Carbon\Carbon;
 use Gogol\Invoices\Admin\Buttons\CreateInvoiceFromProform;
 use Gogol\Invoices\Admin\Buttons\CreateReturnFromInvoice;
 use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceRule;
+use Gogol\Invoices\Model\InvoicesSetting;
 use Gogol\Invoices\Traits\InvoiceProcessTrait;
-use Admin\Fields\Group;
-use Admin\Eloquent\AdminModel;
 use Illuminate\Notifications\Notifiable;
-use Carbon\Carbon;
 
 class Invoice extends AdminModel
 {
@@ -44,11 +46,11 @@ class Invoice extends AdminModel
         return [
             'Nastavenia dokladu' => Group::fields([
                 Group::inline([
-                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|component:SetDefaultSubject|required',
+                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|component:SetDefaultSubject|required|'.($this->hasMultipleSubjects() ? '' : 'hidden'),
                     'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
                     Group::inline([
                         'number_manual' => 'name:Manuálne číslo dokladu|type:checkbox|default:0|hidden',
-                        'number' => 'name:Č. dokladu|index|hidden|removeFromFormIfNot:number_manual,1|max:30',
+                        'number' => 'name:Č. dokladu|index|removeFromFormIfNot:number_manual,1|max:30',
                     ])
                 ]),
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
@@ -61,6 +63,7 @@ class Invoice extends AdminModel
                     'index' => true,
                     'placeholder' => 'Zadajte variabilný symbol',
                     'required' => isset($row) ? true : false,
+                    'hidden' => true,
                     $this->vsRuleUnique($row)
                 ],
                 'payment_method' => 'name:Spôsob platby|belongsTo:payments_methods,name|defaultByOption:default,1|required|canAdd|hidden',
@@ -69,7 +72,7 @@ class Invoice extends AdminModel
                     'paid_at' => 'name:Zaplatené dňa|type:date|format:d.m.Y|title:Zadajte dátum zaplatenia faktúry|hidden',
                 ]),
                 Group::inline([
-                    'delivery_at' => 'name:Dodané dňa|type:datetime|format:d.m.Y|required|default:CURRENT_TIMESTAMP',
+                    'delivery_at' => 'name:Dodané dňa|type:datetime|format:d.m.Y|hidden|required|default:CURRENT_TIMESTAMP',
                     'created_at' => 'name:Vystavené dňa|type:datetime|format:d.m.Y H:i:s|title:Tento údaj určuje, do ktorého daňového obdobia bude faktúra zarataná.|required|default:CURRENT_TIMESTAMP',
                 ]),
                 Group::fields([
@@ -141,9 +144,8 @@ class Invoice extends AdminModel
         'columns' => [
             'number.before' => 'type',
             'company_name.name' => 'Odberateľ',
-            'company_name.after' => 'vs',
-            'vs.name' => 'VS.',
-            'email_sent.before' => 'pdf',
+            'company_name.after' => 'type',
+            'email_sent.before' => 'price_vat',
             'email_sent.encode' => false,
             'pdf.encode' => false,
             'created.name' => 'Vytvorené',
@@ -359,5 +361,12 @@ class Invoice extends AdminModel
         $invoice->save();
 
         return $invoice;
+    }
+
+    private function hasMultipleSubjects()
+    {
+        return Admin::cache('invoices.subjects.count', function(){
+            return InvoicesSetting::count() > 1;
+        });
     }
 }
