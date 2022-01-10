@@ -42,7 +42,7 @@ class ProcessInvoiceRule extends AdminRule
         $previousDate = new Carbon($row->getRawOriginal('created_at'));
 
         if ( $row->created_at->format('Y') != $previousDate->format('Y') ){
-            Ajax::error(_('Zmena roku vytvorenia na už zaučtovanej faktúre nie je možná. Ak chcete faktúru zaučtovať do prechadzajúceho obdobia, zmažte faktúru a vytvorte ju odznova.'));
+            Ajax::warning(_('Zmenili ste rok zaučtovania faktúry. Skontrolujte poradové číslo faktúry tak, aby patrilo do správneho účtovneho obdobia.'));
         }
     }
 }
