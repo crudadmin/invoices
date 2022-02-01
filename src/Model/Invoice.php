@@ -12,12 +12,16 @@ use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceRule;
 use Gogol\Invoices\Model\InvoicesSetting;
+use Gogol\Invoices\Traits\HasInvoiceExport;
+use Gogol\Invoices\Traits\HasInvoicePdf;
+use Gogol\Invoices\Traits\HasInvoiceQrCode;
 use Gogol\Invoices\Traits\InvoiceProcessTrait;
-use Illuminate\Notifications\Notifiable;
 
 class Invoice extends AdminModel
 {
-    use InvoiceProcessTrait;
+    use InvoiceProcessTrait,
+        HasInvoiceExport,
+        HasInvoicePdf;
 
     /*
      * Model created date, for ordering tables in database and in user interface
@@ -33,6 +37,49 @@ class Invoice extends AdminModel
     protected $sortable = false;
 
     protected $group = 'invoices';
+
+    protected $rules = [
+        ProcessInvoiceRule::class,
+    ];
+
+    protected $layouts = [
+        InvoiceComponent::class,
+    ];
+
+    protected $buttons = [
+        CreateInvoiceFromProform::class,
+        CreateReturnFromInvoice::class,
+        SendInvoiceEmailButton::class,
+    ];
+
+    protected $casts = [
+        'vs' => 'integer',
+    ];
+
+    protected $settings = [
+        'increments' => false,
+        'autoreset' => false,
+        'search.enabled' => true,
+        'xls' => true,
+        'buttons.insert' => 'Nový doklad',
+        'title' => [
+            'insert' => 'Nový doklad',
+            'update' => 'Upravujete doklad č. :number',
+        ],
+        'grid' => [
+            'default' => 'full',
+            'disabled' => true,
+        ],
+        'columns' => [
+            'number.before' => 'type',
+            'company_name.name' => 'Odberateľ',
+            'company_name.after' => 'type',
+            'email_sent.before' => 'price_vat',
+            'email_sent.encode' => false,
+            'pdf.encode' => false,
+            'created.name' => 'Vytvorené',
+        ],
+    ];
 
     /*
      * Automatic form and database generation
@@ -126,49 +173,6 @@ class Invoice extends AdminModel
             'return' => [],
         ];
     }
-
-    protected $settings = [
-        'increments' => false,
-        'autoreset' => false,
-        'search.enabled' => true,
-        'xls' => true,
-        'buttons.insert' => 'Nový doklad',
-        'title' => [
-            'insert' => 'Nový doklad',
-            'update' => 'Upravujete doklad č. :number',
-        ],
-        'grid' => [
-            'default' => 'full',
-            'disabled' => true,
-        ],
-        'columns' => [
-            'number.before' => 'type',
-            'company_name.name' => 'Odberateľ',
-            'company_name.after' => 'type',
-            'email_sent.before' => 'price_vat',
-            'email_sent.encode' => false,
-            'pdf.encode' => false,
-            'created.name' => 'Vytvorené',
-        ],
-    ];
-
-    protected $rules = [
-        ProcessInvoiceRule::class,
-    ];
-
-    protected $layouts = [
-        InvoiceComponent::class,
-    ];
-
-    protected $buttons = [
-        CreateInvoiceFromProform::class,
-        CreateReturnFromInvoice::class,
-        SendInvoiceEmailButton::class,
-    ];
-
-    protected $casts = [
-        'vs' => 'integer',
-    ];
 
     public function scopeAdminRows($query)
     {
