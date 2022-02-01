@@ -67,6 +67,9 @@ class InvoiceController extends Controller
 
     public function downloadExport(InvoicesExport $export)
     {
+        //10 minutes timeout
+        ini_set('max_execution_time', 10 * 60);
+
         $invoices = Admin::getModel('Invoice')->whereDate('created_at', '>=', $export->from)
                             ->where('subject_id', $export->subject_id)
                             ->whereDate('created_at', '<=', $export->to)

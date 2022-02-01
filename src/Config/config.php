@@ -64,4 +64,9 @@ return [
      * Multiple subjects support
      */
     'multi_subjects' => false,
+
+    /*
+     * Number length
+     */
+    'numbers_length' => 5,
 ];
