@@ -33,8 +33,10 @@ class InvoiceController extends Controller
         return redirect($pdf);
     }
 
-    public function downloadExport(InvoicesExport $export)
+    public function downloadExport($id)
     {
+        $export = Admin::getModel('InvoicesExport')->find($id);
+
         //10 minutes timeout
         ini_set('max_execution_time', 10 * 60);
 
@@ -48,7 +50,7 @@ class InvoiceController extends Controller
 
         $export_interval = $export->from->format('d-m-Y').'_'.$export->to->format('d-m-Y');
 
-        $zip = (new Invoice)->makeExportZip($invoices, $export, $export_interval);
+        $zip = $export->makeExportZip($invoices, $export, $export_interval);
 
         return response($zip)->withHeaders([
             'Content-Type' => 'application/zip',

@@ -4,9 +4,12 @@ namespace Gogol\Invoices\Model;
 
 use Admin\Eloquent\AdminModel;
 use Gogol\Invoices\Admin\Buttons\ExportInvoicesButton;
+use Gogol\Invoices\Traits\HasInvoiceExport;
 
 class InvoicesExport extends AdminModel
 {
+    use HasInvoiceExport;
+
     /*
      * Model created date, for ordering tables in database and in user interface
      */

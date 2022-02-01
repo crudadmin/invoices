@@ -12,7 +12,6 @@ use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceRule;
 use Gogol\Invoices\Model\InvoicesSetting;
-use Gogol\Invoices\Traits\HasInvoiceExport;
 use Gogol\Invoices\Traits\HasInvoicePdf;
 use Gogol\Invoices\Traits\HasInvoiceQrCode;
 use Gogol\Invoices\Traits\InvoiceProcessTrait;
@@ -20,7 +19,6 @@ use Gogol\Invoices\Traits\InvoiceProcessTrait;
 class Invoice extends AdminModel
 {
     use InvoiceProcessTrait,
-        HasInvoiceExport,
         HasInvoicePdf;
 
     /*
