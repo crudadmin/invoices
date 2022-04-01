@@ -367,6 +367,12 @@ class Invoice extends AdminModel
 
     private function hasMultipleSubjects()
     {
-        return count(getInvoiceSettings() ?: []) > 1;
+        if ( app()->runningInConsole() ){
+            return;
+        }
+
+        return Admin::cache('invoices.subjects.count', function(){
+            return InvoicesSetting::count() > 1;
+        });
     }
 }
