@@ -28,8 +28,6 @@ class Country extends AdminModel
 
     protected $reversed = true;
 
-    protected $visible = ['id', 'name', 'code'];
-
     /*
      * Automatic form and database generation
      * @name - field name
