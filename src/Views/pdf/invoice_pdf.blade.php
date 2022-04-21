@@ -37,14 +37,14 @@ table.po tr.p td {padding:5px; font-size: 12px}
   <tr>
     <td width="30%">
       @if ( $image = $settings->logo )
-      <img src="{{ $image->resize(null, $logoHeight * 2, null, true)->path }}" height="{{ $logoHeight }}px" type="" alt="">
+      <img src="{{ $image->resize(null, $logoHeight * 2, true)->basepath }}" height="{{ $logoHeight }}px" type="" alt="">
       @else
       <h1 class="h-title">{{ env('APP_NAME') }}</h1>
       @endif
     </td>
     <td width="70%" align="right">
       <h1>
-        {{ $invoice->typeName }} <strong>{{ $invoice->number }}</strong>
+        {{ $invoice->typeName }} {{ _('č.') }} <strong>{{ $invoice->number }}</strong>
         @if ( $invoice->type == 'proform' )
         <br><small style="font-size: 11px">{!! _('Proforma faktúra neslúži ako daňový doklad.<br>Faktúra (daňový doklad) bude vystavená po prijatí platby.') !!}</small>
         @endif
@@ -295,7 +295,7 @@ table.po tr.p td {padding:5px; font-size: 12px}
         @if ( $image = $settings->signature )
         <tr>
           <td colspan="2" align="right">
-            <img src="{{ $image->resize(null, $signatureHeight * 2, null, true)->path }}" height="{{ $signatureHeight }}px">
+            <img src="{{ $image->resize(null, $signatureHeight * 2, true)->basepath }}" height="{{ $signatureHeight }}px">
           </td>
         </tr>
         @endif

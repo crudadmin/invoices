@@ -38,7 +38,7 @@ trait HasInvoiceExport
                 continue;
             }
 
-            $zip->addFile($pdf->path, './'.$invoice->typeName.'/'.$pdf->filename);
+            $zip->addFile($pdf->basepath, './'.$invoice->typeName.'/'.$pdf->filename);
         }
     }
 

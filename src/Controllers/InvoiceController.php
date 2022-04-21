@@ -24,11 +24,12 @@ class InvoiceController extends Controller
         if ( ! ($pdf = $invoice->getPdf(config('invoices.testing_pdf', false))) )
             abort(404);
 
-        if ( config('invoices.testing_pdf', false) === true )
-            return response()->file($pdf->path, [
+        if ( config('invoices.testing_pdf', false) === true ) {
+            return response()->file($pdf->basepath, [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="'.$pdf->filename.'"'
             ]);
+        }
 
         return redirect($pdf);
     }

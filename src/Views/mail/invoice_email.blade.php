@@ -10,7 +10,7 @@
 @endif
 
 @component('mail::button', ['url' => $invoice->pdf])
-    {{ sprintf(_('Stiahnuť %s'), $invoice->typeName . ' ' . $invoice->number) }}
+    {{ sprintf(_('Stiahnuť %s'), $invoice->typeNameWithNumber) }}
 @endcomponent
 
 {{ $settings->email_greeting }}<br>

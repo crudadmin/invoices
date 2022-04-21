@@ -8,6 +8,7 @@ use Throwable;
 use Mpdf\Mpdf;
 use Facades\Gogol\Invoices\Helpers\QRCodeGenerator;
 use chillerlan\QRCode\QROptions;
+use Localization;
 
 trait HasInvoicePdf
 {
@@ -46,6 +47,9 @@ trait HasInvoicePdf
      */
     public function generatePDF($auto_save = true, $force_regenerate = false)
     {
+        //Make sure localization is booted
+        Localization::boot();
+
         $snapshot_sha = $this->getSnapshotSha();
         $snapshot_sha_short = substr($snapshot_sha, -10);
 
