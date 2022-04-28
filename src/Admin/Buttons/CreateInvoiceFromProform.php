@@ -15,7 +15,7 @@ class CreateInvoiceFromProform extends Button
     public function __construct(AdminModel $row)
     {
         //Name of button on hover
-        $this->name = $row->proformInvoice ? 'Zobraziť faktúru k proforme' : 'Vygenerovať faktúru k proforme';
+        $this->name = $row->proformInvoice ? _('Zobraziť faktúru k proforme') : _('Vygenerovať faktúru k proforme');
 
         //Button classes
         $this->class = $row->proformInvoice ? 'btn-default' : 'btn-primary';
@@ -32,14 +32,14 @@ class CreateInvoiceFromProform extends Button
     public function question($row)
     {
         if ( $row->items->count() == 0 )
-            return $this->error('Proforma neobsahuje žiadne položky k vygenerovaniu faktúry.');
+            return $this->error(_('Proforma neobsahuje žiadne položky k vygenerovaniu faktúry.'));
 
         //If invoice for this proform exists already
         if ( $row->proformInvoice )
-            return $this->title('Faktúra č. '.$row->proformInvoice->number)
+            return $this->title(sprintf(_('Faktúra č. %s'), $row->proformInvoice->number))
                         ->success($this->getDownloadResponse($row->proformInvoice));
 
-        return $this->title('Naozaj si prajete vygenerovať faktúru?')
+        return $this->title(_('Naozaj si prajete vygenerovať faktúru?'))
                     ->component('AskForCreateInvoice')
                     ->type('warning');
     }
@@ -51,7 +51,7 @@ class CreateInvoiceFromProform extends Button
     {
         //If we want send email, first check email validation
         if ( $this->canSendEmail() && Validator::make(request()->all(), ['email' => 'email|required'])->fails() )
-            return $this->title('Faktúra nebola vygenerovaná!')->error('Nezadali ste platnú emailovú adresu.');
+            return $this->title(_('Faktúra nebola vygenerovaná!'))->error(_('Nezadali ste platnú emailovú adresu.'));
 
         //Replicate row and reset previous saved relations
         $invoice = $row->createInvoice();
@@ -60,13 +60,13 @@ class CreateInvoiceFromProform extends Button
         if ( $this->canSendEmail() )
             $invoice->sendEmail(request('email'), request('message'));
 
-        return $this->title('Faktúra bola úspešne vygenerovaná'.($this->canSendEmail() ? ' a odoslaná na email' : '').'!')
+        return $this->title(_('Faktúra bola úspešne vygenerovaná').($this->canSendEmail() ? (' '._('a odoslaná na email')) : '').'!')
                     ->message($this->getDownloadResponse($invoice));
     }
 
     private function getDownloadResponse($invoice)
     {
-        return 'Stiahnuť si ju môžete na tomto odkaze:<br><a target="_blank" href="'.$invoice->pdf.'">Faktúra č. '.$invoice->number.'</a>';
+        return _('Stiahnuť si ju môžete na tomto odkaze:').'<br><a target="_blank" href="'.$invoice->pdf.'">'.sprintf(_('Faktúra č. %s'), $invoice->number).'</a>';
     }
 
     private function canSendEmail()

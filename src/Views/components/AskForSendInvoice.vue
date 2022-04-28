@@ -6,7 +6,7 @@
         </div>
 
         <div class="form-group">
-            <label>Poznámka</label>
+            <label>{{ __('Poznámka') }}</label>
             <textarea name="message" v-model="message" class="form-control" rows="3"></textarea>
         </div>
     </div>

@@ -6,11 +6,11 @@
                 <input type="number" step="any" :name="field_key" :value="valueOrDefault" @keyup="changeNoVatPrice" class="form-control" :readonly="disabled || readonly">
             </div>
             <div class="col-md-4">
-                <label>DPH</label>
+                <label>{{ __('DPH') }}</label>
                 <input type="number" :step="inputStep" :value="vatSize" disabled class="form-control">
             </div>
             <div class="col-md-4">
-                <label>Cena s DPH</label>
+                <label>{{ __('Cena s DPH') }}</label>
                 <input type="number" :step="inputStep" :name="field_key+'_vat'" :value="vatPrice" @keyup="changeVatPrice" @change="recalculateWithoutVatPrice" class="form-control" :readonly="disabled || readonly">
             </div>
         </div>

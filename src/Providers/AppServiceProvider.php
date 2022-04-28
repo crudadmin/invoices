@@ -5,9 +5,9 @@ namespace Gogol\Invoices\Providers;
 use Admin;
 use Gogol\Invoices\Commands\ImportCountries;
 use Illuminate\Foundation\Http\Kernel;
-use Illuminate\Support\ServiceProvider;
+use Admin\Providers\AdminHelperServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
+class AppServiceProvider extends AdminHelperServiceProvider
 {
     protected $providers = [
         PublishServiceProvider::class,
@@ -29,12 +29,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->mergeAdminConfigs();
+        $this->mergeAdminConfigs(
+            require __DIR__.'/../Config/admin.php'
+        );
 
         Admin::registerAdminModels(__dir__ . '/../Model/**', 'Gogol\Invoices\Model');
 
         //Boot providers after this provider boot
-        $this->bootProviders([
+        $this->registerProviders([
             ViewServiceProvider::class
         ]);
     }
@@ -50,9 +52,9 @@ class AppServiceProvider extends ServiceProvider
             __DIR__.'/../Config/config.php', 'invoices'
         );
 
-        $this->bootFacades();
+        $this->registerFacades();
 
-        $this->bootProviders();
+        $this->registerProviders();
 
         $this->bootRouteMiddleware();
 
@@ -62,63 +64,5 @@ class AppServiceProvider extends ServiceProvider
         $this->commands([
             ImportCountries::class,
         ]);
-    }
-
-    public function bootFacades()
-    {
-        $this->app->booting(function()
-        {
-            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-
-            foreach ($this->facades as $alias => $facade)
-            {
-                $loader->alias($alias, $facade);
-            }
-
-        });
-    }
-
-    public function bootProviders($providers = null)
-    {
-        foreach ($providers ?: $this->providers as $provider)
-        {
-            app()->register($provider);
-        }
-    }
-
-    public function bootRouteMiddleware()
-    {
-        foreach ($this->routeMiddleware as $name => $middleware)
-        {
-            $router = $this->app['router'];
-
-            $router->aliasMiddleware($name, $middleware);
-        }
-    }
-
-    /*
-     * Merge crudadmin config with esolutions config
-     */
-    private function mergeAdminConfigs($key = 'admin')
-    {
-        $admin_config = require __DIR__.'/../Config/admin.php';
-
-        $config = $this->app['config']->get($key, []);
-
-        $this->app['config']->set($key, array_merge($admin_config, $config));
-
-        //Merge selected properties with two dimensional array
-        foreach (['groups', 'models', 'author', 'passwords', 'gettext_source_paths', 'styles', 'scripts', 'components'] as $property) {
-            if ( ! array_key_exists($property, $admin_config) || ! array_key_exists($property, $config) )
-                continue;
-
-            $attributes = array_merge($admin_config[$property], $config[$property]);
-
-            //If is not multidimensional array
-            if ( count($attributes) == count($attributes, COUNT_RECURSIVE) )
-                $attributes = array_unique($attributes);
-
-            $this->app['config']->set($key . '.' . $property, $attributes);
-        }
     }
 }

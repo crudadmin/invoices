@@ -2,10 +2,10 @@
     <div>
         <div v-if="send == 0">
             <div class="form-group">
-                <label>Zaslať vygenerovanú faktúru na email?</label>
+                <label>{{ __('Zaslať vygenerovanú faktúru na email?') }}</label>
                 <select class="form-control" v-model="send">
-                    <option value="0">Nezasielať.</option>
-                    <option value="1">Zaslať, prosím.</option>
+                    <option value="0">{{ __('Nezasielať.') }}</option>
+                    <option value="1">{{ __('Zaslať, prosím.') }}</option>
                 </select>
             </div>
         </div>
@@ -16,7 +16,7 @@
             </div>
 
             <div class="form-group">
-                <label>Poznámka</label>
+                <label>{{ __('Poznámka') }}</label>
                 <textarea name="message" v-model="message" class="form-control" rows="3"></textarea>
             </div>
         </div>

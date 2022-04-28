@@ -185,7 +185,7 @@ class Invoice extends AdminModel
 
         $attributes['return_number'] = $this->return_id && $this->return ? $this->return->number : null;
 
-        $attributes['pdf'] = '<a href="'.action('\Gogol\Invoices\Controllers\InvoiceController@generateInvoicePdf', $this->getKey()).'" target="_blank">Zobraziť doklad</a>';
+        $attributes['pdf'] = '<a href="'.action('\Gogol\Invoices\Controllers\InvoiceController@generateInvoicePdf', $this->getKey()).'" target="_blank">'._('Zobraziť doklad').'</a>';
 
         $attributes['created'] = $this->created_at->format('d.m.Y H:i');
 

@@ -5,9 +5,11 @@ return [
         'vendor/invoices/admin.css',
     ],
 
-    'groups' => [
-        'invoices' => ['Faktúry', 'fa-file-text-o']
-    ],
+    'groups' => function(){
+        return [
+            'invoices' => [_('Faktúry'), 'fa-file-text-o']
+        ];
+    },
 
     'components' => [
         __DIR__ . '/../Views/components',
@@ -22,5 +24,13 @@ return [
         __DIR__.'/../Mail',
         __DIR__.'/../Model',
         __DIR__.'/../Views',
+    ],
+
+    'gettext_admin_source_paths' => [
+        __DIR__.'/../Config/admin.php',
+        __DIR__.'/../Admin',
+        __DIR__.'/../Mail',
+        __DIR__.'/../Views/components',
+        __DIR__.'/../Model',
     ],
 ];
