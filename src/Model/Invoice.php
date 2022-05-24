@@ -177,13 +177,17 @@ class Invoice extends AdminModel
         $query->with('proformInvoice:id,proform_id,number,pdf,type');
     }
 
-    public function setAdminRowsAttributes($attributes)
+    public function setAdminAttributes($attributes)
     {
         $attributes['number'] = $this->number;
-
-        $attributes['email_sent'] = '<i style="color: '.($this->isEmailChecked() ? 'green' : 'red').'" class="fa fa-'.($this->isEmailChecked() ? 'check' : 'times').'"></i>';
-
         $attributes['return_number'] = $this->return_id && $this->return ? $this->return->number : null;
+
+        return $attributes;
+    }
+
+    public function setAdminRowsAttributes($attributes)
+    {
+        $attributes['email_sent'] = '<i style="color: '.($this->isEmailChecked() ? 'green' : 'red').'" class="fa fa-'.($this->isEmailChecked() ? 'check' : 'times').'"></i>';
 
         $attributes['pdf'] = '<a href="'.action('\Gogol\Invoices\Controllers\InvoiceController@generateInvoicePdf', $this->getKey()).'" target="_blank">Zobraziť doklad</a>';
 
