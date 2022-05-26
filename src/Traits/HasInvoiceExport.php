@@ -2,6 +2,7 @@
 
 namespace Gogol\Invoices\Traits;
 
+use Gogol\Invoices\Helpers\OmegaExport;
 use \ZipArchive;
 
 trait HasInvoiceExport
@@ -29,6 +30,7 @@ trait HasInvoiceExport
     {
         $this->addMoneyS3IntoExport($zip, $invoices, $export, $exportInterval);
         $this->addPdfsIntoExport($zip, $invoices, $export, $exportInterval);
+        $this->addOmegaIntoExport($zip, $invoices, $export, $exportInterval);
     }
 
     protected function addPdfsIntoExport($zip, $invoices, $export, $exportInterval)
@@ -48,6 +50,17 @@ trait HasInvoiceExport
         $zip->addFromString(
             './money_s3_'.$exportInterval.'.xml',
             view('invoices::xml.moneys3_export', compact('invoices', 'export'))->render()
+        );
+    }
+
+    protected function addOmegaIntoExport($zip, $invoices, $export, $exportInterval)
+    {
+        $export = new OmegaExport($invoices, $export, $exportInterval);
+
+        //Add money s3 export
+        $zip->addFromString(
+            './omega_'.$exportInterval.'.txt',
+            $export->getCsvString()
         );
     }
 }
