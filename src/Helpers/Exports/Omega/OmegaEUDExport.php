@@ -1,12 +1,20 @@
 <?php
 
-namespace Gogol\Invoices\Helpers\Omega;
+namespace Gogol\Invoices\Helpers\Exports\Omega;
 
-use Gogol\Invoices\Helpers\Omega\OmegaExport;
-use Store;
+use Gogol\Invoices\Helpers\Exports\Omega\OmegaExport;
 
 class OmegaEUDExport extends OmegaExport
 {
+    public function add($zip)
+    {
+        //Add money s3 export
+        $zip->addFromString(
+            './omega_eud_'.$this->exportInterval.'.txt',
+            $this->getCsvString()
+        );
+    }
+
     public function getRows()
     {
         $rows = [
@@ -14,6 +22,10 @@ class OmegaEUDExport extends OmegaExport
         ];
 
         foreach ($this->invoices as $invoice) {
+            // if ( $invoice->number != 'FV-2022002479' ){
+            //     continue;
+            // }
+
             $rows[] = [
                 'R01', //A       R01
                 $this->getInvoiceType($invoice), //B       typ dokladu

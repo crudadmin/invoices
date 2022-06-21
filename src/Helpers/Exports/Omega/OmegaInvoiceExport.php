@@ -1,23 +1,22 @@
 <?php
 
-namespace Gogol\Invoices\Helpers;
+namespace Gogol\Invoices\Helpers\Exports\Omega;
 
+use Gogol\Invoices\Helpers\Exports\Omega\OmegaExport;
 use Store;
 
-class OmegaInvoiceExport
+class OmegaInvoiceExport extends OmegaExport
 {
-    private $invoices;
-    private $export;
-    private $exportInterval;
-
-    public function __construct($invoices, $export, $exportInterval)
+    public function add($zip)
     {
-        $this->invoices = $invoices;
-        $this->export = $export;
-        $this->exportInterval = $exportInterval;
+        //Add money s3 export
+        $zip->addFromString(
+            './omega_faktury_'.$this->exportInterval.'.txt',
+            $this->getCsvString()
+        );
     }
 
-    private function getRows()
+    public function getRows()
     {
         $rows = [
             ['R00', 'T01'],
@@ -32,14 +31,14 @@ class OmegaInvoiceExport
                 $invoice->created_at->format('d.m.Y'), //E       datum vystavenia/datum prijatia
                 $invoice->payment_date->format('d.m.Y'), //F       datum splatnosti - due date
                 $invoice->delivery_at?->format('d.m.Y'), //G       DUZP
-                $invoice->price_vat - $invoice->price, //H       Zaklad Nizsia - VAT basis in lower VAT
-                $invoice->price_vat - $invoice->price, //I       Zaklad Vyssia - VAT basis in higher VAT
+                $this->getInvoiceTaxSum($invoice, self::VAT_LOWER), //H       Zaklad Nizsia - VAT basis in lower VAT
+                $this->getInvoiceTaxSum($invoice, self::VAT_HIGHER), //I       Zaklad Vyssia - VAT basis in higher VAT
                 null, //J       Zaklad 0 - VAT basis in null VAT
                 null, //K       Zaklad Neobsahuje - basis in VAT free
-                10, //L       Sadzba Nizsia - TAX rate lower
-                20, //M       Sadzba Vyssia - TAX rate higher
-                0, //N       Suma DPH nizsia - Amount VAT lower
-                $invoice->price_vat, //O       Suma DPH vyssia - Amount VAT higher
+                self::VAT_LOWER, //L       Sadzba Nizsia - TAX rate lower
+                self::VAT_HIGHER, //M       Sadzba Vyssia - TAX rate higher
+                $this->getInvoiceTaxSum($invoice, self::VAT_LOWER, 'price_vat') - $this->getInvoiceTaxSum($invoice, self::VAT_LOWER, 'price'), //N       Suma DPH nizsia - Amount VAT lower
+                $this->getInvoiceTaxSum($invoice, self::VAT_HIGHER, 'price_vat') - $this->getInvoiceTaxSum($invoice, self::VAT_HIGHER, 'price'), //O       Suma DPH vyssia - Amount VAT higher
                 null, //P       Halierove vyrovnanie - Price correction
                 $invoice->price_vat, //Q       Suma spolu CM - Amount in all in foreign currency
                 $this->getInvoiceType($invoice), //R   >>  typ dokladu
@@ -188,66 +187,12 @@ class OmegaInvoiceExport
         return $rows;
     }
 
-    public function getCsvString()
-    {
-        $rows = $this->getRows();
-
-        $string = $this->toTxt($rows);
-
-        return $string;
-    }
-
     private function getInvoiceType($invoice)
     {
         if ( $invoice->type == 'invoice' ){
             return '0';
         } else if ( $invoice->type == 'return' ){
             return '4';
-        }
-    }
-
-    private function toTxt($rows)
-    {
-        foreach ($rows as $key => $row) {
-            $rows[$key] = implode("\t", $row);
-        }
-
-        //crlf
-        $data = implode("\r\n", $rows);
-
-        return $this->encode($data);
-    }
-
-    public function encode($string)
-    {
-        return iconv( mb_detect_encoding( $string ) , 'Windows-1252//TRANSLIT', $string);
-    }
-
-    private function getInvoiceNumberSequence($invoice)
-    {
-        if ( $prefix = $invoice->omegaNumberPrefix ){
-            return $prefix;
-        }
-
-        return rtrim($invoice->numberPrefix, '-');
-    }
-
-    private function getItemVat($item)
-    {
-        if ( $vat = $item->omegaVat ){
-            return $vat;
-        }
-
-        $vat = (int)$item->vat;
-
-        if ( $vat >= 19 ){
-            return 'V';
-        } else if ( $vat == 0 ){
-            return '0';
-        } else if ( $vat < 19 ){
-            return 'N';
-        } else {
-            return 'X';
         }
     }
 }

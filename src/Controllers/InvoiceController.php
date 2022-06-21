@@ -40,6 +40,8 @@ class InvoiceController extends Controller
 
         //10 minutes timeout
         ini_set('max_execution_time', 10 * 60);
+        ini_set('memory_limit', '2G');
+        ini_set('display_errors', 1);
 
         $invoices = Admin::getModel('Invoice')->whereDate('created_at', '>=', $export->from)
                             ->where('subject_id', $export->subject_id)

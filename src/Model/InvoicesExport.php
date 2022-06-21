@@ -48,6 +48,7 @@ class InvoicesExport extends AdminModel
         'from' => 'name:Exportovať od|placeholder:Vrátane dátumu|type:date|required',
         'to' => 'name:Exportovať do|placeholder:Vrátane dátumu|type:date|required',
         'types' => 'name:Exportovať typy dokladov|type:select|limit:100|multiple|required|max:20',
+        'outputs' => 'name:Exportovať|type:select|multiple|required',
     ];
 
     protected $settings = [
@@ -61,6 +62,9 @@ class InvoicesExport extends AdminModel
             'types' => array_map(function($item){
                 return $item['name'];
             }, config('invoices.invoice_types', [])),
+            'outputs' => array_map(function($item){
+                return $item['name'];
+            }, config('invoices.exports', [])),
         ];
     }
 

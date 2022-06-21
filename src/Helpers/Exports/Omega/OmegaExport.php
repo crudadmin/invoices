@@ -1,24 +1,13 @@
 <?php
 
-namespace Gogol\Invoices\Helpers\Omega;
+namespace Gogol\Invoices\Helpers\Exports\Omega;
 
-use Store;
+use Gogol\Invoices\Helpers\Exports\InvoiceExport;
 
-class OmegaExport
+class OmegaExport extends InvoiceExport
 {
     const VAT_LOWER = 10;
     const VAT_HIGHER = 20;
-
-    public $invoices;
-    public $export;
-    public $exportInterval;
-
-    public function __construct($invoices, $export, $exportInterval)
-    {
-        $this->invoices = $invoices;
-        $this->export = $export;
-        $this->exportInterval = $exportInterval;
-    }
 
     protected function getInvoiceTaxSum($invoice, $vat, $sumColumn = 'price')
     {

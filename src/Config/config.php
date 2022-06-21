@@ -19,6 +19,14 @@ return [
         'return' => [ 'prefix' => 'DP-', 'name' => _('Dobropis') ],
     ],
 
+    'exports' => [
+        'money_s3' => [ 'name' => 'Money S3', 'exporter' => Gogol\Invoices\Helpers\Exports\MoneyS3\MoneyS3Export::class ],
+        'omega-invoices' => [ 'name' => 'Omega - Faktúry', 'exporter' => Gogol\Invoices\Helpers\Exports\Omega\OmegaInvoiceExport::class ],
+        'omega-eud' => [ 'name' => 'Omega - EUD', 'exporter' => Gogol\Invoices\Helpers\Exports\Omega\OmegaEUDExport::class ],
+        'pdfs' => [ 'name' => 'PDF - Separatne', 'exporter' => Gogol\Invoices\Helpers\Exports\PDF\PDFExport::class ],
+        'pdfs-summary' => [ 'name' => 'PDF - Spolu v 1 PDF', 'exporter' => Gogol\Invoices\Helpers\Exports\PDF\PDFSingleExport::class ],
+    ],
+
     /*
      * Allow clients support in invoices
      */
