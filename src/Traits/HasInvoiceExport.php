@@ -2,7 +2,8 @@
 
 namespace Gogol\Invoices\Traits;
 
-use Gogol\Invoices\Helpers\OmegaExport;
+use Gogol\Invoices\Helpers\Omega\OmegaInvoiceExport;
+use Gogol\Invoices\Helpers\Omega\OmegaEUDExport;
 use \ZipArchive;
 
 trait HasInvoiceExport
@@ -30,7 +31,8 @@ trait HasInvoiceExport
     {
         $this->addMoneyS3IntoExport($zip, $invoices, $export, $exportInterval);
         $this->addPdfsIntoExport($zip, $invoices, $export, $exportInterval);
-        $this->addOmegaIntoExport($zip, $invoices, $export, $exportInterval);
+        // $this->addOmegaInvoiceIntoExport($zip, $invoices, $export, $exportInterval);
+        // $this->addOmegaEUDIntoExport($zip, $invoices, $export, $exportInterval);
     }
 
     protected function addPdfsIntoExport($zip, $invoices, $export, $exportInterval)
@@ -53,14 +55,27 @@ trait HasInvoiceExport
         );
     }
 
-    protected function addOmegaIntoExport($zip, $invoices, $export, $exportInterval)
+    protected function addOmegaInvoiceIntoExport($zip, $invoices, $export, $exportInterval)
     {
-        $export = new OmegaExport($invoices, $export, $exportInterval);
+        $export = new OmegaInvoiceExport($invoices, $export, $exportInterval);
 
         //Add money s3 export
         $zip->addFromString(
-            './omega_'.$exportInterval.'.txt',
+            './omega_faktury_'.$exportInterval.'.txt',
             $export->getCsvString()
+        );
+    }
+
+    protected function addOmegaEUDIntoExport($zip, $invoices, $export, $exportInterval)
+    {
+        $export = new OmegaEUDExport($invoices, $export, $exportInterval);
+
+        $string = $export->getCsvString();
+
+        //Add money s3 export
+        $zip->addFromString(
+            './omega_eud_'.$exportInterval.'.txt',
+            $string
         );
     }
 }

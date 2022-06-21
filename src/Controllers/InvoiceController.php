@@ -48,13 +48,13 @@ class InvoiceController extends Controller
                             ->orderBy('created_at', 'ASC')
                             ->get();
 
-        $export_interval = $export->from->format('d-m-Y').'_'.$export->to->format('d-m-Y');
+        $exportInterval = $export->from->format('d-m-Y').'_'.$export->to->format('d-m-Y');
 
-        $zip = $export->makeExportZip($invoices, $export, $export_interval);
+        $zip = $export->makeExportZip($invoices, $export, $exportInterval);
 
         return response($zip)->withHeaders([
             'Content-Type' => 'application/zip',
-            'Content-Disposition' => 'attachment; filename="export-'.$export_interval.'.zip"'
+            'Content-Disposition' => 'attachment; filename="export-'.$exportInterval.'.zip"'
         ]);
     }
 }

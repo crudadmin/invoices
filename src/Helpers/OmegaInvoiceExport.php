@@ -4,7 +4,7 @@ namespace Gogol\Invoices\Helpers;
 
 use Store;
 
-class OmegaExport
+class OmegaInvoiceExport
 {
     private $invoices;
     private $export;
