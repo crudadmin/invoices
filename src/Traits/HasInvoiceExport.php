@@ -6,35 +6,34 @@ use \ZipArchive;
 
 trait HasInvoiceExport
 {
-    public function makeExportZip($invoices, $export, $exportInterval)
+    public function makeExportZip($invoices, $exportInterval)
     {
-        $temp_file = @tempnam('tmp', 'zip');
+        $tempFile = @tempnam('tmp', 'zip');
 
         $zip = new ZipArchive();
-        $zip->open($temp_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->open($tempFile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-        $this->buildExportZip($zip, $invoices, $export, $exportInterval);
+        $this->buildExportZip($zip, $invoices, $exportInterval);
 
-        // Zip archive will be created only after closing object
         $zip->close();
 
-        $data = file_get_contents($temp_file);
+        $data = file_get_contents($tempFile);
 
-        @unlink($temp_file);
+        @unlink($tempFile);
 
         return $data;
     }
 
-    protected function buildExportZip($zip, $invoices, $export, $exportInterval)
+    protected function buildExportZip($zip, $invoices, $exportInterval)
     {
         $exports = config('invoices.exports');
 
-        foreach ($export->outputs as $output) {
+        foreach ($this->outputs as $output) {
             if ( !($exporter = $exports[$output] ?? null) ){
                 continue;
             }
 
-            $class = new $exporter['exporter']($invoices, $export, $exportInterval);
+            $class = new $exporter['exporter']($invoices, $this, $exportInterval);
 
             $class->add($zip);
         }

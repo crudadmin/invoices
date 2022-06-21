@@ -53,7 +53,7 @@ class InvoiceController extends Controller
 
         $exportInterval = $export->from->format('d-m-Y').'_'.$export->to->format('d-m-Y');
 
-        $zip = $export->makeExportZip($invoices, $export, $exportInterval);
+        $zip = $export->makeExportZip($invoices, $exportInterval);
 
         return response($zip)->withHeaders([
             'Content-Type' => 'application/zip',
