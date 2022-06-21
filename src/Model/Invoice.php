@@ -91,7 +91,7 @@ class Invoice extends AdminModel
         return [
             'Nastavenia dokladu' => Group::fields([
                 Group::inline([
-                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|component:SetDefaultSubject|required|'.($this->hasMultipleSubjects() ? '' : 'hidden'),
+                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|sub_component:SetDefaultSubject|required|'.($this->hasMultipleSubjects() ? '' : 'hidden'),
                     'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
                     Group::inline([
                         'number_manual' => 'name:Manuálne číslo dokladu|type:checkbox|default:0|hidden',
@@ -177,13 +177,17 @@ class Invoice extends AdminModel
         $query->with('proformInvoice:id,proform_id,number,pdf,type');
     }
 
-    public function setAdminRowsAttributes($attributes)
+    public function setAdminAttributes($attributes)
     {
         $attributes['number'] = $this->number;
-
-        $attributes['email_sent'] = '<i style="color: '.($this->isEmailChecked() ? 'green' : 'red').'" class="fa fa-'.($this->isEmailChecked() ? 'check' : 'times').'"></i>';
-
         $attributes['return_number'] = $this->return_id && $this->return ? $this->return->number : null;
+
+        return $attributes;
+    }
+
+    public function setAdminRowsAttributes($attributes)
+    {
+        $attributes['email_sent'] = '<i style="color: '.($this->isEmailChecked() ? 'green' : 'red').'" class="fa fa-'.($this->isEmailChecked() ? 'check' : 'times').'"></i>';
 
         $attributes['pdf'] = '<a href="'.action('\Gogol\Invoices\Controllers\InvoiceController@generateInvoicePdf', $this->getKey()).'" target="_blank">'._('Zobraziť doklad').'</a>';
 
