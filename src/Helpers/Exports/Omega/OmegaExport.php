@@ -13,7 +13,9 @@ class OmegaExport extends InvoiceExport
     {
         return $invoice->items->filter(function($item) use ($vat) {
             return $item->vat == $vat;
-        })->sum($sumColumn);
+        })->sum(function($item) use ($sumColumn) {
+            return $item->{$sumColumn} * $item->quantity;
+        });
     }
 
     public function getCsvString()
