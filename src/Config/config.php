@@ -7,6 +7,7 @@ return [
     'logo_height' => 60,
     'signature_height' => 180,
     'billing_border_size' => 2,
+    'issued_by' => true,
 
     /*
      * Mark path

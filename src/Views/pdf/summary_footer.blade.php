@@ -6,7 +6,9 @@
             @endif
         </td>
         <td align="right" valign="top">
+            @if ( config('invoices.issued_by') )
             <p>{{ _('Doklad vystavil') }}: {{ $settings->sign }}</p>
+            @endif
         </td>
     </tr>
     @php
