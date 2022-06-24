@@ -73,4 +73,9 @@ class InvoicesItem extends AdminModel
             ? $this->price_vat * $this->quantity
             : calculateWithVat($this->price * $this->quantity, $this->vat);
     }
+
+    public function canShowInSummary()
+    {
+        return true;
+    }
 }
