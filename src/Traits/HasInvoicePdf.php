@@ -40,6 +40,63 @@ trait HasInvoicePdf
         return sha1($invoice_data . $items_data);
     }
 
+    public function getMpdf()
+    {
+        return new Mpdf(
+            $this->getMpdfOptions()
+        );
+    }
+
+    public function getMpdfOptions()
+    {
+        return [
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'mirrorMargins' => true,
+            'defaultfooterline' => false,
+        ];
+    }
+
+    public function getInvoiceTemplate()
+    {
+        return view('invoices::pdf.invoice_pdf', [
+            'settings' => $this->subject,
+            'invoice' => $this,
+            'items' => $this->items,
+            'qrimage' => QRCodeGenerator::generate($this),
+            'additionalRows' => $this->getAdditionalRows(),
+            'summary' => $this->getInvoiceSummary(),
+        ])->render();
+    }
+
+    private function getInvoiceSummary()
+    {
+        $withTax = [];
+        $withoutTax = [];
+
+        foreach( $this->items as $item ) {
+            foreach ([&$withTax, &$withoutTax] as &$value) {
+                if ( ! array_key_exists(''.$item->vat, $value) ) {
+                    $value[$item->vat] = 0;
+                }
+            }
+
+            //Round order item price by configuration
+            $withoutTax[$item->vat] += $item->price * $item->quantity;
+            $withTax[$item->vat] += $item->totalPriceWithTax;
+        }
+
+        ksort($withTax);
+
+        return [
+            'totalWithTax' => array_sum($withTax),
+            'withTax' => $withTax,
+            'withoutTax' => $withoutTax,
+        ];
+    }
+
     /**
      * Generate PDF of invoice
      * @param  boolean $auto_save        auto save pdf filename
@@ -68,14 +125,7 @@ trait HasInvoicePdf
         }
 
         //Generate pdf
-        $mpdf = new Mpdf([
-            'margin_top' => 10,
-            'margin_bottom' => 10,
-            'margin_left' => 10,
-            'margin_right' => 10,
-            'mirrorMargins' => true,
-            'defaultfooterline' => false,
-        ]);
+        $mpdf = $this->getMpdf();
 
         $mpdf->setFooter('<table style="width: 100%">
             <tr>
@@ -84,13 +134,9 @@ trait HasInvoicePdf
             </tr>
         </table>');
 
-        $mpdf->WriteHTML(view('invoices::pdf.invoice_pdf', [
-            'settings' => $this->subject,
-            'invoice' => $this,
-            'items' => $this->items,
-            'qrimage' => QRCodeGenerator::generate($this),
-            'additionalRows' => $this->getAdditionalRows(),
-        ])->render());
+        $mpdf->WriteHTML(
+            $this->getInvoiceTemplate()
+        );
 
         //Create directory if does not exists
         File::makeDirs($this->filePath('pdf'));

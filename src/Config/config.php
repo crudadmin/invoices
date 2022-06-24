@@ -6,6 +6,7 @@ return [
      */
     'logo_height' => 60,
     'signature_height' => 180,
+    'billing_border_size' => 2,
 
     /*
      * Mark path
@@ -47,7 +48,7 @@ return [
      * you can open invoice in admin panel, and refresh response
      * without changing data in invoice and regeneraiting it
      */
-    'testing_pdf' => false,
+    'testing_pdf' => env('INVOICES_PDF_TEST', false),
 
     /*
      * Does not round decimals for vat price in products. For multiple quantity total price may be different

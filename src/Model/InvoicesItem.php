@@ -66,4 +66,11 @@ class InvoicesItem extends AdminModel
         ProcessInvoiceItemRule::class,
         ProcessInvoicePriceRule::class,
     ];
+
+    public function getTotalPriceWithTaxAttribute()
+    {
+        return canRoundSummary()
+            ? $this->price_vat * $this->quantity
+            : calculateWithVat($this->price * $this->quantity, $this->vat);
+    }
 }
