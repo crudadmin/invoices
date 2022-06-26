@@ -14,7 +14,7 @@ class SendInvoiceEmailButton extends Button
     public function __construct(AdminModel $row)
     {
         //Name of button on hover
-        $this->name = 'Odoslať doklad na email';
+        $this->name = _('Odoslať doklad na email');
 
         //Button classes
         $this->class = 'btn-default';
@@ -29,9 +29,9 @@ class SendInvoiceEmailButton extends Button
     public function question($row)
     {
         if ( $row->items->count() == 0 )
-            return $this->error('Doklad neobsahuje žiadné položky k vygenerovaniu PDF.');
+            return $this->error(_('Doklad neobsahuje žiadné položky k vygenerovaniu PDF.'));
 
-        return $this->title('Naozaj si prajete odoslať doklad na email?')
+        return $this->title(_('Naozaj si prajete odoslať doklad na email?'))
                     ->component('AskForSendInvoice');
     }
 
@@ -41,10 +41,10 @@ class SendInvoiceEmailButton extends Button
     public function fire(AdminModel $row)
     {
         if ( Validator::make(request()->all(), ['email' => 'email|required'])->fails() )
-            return $this->error('Nezadali ste platnú emailovú adresu.');
+            return $this->error(_('Nezadali ste platnú emailovú adresu.'));
 
         $row->sendEmail(request('email'), request('message'));
 
-        return $this->message('Email bol úspešne odoslaný.');
+        return $this->message(_('Email bol úspešne odoslaný.'));
     }
 }

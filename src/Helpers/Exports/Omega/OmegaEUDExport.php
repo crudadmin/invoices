@@ -34,7 +34,7 @@ class OmegaEUDExport extends OmegaExport
                 $this->getInvoiceNumberSequence($invoice), //D       kod ciselneho radu - sequence code
                 $invoice->number, //E       cislo interne - internal number
                 $invoice->number, //F       externe cislo - external number
-                $invoice->company_name, //G       meno firmy partnera - company name of partner
+                $invoice->company_id ? $invoice->company_name : 'Maloobchodný predaj', //G       meno firmy partnera - company name of partner
                 $invoice->company_id, //H       ICO - REG
                 $invoice->company_tax_id, //I       DIC/DU - TAX partner
                 $invoice->created_at->format('d.m.Y'), //J       datum vystavenia - date of issue
@@ -68,7 +68,7 @@ class OmegaEUDExport extends OmegaExport
                 '', //AL      kod partnera - code of partner
                 '', //AM      cas vystavenia - time of issue
                 $invoice->note, //AN      poznamka - comment
-                '', //AO      text hlavicky - text header
+                $invoice->company_name, //AO      text hlavicky - text header
                 '', //AP      pocet dni splatnosti - number of days due
                 '', //AQ      prijate od/vyplatene komu - received from / paid to
                 '', //AR      Kod IC DPH - code of VAT
@@ -164,7 +164,7 @@ class OmegaEUDExport extends OmegaExport
                 '',
                 '',
                 '',
-                'A1',
+                $invoice->company_id ? 'A1' : 'D2',
                 '',
                 '',
                 '',
@@ -204,7 +204,7 @@ class OmegaEUDExport extends OmegaExport
                 '',
                 '',
                 '',
-                'A1',
+                $invoice->company_id ? 'A1' : 'D2',
                 '',
                 '',
                 '',

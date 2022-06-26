@@ -13,7 +13,7 @@ class CreateReturnFromInvoice extends Button
     public function __construct(AdminModel $row)
     {
         //Name of button on hover
-        $this->name = 'Vystaviť dobropis';
+        $this->name = _('Vystaviť dobropis');
 
         //Button classes
         $this->class = 'btn-default';
@@ -30,14 +30,14 @@ class CreateReturnFromInvoice extends Button
     public function question($row)
     {
         if ( $row->items->count() == 0 )
-            return $this->error('Faktúra neobsahuje žiadne položky k vygenerovaniu dobropisu.');
+            return $this->error(_('Faktúra neobsahuje žiadne položky k vygenerovaniu dobropisu.'));
 
         //If invoice for this proform exists already
         if ( $row->returnInvoice )
-            return $this->title('Dobropis č. '.$row->returnInvoice->number.' už existuje!')
+            return $this->title(sprintf(_('Dobropis č. %s už existuje!'), $row->returnInvoice->number))
                         ->error($this->getDownloadResponse($row->returnInvoice));
 
-        return $this->title('Upozornenie')->warning('Naozaj si prajete vygenerovať dobropis?');
+        return $this->title(_('Upozornenie'))->warning(_('Naozaj si prajete vygenerovať dobropis?'));
     }
 
     /*
@@ -47,12 +47,12 @@ class CreateReturnFromInvoice extends Button
     {
         $invoice = $row->createReturn();
 
-        return $this->title('Dobropis bol úspešne vygenerovaný!')
+        return $this->title(_('Dobropis bol úspešne vygenerovaný!'))
                     ->message($this->getDownloadResponse($invoice));
     }
 
     private function getDownloadResponse($invoice)
     {
-        return 'Stiahnuť si ho môžete na tomto odkaze:<br><a target="_blank" href="'.$invoice->getPdf().'">Faktúra č. '.$invoice->number.'</a>';
+        return _('Stiahnuť si ho môžete na tomto odkaze:').'<br><a target="_blank" href="'.$invoice->getPdf().'">Faktúra č. '.$invoice->number.'</a>';
     }
 }
