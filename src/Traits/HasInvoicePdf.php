@@ -138,11 +138,11 @@ trait HasInvoicePdf
             $this->getInvoiceTemplate()
         );
 
-        //Create directory if does not exists
-        File::makeDirs($this->filePath('pdf'));
-
-        //Save pdf
-        $mpdf->output($this->filePath('pdf', $filename));
+        //Save pdf into storage
+        $this->getFieldStorage('pdf')->put(
+            $this->getStorageFilePath('pdf', $filename),
+            $mpdf->output(null, 'S')
+        );
 
         $this->pdf = $filename;
         $this->snapshot_sha = $snapshot_sha;

@@ -25,7 +25,7 @@ class InvoiceController extends Controller
             abort(404);
 
         if ( config('invoices.testing_pdf', false) === true ) {
-            return response()->file($pdf->basepath, [
+            return response($pdf->get(), 200, [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="'.$pdf->filename.'"'
             ]);
