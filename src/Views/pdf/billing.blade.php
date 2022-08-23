@@ -31,17 +31,17 @@
     </tr>
     <tr>
         <td>{{ _('IČO') }}: {{ $settings->company_id }}</td>
-        <td width="32%" class="bl2">{{ _('IČO') }}: {{ $invoice->company_id }}</td>
+        <td width="32%" class="bl2">@if ($invoice->company_id){{ _('IČO') }}: {{ $invoice->company_id }}@endif</td>
         <td width="32%" class="br2"></td>
     </tr>
     <tr>
         <td>{{ _('DIČ') }}: {{ $settings->tax_id }}</td>
-        <td width="32%" class="bl2">{{ _('DIČ') }}: {{ $invoice->company_tax_id }}</td>
+        <td width="32%" class="bl2">@if ($invoice->company_tax_id){{ _('DIČ') }}: {{ $invoice->company_tax_id }}@endif</td>
         <td width="32%" class="br2"></td>
     </tr>
     <tr>
         <td>{{ _('IČ DPH') }}: {{ $settings->vat_id }}</td>
-        <td width="32%" class="{{ count($additionalRows) == 0 ? 'bb2' : '' }} bl2">{{ _('IČ DPH') }}: {{ $invoice->company_vat_id }}</td>
+        <td width="32%" class="{{ count($additionalRows) == 0 ? 'bb2' : '' }} bl2">@if ($invoice->company_vat_id){{ _('IČ DPH') }}: {{ $invoice->company_vat_id }}@endif</td>
         <td width="32%" class="{{ count($additionalRows) == 0 ? 'bb2' : '' }} br2"></td>
     </tr>
     @foreach($additionalRows as $i => $row)
