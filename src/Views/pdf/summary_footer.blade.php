@@ -17,7 +17,7 @@
     @if ( $image = $settings->signature )
     <tr>
         <td colspan="2" align="right">
-            <img src="{{ $image->resize(null, $signatureHeight * 2, true)->basepath }}" height="{{ $signatureHeight }}px">
+            <img src="{{ $image->resize(null, $signatureHeight * 2, true)->url }}" height="{{ $signatureHeight }}px">
         </td>
     </tr>
     @endif
