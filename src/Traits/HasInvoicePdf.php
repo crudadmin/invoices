@@ -127,12 +127,7 @@ trait HasInvoicePdf
         //Generate pdf
         $mpdf = $this->getMpdf();
 
-        $mpdf->setFooter('<table style="width: 100%">
-            <tr>
-                <!-- <td align="left" style="font-style: normal">'.$this->number.'</td> -->
-                <td align="right" style="font-weight: bold; font-style: normal">{PAGENO} / {nbpg}</td>
-            </tr>
-        </table>');
+        $this->setPdfFooter($mpdf);
 
         $mpdf->WriteHTML(
             $this->getInvoiceTemplate()
@@ -149,6 +144,16 @@ trait HasInvoicePdf
 
         if ( $auto_save !== false )
             $this->save();
+    }
+
+    public function setPdfFooter($mpdf)
+    {
+        $mpdf->setFooter('<table style="width: 100%">
+            <tr>
+                <!-- <td align="left" style="font-style: normal">'.$this->number.'</td> -->
+                <td align="right" style="font-weight: bold; font-style: normal">{PAGENO} / {nbpg}</td>
+            </tr>
+        </table>');
     }
 
     private function getAdditionalRows()
