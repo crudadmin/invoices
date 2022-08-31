@@ -25,11 +25,11 @@
 
 <script type="text/javascript">
 export default {
-    props : ['model', 'row', 'rows', 'request'],
+    props : ['model', 'data', 'request'],
 
     data(){
         return {
-            email : this.row.email,
+            email : this.data.email,
             message : null,
             send : 0,
         }

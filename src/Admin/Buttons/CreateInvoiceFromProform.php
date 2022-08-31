@@ -40,7 +40,9 @@ class CreateInvoiceFromProform extends Button
                         ->success($this->getDownloadResponse($row->proformInvoice));
 
         return $this->title(_('Naozaj si prajete vygenerovať faktúru?'))
-                    ->component('AskForCreateInvoice')
+                    ->component('AskForCreateInvoice', [
+                        'email' => $row->email
+                    ])
                     ->type('warning');
     }
 
