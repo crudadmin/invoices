@@ -32,7 +32,9 @@ class SendInvoiceEmailButton extends Button
             return $this->error(_('Doklad neobsahuje žiadné položky k vygenerovaniu PDF.'));
 
         return $this->title(_('Naozaj si prajete odoslať doklad na email?'))
-                    ->component('AskForSendInvoice');
+                    ->component('AskForSendInvoice', [
+                        'email' => $row->email,
+                    ]);
     }
 
     /*

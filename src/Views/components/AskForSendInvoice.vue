@@ -14,16 +14,16 @@
 
 <script type="text/javascript">
 export default {
-    props : ['model', 'row', 'rows', 'request'],
+    props : ['model', 'request', 'data'],
 
     data(){
         return {
-            email : this.row.email,
+            email : this.data.email,
             message : null,
         }
     },
 
-    ready(){
+    mounted(){
         this.setRequestData();
     },
 

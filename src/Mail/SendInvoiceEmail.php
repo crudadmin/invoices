@@ -37,7 +37,7 @@ class SendInvoiceEmail extends Mailable
                         'message' => $this->message,
                         'settings' => $this->invoice->subject,
                     ])
-                    ->subject($this->invoice->typeNameWithNumber)
+                    ->subject($this->invoice->typeNameNumber)
                     ->attach($this->invoice->getPdf()->basepath, [
                         'as' => $this->invoice->getPdf()->filename
                     ]);
