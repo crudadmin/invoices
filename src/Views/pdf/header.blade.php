@@ -5,7 +5,7 @@
     <tr>
         <td width="30%">
             @if ( $image = $settings->logo )
-            <img src="{{ $image->resize(null, $logoHeight * 2, true)->url }}" height="{{ $logoHeight }}px" type="" alt="">
+            <img src="{{ $image->resize(null, $logoHeight * 2, true)->getBase64() }}" height="{{ $logoHeight }}px" type="" alt="">
             @else
             <h1 class="h-title">{{ env('APP_NAME') }}</h1>
             @endif
