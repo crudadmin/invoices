@@ -1,4 +1,4 @@
-<table width="100%" border="0" class="po">
+<table width="100%" border="0" class="po" style="padding-bottom: 20px">
     <tr style="width: 100%">
         <td style="width: 50%;" valign="top">
             @include('invoices::pdf.summary_left')
