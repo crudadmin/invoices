@@ -72,8 +72,9 @@ class Invoice extends AdminModel
             'number.before' => 'type',
             'company_name.name' => 'Odberateľ',
             'company_name.after' => 'type',
-            'email_sent.before' => 'price_vat',
-            'email_sent.encode' => false,
+            'notified.name' => 'Notifikovaný',
+            'notified.before' => 'price_vat',
+            'notified.encode' => false,
             'pdf.encode' => false,
             'created.name' => 'Vytvorené',
         ],
@@ -156,7 +157,7 @@ class Invoice extends AdminModel
                     ])->name('Doručovacia adresa')->add('hidden')->id('delivery') : [],
                 ])->inline(),
             ]),
-            'email_sent' => 'name:Notifikácia|type:json|removeFromForm',
+            'notified_at' => 'name:Notifikácia zaslaná dňa|type:datetime|inaccessible',
             'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
             'guid' => 'name:GUID|max:50|invisible',
         ];
@@ -187,7 +188,7 @@ class Invoice extends AdminModel
 
     public function setAdminRowsAttributes($attributes)
     {
-        $attributes['email_sent'] = '<i style="color: '.($this->isEmailChecked() ? 'green' : 'red').'" class="fa fa-'.($this->isEmailChecked() ? 'check' : 'times').'"></i>';
+        $attributes['notified'] = '<i style="color: '.($this->notified_at ? 'green' : 'red').'" class="fa fa-'.($this->notified_at ? 'check' : 'times').'"></i>';
 
         $attributes['pdf'] = '<a href="'.action('\Gogol\Invoices\Controllers\InvoiceController@generateInvoicePdf', $this->getKey()).'" target="_blank">'._('Zobraziť doklad').'</a>';
 
@@ -329,7 +330,7 @@ class Invoice extends AdminModel
         $invoice->paid_at = Carbon::now();
         $invoice->payment_date = $this->payment_date < Carbon::now()->setTime(0, 0, 0) ? Carbon::now() : $this->payment_date;
         $invoice->snapshot_sha = null;
-        $invoice->email_sent = null;
+        $invoice->notified_at = null;
         $invoice->save();
 
         //Clone proform items
@@ -363,7 +364,7 @@ class Invoice extends AdminModel
         $invoice->price = -$invoice->price;
         $invoice->price_vat = -$invoice->price_vat;
         $invoice->snapshot_sha = null;
-        $invoice->email_sent = null;
+        $invoice->notified_at = null;
         $invoice->save();
 
         //Clone proform items

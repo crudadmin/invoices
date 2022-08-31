@@ -126,23 +126,17 @@ trait InvoiceProcessTrait
         Mail::to($email ?: $this->email)->send(new SendInvoiceEmail($this, $message));
 
         //Save that email has been sent
-        $this->checkSentEmail($email);
-    }
-
-    /*
-     * Check if given/saved email is checked
-     */
-    public function isEmailChecked($email = null)
-    {
-        return is_array($this->email_sent) && in_array($email ?: $this->email, $this->email_sent);
+        $this->checkNotificationSend($email);
     }
 
     /*
      * Check given email as sent
      */
-    public function checkSentEmail($email = null)
+    public function checkNotificationSend($email = null)
     {
-        $this->update([ 'email_sent' => array_unique(array_merge((array)$this->email_sent, [ $email ?: $this->email ])) ]);
+        $this->update([
+            'notified_at' => Carbon::now(),
+        ]);
     }
 
     /*
