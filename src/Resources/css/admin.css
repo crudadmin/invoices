@@ -1,4 +1,4 @@
-.td-notified { text-align: center; }
+.td-notified, .th-notified { text-align: center; }
 
 .invoices-field .input-group-addon {
     display: flex;

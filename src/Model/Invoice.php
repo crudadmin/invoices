@@ -73,7 +73,7 @@ class Invoice extends AdminModel
             'company_name.name' => 'Odberateľ',
             'company_name.after' => 'type',
             'notified.name' => 'Notifikovaný',
-            'notified.before' => 'price_vat',
+            'notified.before' => 'created',
             'notified.encode' => false,
             'pdf.encode' => false,
             'created.name' => 'Vytvorené',
