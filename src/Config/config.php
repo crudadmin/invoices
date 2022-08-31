@@ -7,6 +7,7 @@ return [
     'logo_height' => 60,
     'signature_height' => 180,
     'billing_border_size' => 2,
+    'line_padding_size' => 5,
     'issued_by' => true,
 
     /*

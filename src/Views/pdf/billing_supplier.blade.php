@@ -17,20 +17,4 @@
         </td>
     </tr>
     @endforeach
-    <tr><td>&nbsp;</tr>
-    <tr><td><strong>{{ _('Účet dodávateľa') }}</strong></td></tr>
-    <tr><td>{{ _('Čislo účtu') }}: {{ $settings->account }}</td></tr>
-    @if ( $settings->iban )
-    <tr><td>{{ _('IBAN') }}: {{ $settings->iban }}</td></tr>
-    @endif
-    @if ( $settings->swift )
-    <tr><td>{{ _('SWIFT Kód') }}: {{ $settings->swift }}</td></tr>
-    @endif
-    <tr><td>&nbsp;</td></tr>
-    @if ( $settings->register )
-    <tr><td>{{ _('Register') }}: {{ $settings->register }}</td></tr>
-    @endif
-    @if ( $settings->input )
-    <tr><td>{{ _('Číslo vložky') }}: {{ $settings->input }}</td></tr>
-    @endif
 </table>

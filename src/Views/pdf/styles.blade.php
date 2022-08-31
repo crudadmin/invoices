@@ -4,8 +4,10 @@
     h1.h-title {font-family: tahoma; font-size: {{ config('invoices.logo_size', 48) }}px; color: #000; font-weight:bold;color: {{ $settings->invoice_color ?: '#3a92c3' }};}
     h2 {font-family: tahoma; font-size: 15px}
     table {border-spacing:0}
-    table.--padding tr td {padding: 5px 5px 5px 5px;}
-    table.--border {border: solid {{ config('invoices.billing_border_size', 2) }}px {{ $settings->invoice_color ?: '#3a92c3'  }}}
+    table.--padding tr td {padding-bottom: {{ config('invoices.line_padding_size') }}px;padding-top: {{ config('invoices.line_padding_size') }}px;}
+    table.--border {padding: {{ config('invoices.line_padding_size') }} {{ config('invoices.line_padding_size') * 2 }}px {{ config('invoices.line_padding_size') }} {{ config('invoices.line_padding_size') * 2 }}px;border: solid {{ config('invoices.billing_border_size', 2) }}px {{ $settings->invoice_color ?: '#3a92c3'  }}}
+    table td.--pt0 {padding-top: 0}
+    table td.--pb0 {padding-bottom: 0}
     table.top {border-top: solid 2px #eee}
     table.po tr.n td {padding:5px; font-size: 10px}
     table.po tr.p td {padding:5px; font-size: 12px}

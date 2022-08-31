@@ -7,7 +7,18 @@
             @include('invoices::pdf.billing_customer')
         </td>
     </tr>
-    <tr class="p" height="30px">
+    <tr>
         <td colspan="2">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="36%" valign="top">
+            @include('invoices::pdf.billing_supplier_info')
+        </td>
+        <td width="64%" valign="top">
+            @include('invoices::pdf.billing_customer_info')
+        </td>
+    </tr>
+    <tr class="p">
+        <td colspan="2" style="padding-bottom: 30px">&nbsp;</td>
     </tr>
 </table>
