@@ -51,6 +51,10 @@ class InvoiceController extends Controller
                             ->orderBy('number', 'ASC')
                             ->get();
 
+        if ( $invoices->count() == 0 ){
+            return response('No invoices found in this export.', 500);
+        }
+
         $exportInterval = $export->from->format('d-m-Y').'_'.$export->to->format('d-m-Y');
 
         $zip = $export->makeExportZip($invoices, $exportInterval);
