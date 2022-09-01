@@ -4,21 +4,18 @@ namespace Gogol\Invoices\Helpers\Exports\PDF;
 
 use Gogol\Invoices\Helpers\Exports\InvoiceExport;
 use Mpdf\Mpdf;
+use setasign\Fpdi\PdfParser\StreamReader;
 
 class PDFSingleExport extends InvoiceExport
 {
     public function add($zip)
     {
-        $invoicesToMerge = $this->invoices->map(function($file){
-            return $file->getPdf()->basepath;
-        });
-
-        if ( $path = $this->mergedPDFPath($zip, $invoicesToMerge) ) {
+        if ( $path = $this->mergedPDFPath($zip) ) {
             $zip->addFile($path, './'.str_slug(_('sumarne_faktury')).'.pdf');
         }
     }
 
-    public function mergedPDFPath($zip, $mergeFiles)
+    public function mergedPDFPath($zip)
     {
         $pdf = new Mpdf([
             'margin_top' => 10,
@@ -31,11 +28,11 @@ class PDFSingleExport extends InvoiceExport
 
         $finalPath = @tempnam('tmp', 'pdfs_merge');
 
-        if ( $mergeFiles->count() == 0) {
+        if ( $this->invoices->count() == 0) {
             return;
         }
 
-        $filesTotal = sizeof($mergeFiles);
+        $filesTotal = sizeof($this->invoices);
         $fileNumber = 1;
 
         if (!file_exists($finalPath)) {
@@ -43,21 +40,23 @@ class PDFSingleExport extends InvoiceExport
             fclose($handle);
         }
 
-        foreach ($mergeFiles as $fileName) {
-            if (file_exists($fileName)) {
-                $pagesInFile = $pdf->SetSourceFile($fileName);
+        foreach ($this->invoices as $invoice) {
+            $stream = StreamReader::createByString(
+                $invoice->getPdf()->get()
+            );
 
-                for ($i = 1; $i <= $pagesInFile; $i++) {
-                    $tplId = $pdf->importPage($i);
-                    $pdf->UseTemplate($tplId);
+            $pagesInFile = $pdf->SetSourceFile($stream);
 
-                    if (($fileNumber < $filesTotal) || ($i != $pagesInFile)) {
-                        $pdf->WriteHTML('<pagebreak />');
-                    }
+            for ($i = 1; $i <= $pagesInFile; $i++) {
+                $tplId = $pdf->importPage($i);
+                $pdf->UseTemplate($tplId);
+
+                if (($fileNumber < $filesTotal) || ($i != $pagesInFile)) {
+                    $pdf->WriteHTML('<pagebreak />');
                 }
-
-                $fileNumber++;
             }
+
+            $fileNumber++;
         }
 
         $pdf->Output($finalPath);

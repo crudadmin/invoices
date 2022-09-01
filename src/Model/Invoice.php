@@ -282,12 +282,13 @@ class Invoice extends AdminModel
     /**
      * Get pdf file of invoice
      * If pdf is not actual or generater, then regenerate pdf and re-save filename into db
+     *
      * @param  boolean $regenerate force regeneration of PDF
      */
-    public function getPdf($force_regenerate = false)
+    public function getPdf($forceRegenerate = false)
     {
         //Regenerate invoice if needed
-        $this->generatePDF(true, $force_regenerate);
+        $this->generatePDF(true, $forceRegenerate);
 
         return $this->pdf;
     }

@@ -48,7 +48,7 @@ class InvoiceController extends Controller
                             ->whereDate('created_at', '<=', $export->to)
                             ->whereIn('type', $export->types ?: [])
                             ->with(['items', 'proformInvoice'])
-                            ->orderBy('created_at', 'ASC')
+                            ->orderBy('number', 'ASC')
                             ->get();
 
         $exportInterval = $export->from->format('d-m-Y').'_'.$export->to->format('d-m-Y');
