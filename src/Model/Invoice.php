@@ -96,7 +96,7 @@ class Invoice extends AdminModel
                     'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
                     Group::inline([
                         'number_manual' => 'name:Manuálne číslo dokladu|type:checkbox|default:0|hidden',
-                        'number' => 'name:Č. dokladu|index|removeFromFormIfNot:number_manual,1|max:30',
+                        'number' => 'name:Č. dokladu|index|removeFromFormIfNot:number_manual,1|max:30|index',
                     ])
                 ]),
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
