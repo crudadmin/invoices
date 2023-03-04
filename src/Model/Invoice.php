@@ -210,7 +210,7 @@ class Invoice extends AdminModel
      */
     public function getTypeNameNumberAttribute()
     {
-        return sprintf('%s  č. %s', config('invoices.invoice_types.'.$this->type.'.name', ''), $this->number);
+        return sprintf('%s č. %s', config('invoices.invoice_types.'.$this->type.'.name', ''), $this->number);
     }
 
     /*
@@ -388,5 +388,33 @@ class Invoice extends AdminModel
         return Admin::cache('invoices.subjects.count', function(){
             return InvoicesSetting::count() > 1;
         });
+    }
+
+    public function getFilterStates()
+    {
+        $filter = [];
+
+        $subjects = Admin::getModel('InvoicesSetting')->all();
+        if ( count($subjects) >= 2 ) {
+            foreach ($subjects as $subject) {
+                $filter['subject_'.$subject->getKey()] = [
+                    'name' => $subject->name,
+                    'query' => function($query) use ($subject) {
+                        return $query->where('subject_id', $subject->getKey());
+                    },
+                ];
+            }
+        }
+
+        foreach (config('invoices.invoice_types') as $key => $type) {
+            $filter[$key] = [
+                'name' => $type['name'],
+                'query' => function($query) use ($key) {
+                    return $query->where('type', $key);
+                },
+            ];
+        }
+
+        return $filter;
     }
 }

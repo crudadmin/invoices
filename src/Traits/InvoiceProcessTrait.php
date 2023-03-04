@@ -97,7 +97,7 @@ trait InvoiceProcessTrait
                              ->latest('number')
                              ->first();
 
-        $prefix = $prefixYearDate->format('Y');
+        $prefix = $this->getOrderYearPrefix($prefixYearDate);
 
         //Get last invoice increment
         $invoiceCount = ! $lastInvoice ? 0 : (int)substr($lastInvoice->getRawOriginal('number'), strlen($prefix));
@@ -106,6 +106,11 @@ trait InvoiceProcessTrait
         $nextNumber = substr($invoiceCount + 1, -$pad);
 
         $this->number = $prefix . str_pad($nextNumber, $pad, 0, STR_PAD_LEFT);
+    }
+
+    public function getOrderYearPrefix($date)
+    {
+        return $date->format('Y');
     }
 
     /*

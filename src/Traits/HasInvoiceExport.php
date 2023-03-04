@@ -2,6 +2,7 @@
 
 namespace Gogol\Invoices\Traits;
 
+use Exception;
 use \ZipArchive;
 
 trait HasInvoiceExport
@@ -17,9 +18,14 @@ trait HasInvoiceExport
 
         $zip->close();
 
-        $data = file_get_contents($tempFile);
+        if ( file_exists($tempFile) ){
+            $data = file_get_contents($tempFile);
 
-        @unlink($tempFile);
+            @unlink($tempFile);
+        } else {
+            throw new Exception('No zip file created.');
+        }
+
 
         return $data;
     }
@@ -28,7 +34,7 @@ trait HasInvoiceExport
     {
         $exports = config('invoices.exports');
 
-        foreach ($this->outputs as $output) {
+        foreach ($this->outputs ?: [] as $output) {
             if ( !($exporter = $exports[$output] ?? null) ){
                 continue;
             }

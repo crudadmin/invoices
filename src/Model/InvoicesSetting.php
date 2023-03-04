@@ -72,7 +72,7 @@ class InvoicesSetting extends AdminModel
                 'payment_term' => 'name:Splatnosť faktúr|type:integer|min:0|default:30',
                 Group::fields([
                     'vat' => 'name:Platca dph|type:checkbox|default:0',
-                    'invoice_color' => 'name:RGB ramčeka faktúry|max:11',
+                    'invoice_color' => 'name:RGB ramčeka faktúry|type:color|max:11',
                 ])->inline(),
                 Group::half([
                     'logo' => 'name:Logo|type:file|image',
