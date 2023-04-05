@@ -50,8 +50,12 @@ function getVatValues()
     });
 }
 
-function getDefaultVatValue()
+function getDefaultVatValue($subject = null)
 {
+    if ( $subject && $subject->vat_default ){
+        return $subject->vat_default->vat;
+    }
+
     return Admin::cache('invoices.defaultVat', function(){
         $model = Admin::getModel('Vat');
 
