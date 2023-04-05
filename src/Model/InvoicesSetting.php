@@ -112,6 +112,6 @@ class InvoicesSetting extends AdminModel
 
     public function getHasVatAttribute()
     {
-        return $this->company_vat_id ? true : false;
+        return $this->vat_id ? true : false;
     }
 }
