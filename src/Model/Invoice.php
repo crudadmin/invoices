@@ -92,7 +92,7 @@ class Invoice extends AdminModel
         return [
             'Nastavenia dokladu' => Group::fields([
                 Group::inline([
-                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,name|sub_component:SetDefaultSubject|required|'.($this->hasMultipleSubjects() ? '' : 'hidden'),
+                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,:name|sub_component:SetDefaultSubject|required|'.($this->hasMultipleSubjects() ? '' : 'hidden'),
                     'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
                     Group::inline([
                         'number_manual' => 'name:Manuálne číslo dokladu|type:checkbox|default:0|hidden',
@@ -166,11 +166,24 @@ class Invoice extends AdminModel
     public function options()
     {
         return [
+            'subject_id' => $this->getSubjectOptions(),
             'type' => array_map(function($item){
                 return $item['name'];
             }, config('invoices.invoice_types', [])),
             'return' => [],
         ];
+    }
+
+    private function getSubjectOptions()
+    {
+        return Admin::getModel('InvoicesSetting')->select(['invoices_settings.id', 'invoices_settings.name'])
+            ->when(config('invoices.multi_subjects'), function($query){
+                $query
+                    ->addSelect('vats.vat as vat_default_value')
+                    ->leftJoin('vats', function($join){
+                        $join->on('invoices_settings.vat_default_id', '=', 'vats.id');
+                    });
+            })->get();
     }
 
     public function scopeAdminRows($query)

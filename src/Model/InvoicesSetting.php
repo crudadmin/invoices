@@ -46,7 +46,7 @@ class InvoicesSetting extends AdminModel
                 'name' => 'name:Meno a priezivsko / Firma|placeholder:Zadajte názov odoberateľa|required|max:90',
                 'company_id' => 'name:IČO|required|placeholder:Zadajte IČO',
                 'tax_id' => 'name:DIČ|required|placeholder:Zadajte DIČ',
-                'vat_id' => 'name:IČ DPH|placeholder:Zadajte IČ DPH',
+                'vat_id' => 'name:IČ DPH|placeholder:Zadajte IČ DPH|title:V prípade, že je subjekt platcom DPH',
             ]),
             'Fakturačná adresa' => Group::half([
                 'city' => 'name:Mesto|placeholder:Zadajte mesto|required|max:90',
@@ -70,10 +70,10 @@ class InvoicesSetting extends AdminModel
                 'register' => 'name:Registrácia|required',
                 'sign' => 'name:Doklad vystavil|required',
                 'payment_term' => 'name:Splatnosť faktúr|type:integer|min:0|default:30',
+                'invoice_color' => 'name:RGB ramčeka faktúry|type:color|max:11',
                 Group::fields([
-                    'vat' => 'name:Platca dph|type:checkbox|default:0',
-                    'invoice_color' => 'name:RGB ramčeka faktúry|type:color|max:11',
-                ])->inline(),
+                    'vat_default' => 'name:Predvolená DPH|belongsTo:vats,:name (:vat%)|canAdd',
+                ])->if(config('invoices.multi_subjects')),
                 Group::half([
                     'logo' => 'name:Logo|type:file|image',
                     'logo_height' => 'name:Výška loga (px)|type:integer|required|default:60',
@@ -110,4 +110,8 @@ class InvoicesSetting extends AdminModel
         return '#'.str_replace('#', '', $value);
     }
 
+    public function getHasVatAttribute()
+    {
+        return $this->company_vat_id ? true : false;
+    }
 }

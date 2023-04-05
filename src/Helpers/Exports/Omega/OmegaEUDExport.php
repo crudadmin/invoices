@@ -35,7 +35,7 @@ class OmegaEUDExport extends OmegaExport
                 $invoice->number, //E       cislo interne - internal number
                 $invoice->number, //F       externe cislo - external number
                 $invoice->company_id ? $invoice->company_name : 'Maloobchodný predaj', //G       meno firmy partnera - company name of partner
-                $invoice->company_id, //H       ICO - REG
+                $invoice->company_id ?: 10, //H       ICO - REG
                 $invoice->company_tax_id, //I       DIC/DU - TAX partner
                 $invoice->created_at->format('d.m.Y'), //J       datum vystavenia - date of issue
                 $invoice->created_at->format('d.m.Y'), //K       datum prijatia - date of receipt

@@ -29,6 +29,11 @@ class InvoicesItem extends AdminModel
 
     protected $reversed = true;
 
+    protected $rules = [
+        ProcessInvoiceItemRule::class,
+        ProcessInvoicePriceRule::class,
+    ];
+
     /*
      * Automatic form and database generation
      * @name - field name
@@ -43,35 +48,41 @@ class InvoicesItem extends AdminModel
             'quantity' => 'name:Množstvo|type:integer|required|default:1|min:1',
             Group::fields([
                 'price' => 'name:Cena/ks bez DPH|type:decimal|component:SetVatPrice|required_without:price_vat',
-                'vat' => 'name:DPH %|type:select|options:0,20|default:'.(app()->runningInConsole() ? 0 : getDefaultVatValue()).'|required',
+                'vat' => 'name:DPH %|type:select|sub_component:SelectDefaultVat|required',
                 'price_vat' => 'name:Cena/ks s DPH|type:decimal|component:SetVatPrice|required_without:price',
             ])->inline(),
+        ];
+    }
+
+    public function settings()
+    {
+        return [
+            'title.insert' => 'Nová položka',
+            'title.update' => 'Upravujete položku :name',
+            'buttons.insert' => 'Nová položka',
+            'defaultVat' => getDefaultVatValue(),
         ];
     }
 
     public function options()
     {
         return [
-            'vat' => array_combine(getVatValues(), getVatValues()),
+            'vat' => $this->getVatValues(),
         ];
     }
-
-    protected $settings = [
-        'title.insert' => 'Nová položka',
-        'title.update' => 'Upravujete položku :name',
-        'buttons.insert' => 'Nová položka',
-    ];
-
-    protected $rules = [
-        ProcessInvoiceItemRule::class,
-        ProcessInvoicePriceRule::class,
-    ];
 
     public function getTotalPriceWithTaxAttribute()
     {
         return canRoundSummary()
             ? $this->price_vat * $this->quantity
             : calculateWithVat($this->price * $this->quantity, $this->vat);
+    }
+
+    private function getVatValues()
+    {
+        $vats = getVatValues();
+
+        return array_combine($vats, $vats);
     }
 
     public function canShowInSummary()

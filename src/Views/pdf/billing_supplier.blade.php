@@ -7,7 +7,9 @@
     <tr><td>&nbsp;</tr>
     <tr><td>{{ _('IČO') }}: {{ $settings->company_id }}</td></tr>
     <tr><td>{{ _('DIČ') }}: {{ $settings->tax_id }}</td></tr>
+    @if ( $settings->vat_id )
     <tr><td>{{ _('IČ DPH') }}: {{ $settings->vat_id }}</td></tr>
+    @endif
     @foreach($additionalRows as $i => $row)
     <tr>
         <td>

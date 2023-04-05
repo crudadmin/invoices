@@ -24,6 +24,8 @@ class Vat extends AdminModel
 
     protected $hidden = ['created_at', 'updated_at', 'deleted_at', 'published_at'];
 
+    protected $orderBy = ['vat', 'asc'];
+
     /*
      * Automatic form and database generation
      * @name - field name

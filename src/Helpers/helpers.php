@@ -43,7 +43,7 @@ function getVatValues()
         $model = Admin::getModel('Vat');
 
         if ( $model ) {
-            return $model->pluck('vat')->toArray();
+            return $model->pluck('vat')->sort()->values()->toArray();
         }
 
         return config('invoices.vats', [0, 20]);

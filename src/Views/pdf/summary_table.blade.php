@@ -1,6 +1,6 @@
 <table width="100%" border="0" class="po">
     <tr>
-        <td height="30" colspan="{{ $invoice->vat ? 4 : 3 }}">&nbsp;</td>
+        <td height="30" colspan="{{ $invoice->hasVat ? 4 : 3 }}">&nbsp;</td>
     </tr>
     <tr class="n">
         <td class="bw" bgcolor="#eee" align="right"><strong>{{ _('DPH') }}</strong></td>
