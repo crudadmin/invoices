@@ -17,8 +17,12 @@
                 <br><small style="font-size: 11px">{!! _('Proforma faktúra neslúži ako daňový doklad.<br>Faktúra (daňový doklad) bude vystavená po prijatí platby.') !!}</small>
                 @endif
             </h1>
-            @if ( $invoice->type == 'invoice' && $invoice->proform )
-            {{ _('Tento doklad je úhradou proformy č.') }} {{ $invoice->proform->number }}
+            @if ( in_array($invoice->type, ['invoice', 'advance']) && $invoice->proform )
+                @if ( $invoice->proform->type == 'proform' )
+                    {{ _('Tento doklad je úhradou proformy č.') }} {{ $invoice->proform->number }}
+                @elseif ( $invoice->proform->type == 'advance' )
+                    {{ _('Tento doklad je úhradou zálohovej faktúry č.') }} {{ $invoice->proform->number }}
+                @endif
             @elseif ( $invoice->type == 'return' && $invoice->return )
             {{ _('K faktúre č.') }} {{ $invoice->return->number }}
             @endif

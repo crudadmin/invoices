@@ -15,7 +15,7 @@ class CreateInvoiceFromProform extends Button
     public function __construct(AdminModel $row)
     {
         //Name of button on hover
-        $this->name = $row->proformInvoice ? _('Zobraziť faktúru k proforme') : _('Vygenerovať faktúru k proforme');
+        $this->name = $row->proformInvoice ? _('Zobraziť ostrú faktúru') : _('Vygenerovať ostrú faktúru');
 
         //Button classes
         $this->class = $row->proformInvoice ? 'btn-default' : 'btn-primary';
@@ -23,7 +23,8 @@ class CreateInvoiceFromProform extends Button
         //Button Icon
         $this->icon = 'fa-file-text-o';
 
-        $this->active = $row->type == 'proform';
+        //
+        $this->active = in_array($row->type, ['proform', 'advance']);
     }
 
     /*

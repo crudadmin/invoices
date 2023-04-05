@@ -281,7 +281,7 @@ class Invoice extends AdminModel
      */
     public function proformInvoice()
     {
-        return $this->belongsTo(Invoice::class, 'id', 'proform_id')->where('type', 'invoice');
+        return $this->belongsTo(Invoice::class, 'id', 'proform_id')->whereIn('type', ['invoice', 'advance']);
     }
 
     /*
@@ -336,10 +336,10 @@ class Invoice extends AdminModel
     /*
      * Generate invoice
      */
-    public function createInvoice()
+    public function createInvoice($type = 'invoice')
     {
         $invoice = $this->replicate();
-        $invoice->type = 'invoice';
+        $invoice->type = $type;
         $invoice->proform_id = $this->getKey();
         $invoice->paid_at = Carbon::now();
         $invoice->payment_date = $this->payment_date < Carbon::now()->setTime(0, 0, 0) ? Carbon::now() : $this->payment_date;
@@ -361,6 +361,11 @@ class Invoice extends AdminModel
         }
 
         return $invoice;
+    }
+
+    public function createAdvance()
+    {
+        return $this->createInvoice('advance');
     }
 
     /*
