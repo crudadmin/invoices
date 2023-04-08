@@ -24,7 +24,7 @@
                     {{ _('Odpočet zálohy k Proforma faktúre č.') }} {{ $invoice->proform->number }}
                 @endif
             @elseif ( $invoice->type == 'return' && $invoice->return )
-            {{ _('K faktúre č.') }} {{ $invoice->return->number }}
+            {{ sprintf(_('K %s č.'), mb_strtolower($invoice->return->typeName)) }} {{ $invoice->return->number }}
             @endif
         </td>
     </tr>

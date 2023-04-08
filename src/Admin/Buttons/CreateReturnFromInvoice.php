@@ -21,7 +21,7 @@ class CreateReturnFromInvoice extends Button
         //Button Icon
         $this->icon = 'fa-undo';
 
-        $this->active = $row->type == 'invoice';
+        $this->active = in_array($row->type, ['invoice', 'advance']);
     }
 
     /*
