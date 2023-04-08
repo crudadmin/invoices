@@ -16,4 +16,13 @@
             <td class="bb br" align="right">{{ priceFormat($item->totalPriceWithTax) }} €</td>
         </tr>
     @endforeach
+    @if ( $invoice->canSubtractInvoice && $invoice->proform?->type == 'advance' )
+        <tr class="p">
+            <td class="bb bl" height="30" align="left">{{ sprintf(_('Odpočet: %s'), $invoice->proform->typeName).' '.$invoice->proform->number }}</td>
+            <td class="bb">1</td>
+            <td class="bb" align="right">- {{ priceFormat($invoice->proform->price_vat) }} €</td>
+            <td class="bb" align="right">{{ getDefaultVatValue($invoice->subject) }} %</td>
+            <td class="bb br" align="right">- {{ priceFormat($invoice->proform->price_vat) }} €</td>
+        </tr>
+    @endif
 </table>

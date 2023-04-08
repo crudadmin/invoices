@@ -18,7 +18,7 @@ return [
     //Types of invoices
     'invoice_types' => [
         'proform' => [ 'prefix' => 'PF-', 'name' => _('Proforma faktúra') ],
-        'advance' => [ 'prefix' => 'ZF-', 'name' => _('Zálohová faktúra') ],
+        'advance' => [ 'prefix' => 'DD-', 'name' => _('Daňový doklad k prijatej platbe') ],
         'invoice' => [ 'prefix' => 'FV-', 'name' => _('Faktúra (daňový doklad)') ],
         'return' => [ 'prefix' => 'DP-', 'name' => _('Dobropis') ],
     ],

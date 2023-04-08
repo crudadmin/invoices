@@ -6,7 +6,7 @@ use Admin\Helpers\File;
 use Log;
 use Throwable;
 use Mpdf\Mpdf;
-use Facades\Gogol\Invoices\Helpers\QRCodeGenerator;
+use Gogol\Invoices\Helpers\QRCodeGenerator;
 use chillerlan\QRCode\QROptions;
 use Localization;
 
@@ -61,13 +61,17 @@ trait HasInvoicePdf
 
     public function getInvoiceTemplate()
     {
+        $summary = $this->getInvoiceSummary();
+
+        $qr = new QRCodeGenerator($this, $summary['totalWithTax']);
+
         return view('invoices::pdf.invoice_pdf', [
             'settings' => $this->subject,
             'invoice' => $this,
             'items' => $this->items,
-            'qrimage' => QRCodeGenerator::generate($this),
+            'qrimage' => $summary['totalWithTax'] > 0 ? $qr->generate() : null,
             'additionalRows' => $this->getAdditionalRows(),
-            'summary' => $this->getInvoiceSummary(),
+            'summary' => $summary,
         ])->render();
     }
 
@@ -90,8 +94,16 @@ trait HasInvoicePdf
 
         ksort($withTax);
 
+        $totalWithTax = array_sum($withTax);
+
+        if ( $this->canSubtractInvoice ){
+            $totalWithTax -= $this->proform->price_vat;
+        } else if ( $this->type == 'advance' && $this->paid_at ){
+            $totalWithTax = 0;
+        }
+
         return [
-            'totalWithTax' => array_sum($withTax),
+            'totalWithTax' => $totalWithTax,
             'withTax' => $withTax,
             'withoutTax' => $withoutTax,
         ];
@@ -114,8 +126,9 @@ trait HasInvoicePdf
         $filename = $this->number . '-' . $snapshot_sha_short . '.pdf';
 
         //Check if we can generate new invoice by checking old and new data hash
-        if ( $this->pdf && $this->pdf->exists() && $force_regenerate === false && $this->snapshot_sha == $snapshot_sha )
+        if ( $this->pdf && $this->pdf->exists() && $force_regenerate === false && $this->snapshot_sha == $snapshot_sha ){
             return;
+        }
 
         //Try load all removed relationship rows
         try {

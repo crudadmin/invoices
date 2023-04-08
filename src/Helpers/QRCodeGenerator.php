@@ -9,12 +9,23 @@ use Log;
 
 class QRCodeGenerator
 {
+    protected $invoice;
+
+    protected $price;
+
     protected $qrGenerators = [
         'sk' => 'generatePayBySquareCode',
         'cz' => 'generateCzechQRCode',
     ];
 
-    public function generate($invoice)
+    public function __construct($invoice, $price)
+    {
+        $this->invoice = $invoice;
+
+        $this->price = $price;
+    }
+
+    public function generate()
     {
         $qrType = strtolower(config('invoices.qrcode_type') ?: '');
 
@@ -27,7 +38,7 @@ class QRCodeGenerator
 
         //IF extensions are not available
         try {
-            if ( !($data = $this->{$this->qrGenerators[$qrType]}($invoice)) ) {
+            if ( !($data = $this->{$this->qrGenerators[$qrType]}($this->invoice)) ) {
                 return;
             }
         } catch(Throwable $error){
@@ -36,7 +47,7 @@ class QRCodeGenerator
             return;
         }
 
-        $options = $invoice->getInvoiceQrCodeOptions();
+        $options = $this->invoice->getInvoiceQrCodeOptions();
 
         $image = (new QRCode($options))->render($data);
 
@@ -45,7 +56,7 @@ class QRCodeGenerator
 
     public function generateCzechQRCode($invoice)
     {
-        $data = 'SPD*1.0*ACC:'.$invoice->subject->iban.'*AM:'.$invoice->price_vat.'*CC:EUR*X-VS:'.$invoice->vs.'*MSG:QRPLATBA';
+        $data = 'SPD*1.0*ACC:'.$invoice->subject->iban.'*AM:'.$this->price.'*CC:EUR*X-VS:'.$invoice->vs.'*MSG:QRPLATBA';
 
         return $data;
     }
@@ -62,7 +73,7 @@ class QRCodeGenerator
             1 => '1',
             2 => implode("\t", array(
                 true,
-                $invoice->price_vat,                    // SUMA
+                $this->price,                    // SUMA
                 'EUR',                                  // JEDNOTKA
                 '',  // DATUM
                 $invoice->vs,                           // VARIABILNY SYMBOL

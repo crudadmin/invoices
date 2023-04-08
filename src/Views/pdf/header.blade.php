@@ -21,7 +21,7 @@
                 @if ( $invoice->proform->type == 'proform' )
                     {{ _('Tento doklad je úhradou proformy č.') }} {{ $invoice->proform->number }}
                 @elseif ( $invoice->proform->type == 'advance' )
-                    {{ _('Tento doklad je úhradou zálohovej faktúry č.') }} {{ $invoice->proform->number }}
+                    {{ _('Odpočet zálohy k Proforma faktúre č.') }} {{ $invoice->proform->number }}
                 @endif
             @elseif ( $invoice->type == 'return' && $invoice->return )
             {{ _('K faktúre č.') }} {{ $invoice->return->number }}

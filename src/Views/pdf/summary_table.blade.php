@@ -23,7 +23,7 @@
         <td height="10" colspan="2">&nbsp;</td>
     </tr>
     <tr class="p">
-        <td bgcolor="#eee" align="left"><h2><strong>{{ _('Celkom k úhrade') }} @if ( $invoice->paid_at ) {{ _('(zaplatené)') }}@endif</strong></h2></td>
-        <td bgcolor="#eee" align="right"><h2><strong>{{ priceFormat( ! $invoice->paid_at ? $summary['totalWithTax'] : 0 ) }} €</strong></h2></td>
+        <td bgcolor="#eee" align="left"><h2><strong>{{ _('Celkom k úhrade') }} @if ( $summary['totalWithTax'] == 0 ) {{ _('(zaplatené)') }}@endif</strong></h2></td>
+        <td bgcolor="#eee" align="right"><h2><strong>{{ priceFormat($summary['totalWithTax']) }} €</strong></h2></td>
     </tr>
 </table>

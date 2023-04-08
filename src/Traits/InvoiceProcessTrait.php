@@ -17,14 +17,16 @@ trait InvoiceProcessTrait
         return Rule::unique('invoices')->ignore($row ? $row->getKey() : null)->where(function($query) use($row) {
             $query->whereNull('deleted_at');
 
-            if ( ! $row )
+            if ( ! $row ) {
                 return;
+            }
 
             //Also except invoice/proform
-            if ( $row->proform_id )
+            if ( $row->proform_id ) {
                 $query->where('id', '!=', $row->proform_id);
-            else
-                $query->where('proform_id', '!=', $row->getKey());
+            }
+
+            $query->where('proform_id', '!=', $row->getKey());
         });
     }
 
