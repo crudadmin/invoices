@@ -438,6 +438,6 @@ class Invoice extends AdminModel
 
     public function getCanSubtractInvoiceAttribute()
     {
-        return $this->type == 'invoice' && in_array($this->proform?->type, ['advance', 'proform']);
+        return $this->type == 'invoice' && in_array($this->proform?->type, ['advance', 'proform']) && $this->proform->paid_at;
     }
 }

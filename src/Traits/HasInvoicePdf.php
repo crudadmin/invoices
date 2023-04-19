@@ -96,10 +96,10 @@ trait HasInvoicePdf
 
         $totalWithTax = array_sum($withTax);
 
-        if ( $this->canSubtractInvoice ){
-            $totalWithTax -= $this->proform->price_vat;
-        } else if ( $this->type == 'advance' && $this->paid_at ){
+        if ( in_array($this->type, ['invoice', 'advance']) && $this->paid_at ){
             $totalWithTax = 0;
+        } else if ( $this->canSubtractInvoice ){
+            $totalWithTax -= $this->proform->price_vat;
         }
 
         return [

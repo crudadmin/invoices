@@ -16,7 +16,7 @@
             <td class="bb br" align="right">{{ priceFormat($item->totalPriceWithTax) }} €</td>
         </tr>
     @endforeach
-    @if ( $invoice->canSubtractInvoice && $invoice->proform?->type == 'advance' )
+    @if ( $invoice->canSubtractInvoice && ($invoice->proform?->type == 'advance' || $summary['totalWithTax'] > 0) )
         <tr class="p">
             <td class="bb bl" height="30" align="left">{{ sprintf(_('Odpočet: %s'), $invoice->proform->typeName).' '.$invoice->proform->number }}</td>
             <td class="bb">1</td>
