@@ -62,14 +62,15 @@ class Invoice extends AdminModel
         'buttons.insert' => 'Nový doklad',
         'title' => [
             'insert' => 'Nový doklad',
-            'update' => 'Upravujete doklad č. :number',
+            'update' => 'Upravujete doklad č. :formated_number',
         ],
         'grid' => [
             'default' => 'full',
             'disabled' => true,
         ],
         'columns' => [
-            'number.before' => 'type',
+            'formated_number.name' => 'Č. dokladu',
+            'formated_number.before' => 'type',
             'company_name.name' => 'Odberateľ',
             'company_name.after' => 'type',
             'notified.name' => 'Notifikovaný',
@@ -96,7 +97,7 @@ class Invoice extends AdminModel
                     'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20',
                     Group::inline([
                         'number_manual' => 'name:Manuálne číslo dokladu|type:checkbox|default:0|hidden',
-                        'number' => 'name:Č. dokladu|index|removeFromFormIfNot:number_manual,1|max:30|index',
+                        'number' => 'name:Č. dokladu|index|removeFromFormIfNot:number_manual,1|max:30|index|hidden',
                     ])
                 ]),
                 'return' => 'name:Dobropis k faktúre|belongsTo:invoices,'.config('invoices.invoice_types.invoice.prefix').':number|exists:invoices,id,type,invoice|component:setReturnField|required_if:type,return|hidden',
@@ -193,7 +194,8 @@ class Invoice extends AdminModel
 
     public function setAdminAttributes($attributes)
     {
-        $attributes['number'] = $this->number;
+        $attributes['formated_number'] = $this->number;
+
         $attributes['return_number'] = $this->return_id && $this->return ? $this->return->number : null;
 
         return $attributes;
