@@ -326,7 +326,7 @@ class Invoice extends AdminModel
         }
 
         //Remove uneccessary columns from invoice
-        foreach (['deleted_at', 'created_at', 'updated_at', 'client_id', 'number', 'number_prefix'] as $column) {
+        foreach (['deleted_at', 'created_at', 'updated_at', 'number', 'number_prefix'] as $column) {
             if ( array_key_exists($column, $data) ) {
                 unset($data[$column]);
             }

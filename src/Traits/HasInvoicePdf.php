@@ -112,9 +112,9 @@ trait HasInvoicePdf
     /**
      * Generate PDF of invoice
      * @param  boolean $auto_save        auto save pdf filename
-     * @param  boolean $force_regenerate forced regeneration of pdf
+     * @param  boolean $forceRegenerate forced regeneration of pdf
      */
-    public function generatePDF($auto_save = true, $force_regenerate = false)
+    public function generatePDF($auto_save = true, $forceRegenerate = false)
     {
         //Make sure localization is booted
         Localization::boot();
@@ -126,8 +126,8 @@ trait HasInvoicePdf
         $filename = $this->number . '-' . $snapshot_sha_short . '.pdf';
 
         //Check if we can generate new invoice by checking old and new data hash
-        if ( $this->pdf && $this->pdf->exists() && $force_regenerate === false && $this->snapshot_sha == $snapshot_sha ){
-            return;
+        if ( $this->pdf && $this->pdf->exists() && $forceRegenerate === false && $this->snapshot_sha == $snapshot_sha ){
+            return $this;
         }
 
         //Try load all removed relationship rows
@@ -155,8 +155,11 @@ trait HasInvoicePdf
         $this->pdf = $filename;
         $this->snapshot_sha = $snapshot_sha;
 
-        if ( $auto_save !== false )
+        if ( $auto_save !== false ) {
             $this->save();
+        }
+
+        return $this;
     }
 
     public function setPdfFooter($mpdf)
