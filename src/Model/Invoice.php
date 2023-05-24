@@ -217,7 +217,7 @@ class Invoice extends AdminModel
      */
     public function getTypeNameAttribute()
     {
-        return config('invoices.invoice_types.'.$this->type.'.name', '');
+        return _(config('invoices.invoice_types.'.$this->type.'.name', ''));
     }
 
     /*
