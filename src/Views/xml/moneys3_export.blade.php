@@ -23,7 +23,7 @@
             <VarSymbol>{{ $invoice->vs }}</VarSymbol>
             <CObjednavk>{{ $invoice->order_id ?: $invoice->vs }}</CObjednavk>
             <Ucet>{{ $export->subject->bank_name }}</Ucet>
-            <Druh>{{ $invoice->isInvoice || $invoice->isReturn ? 'N' : 'L' }}</Druh>
+            <Druh>{{ in_array($invoice->type, ['invoice', 'return', 'advance']) ? 'N' : 'L' }}</Druh>
             <Dobropis>0</Dobropis>
             @if ( $invoice->isInvoice )
             <PredKontac>PRIJMY_D</PredKontac>
@@ -47,15 +47,15 @@
             <SumZaloha>{{ $invoice->isInvoice ? $invoice->price_vat : 0 }}</SumZaloha>
             <SumZalohaC>{{ $invoice->isInvoice ? $invoice->price_vat : 0 }}</SumZalohaC>
             <DodOdb>
-                <ObchNazev>{{ $invoice->name }}</ObchNazev>
+                <ObchNazev>{{ $invoice->company_name }}</ObchNazev>
                 <ObchAdresa>
                     <Ulice>{{ $invoice->street }}</Ulice>
                     <Misto>{{ $invoice->city }}</Misto>
                     <PSC>{{ $invoice->zipcode }}</PSC>
                     <Stat>{{ $invoice->country }}</Stat>
-                    <KodStatu>SK</KodStatu>
+                    <KodStatu>{{ ($code = $invoice->country->code) ? strtoupper($code) : 'SK' }}</KodStatu>
                 </ObchAdresa>
-                <FaktNazev>{{ $invoice->name }}</FaktNazev>
+                <FaktNazev>{{ $invoice->company_name }}</FaktNazev>
                 <ICO>{{ $invoice->company_id }}</ICO>
                 <DIC>{{ $invoice->vat_id }}</DIC>
                 <FaktAdresa>
@@ -63,10 +63,10 @@
                     <Misto>{{ $invoice->city }}</Misto>
                     <PSC>{{ $invoice->zipcode }}</PSC>
                     <Stat>{{ $invoice->country }}</Stat>
-                    <KodStatu>SK</KodStatu>
+                    <KodStatu>{{ ($code = $invoice->country->code) ? strtoupper($code) : 'SK' }}</KodStatu>
                 </FaktAdresa>
                 <GUID></GUID>
-                <Nazev>{{ $invoice->name }}</Nazev>
+                <Nazev>{{ $invoice->company_name }}</Nazev>
                 <Tel>
                     <Pred></Pred>
                 </Tel>
@@ -78,13 +78,13 @@
                 <DICSK>{{ $invoice->tax_id }}</DICSK>
             </DodOdb>
             <KonecPrij>
-                <Nazev>{{ $invoice->name }}</Nazev>
+                <Nazev>{{ $invoice->company_name }}</Nazev>
                 <Adresa>
                     <Ulice>{{ $invoice->street }}</Ulice>
                     <Misto>{{ $invoice->city }}</Misto>
                     <PSC>{{ $invoice->zipcode }}</PSC>
                     <Stat>{{ $invoice->country }}</Stat>
-                    <KodStatu>SK</KodStatu>
+                    <KodStatu>{{ ($code = $invoice->country->code) ? strtoupper($code) : 'SK' }}</KodStatu>
                 </Adresa>
                 <GUID></GUID>
                 <Tel>
@@ -103,23 +103,23 @@
             <DopravZahr>0</DopravZahr>
             <Sleva>0</Sleva>
             <Pojisteno>0</Pojisteno>
+
             @if ( $invoice->isProform )
             <Vyridit_do>{{ $invoice->payment_date->format('Y-m-d') }}</Vyridit_do>
-            <Vyrizeno>{{ $invoice->proformInvoice ? $invoice->proformInvoice->payment_date->format('Y-m-d') : '' }}</Vyrizeno>
-
+            <Vyrizeno></Vyrizeno>
             <SeznamZalPolozek>
                 @foreach( $invoice->items as $key => $item )
                 <Polozka>
                     <Popis>{{ $item->name }}</Popis>
-                    <PocetMJ>{{ $item->qty }}</PocetMJ>
+                    <PocetMJ>{{ $item->quantity }}</PocetMJ>
                     <ZbyvaMJ>0</ZbyvaMJ>
-                    <Cena>{{ $item->price }}</Cena>
-                    <SazbaDPH>0</SazbaDPH>
-                    <TypCeny>0</TypCeny>
+                    <Cena>{{ $item->price_vat }}</Cena>
+                    <SazbaDPH>{{ $item->vat }}</SazbaDPH>
+                    <TypCeny>1</TypCeny>
                     <Sleva>0</Sleva>
                     <Vystaveno>{{ $invoice->created_at->format('Y-m-d') }}</Vystaveno>
                     <Vyridit_do>{{ $invoice->payment_date->format('Y-m-d') }}</Vyridit_do>
-                    <Vyrizeno>{{ $invoice->proformInvoice ? $invoice->proformInvoice->payment_date->format('Y-m-d') : '' }}</Vyrizeno>
+                    <Vyrizeno></Vyrizeno>
                     <Poradi>{{ $key + 1 }}</Poradi>
                     <Valuty>0</Valuty>
                     <Hmotnost>0</Hmotnost>
@@ -137,7 +137,7 @@
                 @foreach( $invoice->items as $key => $item )
                 <Polozka>
                     <Popis>{{ $item->name }}</Popis>
-                    <PocetMJ>{{ $item->qty }}</PocetMJ>
+                    <PocetMJ>{{ $item->quantity }}</PocetMJ>
                     <SazbaDPH>0</SazbaDPH>
                     <Cena>{{ $item->price }}</Cena>
                     <CenaTyp>0</CenaTyp>
