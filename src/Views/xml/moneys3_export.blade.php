@@ -2,18 +2,21 @@
 <MoneyData ICAgendy="{{ $export->subject->company_id }}" KodAgendy="" HospRokOd="{{ $export->from->format('Y-m-d') }}" HospRokDo="{{ $export->to->format('Y-m-d') }}" description="faktúry prijaté a vystavené" ExpZkratka="_FP+FV" ExpDate="2017-09-16" ExpTime="10:39:00" VyberZaznamu="0">
     <SeznamFaktVyd>
         @foreach( $invoices as $invoice )
+@php
+$isInvoice = in_array($invoice->type, ['invoice', 'advance']);
+@endphp
         <FaktVyd>
             <Doklad>{{ $invoice->number }}</Doklad>
             <GUID>{{ $invoice->getGuid() }}</GUID>
-            <Rada>{{ !$invoice->isInvoice ? '0' : '20rr' }}</Rada>
+            <Rada>{{ !$isInvoice ? '0' : '20rr' }}</Rada>
             <CisRada>{{ (int)substr($invoice->number, 4) }}</CisRada>
             <Popis>{{ ($first = $invoice->items->first()) ? $first->name : 'Online objednávka' }}</Popis>
             <Vystaveno>{{ $invoice->created_at->format('Y-m-d') }}</Vystaveno>
-            @if ( $invoice->isInvoice )
+            @if ( $isInvoice )
             <DatUcPr>{{ $invoice->created_at->format('Y-m-d') }}</DatUcPr>
             @endif
             <Splatno>{{ $invoice->payment_date ? $invoice->payment_date->format('Y-m-d') : '' }}</Splatno>
-            @if ( $invoice->isInvoice || $invoice->isReturn )
+            @if ( $isInvoice || $invoice->isReturn )
             <Doruceno>{{ $invoice->created_at->format('Y-m-d') }}</Doruceno>
             <DatSkPoh>{{ $invoice->created_at->format('Y-m-d') }}</DatSkPoh>
             @endif
@@ -23,18 +26,18 @@
             <VarSymbol>{{ $invoice->vs }}</VarSymbol>
             <CObjednavk>{{ $invoice->order_id ?: $invoice->vs }}</CObjednavk>
             <Ucet>{{ $export->subject->bank_name }}</Ucet>
-            <Druh>{{ in_array($invoice->type, ['invoice', 'return', 'advance']) ? 'N' : 'L' }}</Druh>
+            <Druh>{{ in_array($invoice->type, ['invoice', 'return']) ? 'N' : ($invoice->type == 'advance' ? 'D' : 'L') }}</Druh>
             <Dobropis>0</Dobropis>
-            @if ( $invoice->isInvoice )
+            @if ( $isInvoice )
             <PredKontac>PRIJMY_D</PredKontac>
             @endif
             <Uhrada>{{ $invoice->payment_type }}</Uhrada>
             <SazbaDPH1>10</SazbaDPH1>
             <SazbaDPH2>20</SazbaDPH2>
-            <Proplatit>{{ $invoice->isInvoice && $invoice->paid_at ? 0 : $invoice->price_vat }}</Proplatit>
+            <Proplatit>{{ $isInvoice && $invoice->paid_at ? 0 : $invoice->price_vat }}</Proplatit>
             <Vyuctovano>0</Vyuctovano>
             <SouhrnDPH>
-                <Zaklad0>{{ $invoice->isInvoice ? 0 : $invoice->price }}</Zaklad0>
+                <Zaklad0>{{ $isInvoice ? 0 : $invoice->price }}</Zaklad0>
                 <Zaklad5>0</Zaklad5>
                 <Zaklad22>0</Zaklad22>
                 <DPH5>0</DPH5>
@@ -44,15 +47,15 @@
             <Vystavil></Vystavil>
             <PriUhrZbyv>0</PriUhrZbyv>
             <ValutyProp>0</ValutyProp>
-            <SumZaloha>{{ $invoice->isInvoice ? $invoice->price_vat : 0 }}</SumZaloha>
-            <SumZalohaC>{{ $invoice->isInvoice ? $invoice->price_vat : 0 }}</SumZalohaC>
+            <SumZaloha>{{ $isInvoice ? $invoice->price_vat : 0 }}</SumZaloha>
+            <SumZalohaC>{{ $isInvoice ? $invoice->price_vat : 0 }}</SumZalohaC>
             <DodOdb>
                 <ObchNazev>{{ $invoice->company_name }}</ObchNazev>
                 <ObchAdresa>
                     <Ulice>{{ $invoice->street }}</Ulice>
                     <Misto>{{ $invoice->city }}</Misto>
                     <PSC>{{ $invoice->zipcode }}</PSC>
-                    <Stat>{{ $invoice->country }}</Stat>
+                    <Stat>{{ $invoice->country?->name }}</Stat>
                     <KodStatu>{{ ($code = $invoice->country->code) ? strtoupper($code) : 'SK' }}</KodStatu>
                 </ObchAdresa>
                 <FaktNazev>{{ $invoice->company_name }}</FaktNazev>
@@ -62,7 +65,7 @@
                     <Ulice>{{ $invoice->street }}</Ulice>
                     <Misto>{{ $invoice->city }}</Misto>
                     <PSC>{{ $invoice->zipcode }}</PSC>
-                    <Stat>{{ $invoice->country }}</Stat>
+                    <Stat>{{ $invoice->country?->name }}</Stat>
                     <KodStatu>{{ ($code = $invoice->country->code) ? strtoupper($code) : 'SK' }}</KodStatu>
                 </FaktAdresa>
                 <GUID></GUID>
@@ -83,7 +86,7 @@
                     <Ulice>{{ $invoice->street }}</Ulice>
                     <Misto>{{ $invoice->city }}</Misto>
                     <PSC>{{ $invoice->zipcode }}</PSC>
-                    <Stat>{{ $invoice->country }}</Stat>
+                    <Stat>{{ $invoice->country?->name }}</Stat>
                     <KodStatu>{{ ($code = $invoice->country->code) ? strtoupper($code) : 'SK' }}</KodStatu>
                 </Adresa>
                 <GUID></GUID>
@@ -138,9 +141,9 @@
                 <Polozka>
                     <Popis>{{ $item->name }}</Popis>
                     <PocetMJ>{{ $item->quantity }}</PocetMJ>
-                    <SazbaDPH>0</SazbaDPH>
-                    <Cena>{{ $item->price }}</Cena>
-                    <CenaTyp>0</CenaTyp>
+                    <SazbaDPH>{{ $item->vat }}</SazbaDPH>
+                    <Cena>{{ $item->price_vat }}</Cena>
+                    <CenaTyp>1</CenaTyp>
                     <Sleva>0</Sleva>
                     <Poradi>{{ $key + 1 }}</Poradi>
                     <Valuty>0</Valuty>
