@@ -1,7 +1,7 @@
 <table style="margin-top: 10px;" width="100%">
     <tr>
         <td align="left" valign="top">
-            @if ( $settings->hasVat == false )
+            @if ( $settings->hasVat($invoice) == false )
             {{ _('Nie sme platci DPH.') }}
             @endif
         </td>

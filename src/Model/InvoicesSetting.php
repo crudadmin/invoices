@@ -74,6 +74,7 @@ class InvoicesSetting extends AdminModel
                 Group::fields([
                     'vat_default' => 'name:Predvolená DPH|belongsTo:vats,:name (:vat%)|canAdd',
                 ])->if(config('invoices.multi_subjects')),
+                'vat_payer_from' => 'name:Platca DPH od|type:date',
                 Group::half([
                     'logo' => 'name:Logo|type:file|image',
                     'logo_height' => 'name:Výška loga (px)|type:integer|required|default:60',
@@ -113,5 +114,14 @@ class InvoicesSetting extends AdminModel
     public function getHasVatAttribute()
     {
         return $this->vat_id ? true : false;
+    }
+
+    public function hasVat($invoice)
+    {
+        if ( $this->vat_payer_from && $this->vat_payer_from >= $invoice->delivery_at ){
+            return false;
+        }
+
+        return $this->hasVat;
     }
 }
