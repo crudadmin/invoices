@@ -75,21 +75,26 @@ trait HasInvoicePdf
         ])->render();
     }
 
-    private function getInvoiceSummary()
+    public function getInvoiceSummary()
     {
         $withTax = [];
         $withoutTax = [];
+        $tax = [];
 
         foreach( $this->items as $item ) {
-            foreach ([&$withTax, &$withoutTax] as &$value) {
-                if ( ! array_key_exists(''.$item->vat, $value) ) {
-                    $value[$item->vat] = 0;
+            foreach ([&$withTax, &$withoutTax, &$tax] as &$refValue) {
+                if ( ! array_key_exists(''.$item->vat, $refValue) ) {
+                    $refValue[$item->vat] = 0;
                 }
             }
 
             //Round order item price by configuration
             $withoutTax[$item->vat] += $item->price * $item->quantity;
             $withTax[$item->vat] += $item->totalPriceWithTax;
+        }
+
+        foreach ($withTax as $taxValue => $value) {
+            $tax[$taxValue] = $value - $withoutTax[$taxValue];
         }
 
         ksort($withTax);
@@ -106,6 +111,7 @@ trait HasInvoicePdf
             'totalWithTax' => $totalWithTax,
             'withTax' => $withTax,
             'withoutTax' => $withoutTax,
+            'tax' => $tax,
         ];
     }
 

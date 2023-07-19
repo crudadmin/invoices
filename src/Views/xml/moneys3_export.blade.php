@@ -4,6 +4,7 @@
         @foreach( $invoices as $invoice )
 @php
 $isInvoice = in_array($invoice->type, ['invoice', 'advance']);
+$summary = $invoice->getInvoiceSummary();
 @endphp
         <FaktVyd>
             <Doklad>{{ $invoice->number }}</Doklad>
@@ -13,7 +14,7 @@ $isInvoice = in_array($invoice->type, ['invoice', 'advance']);
             <Popis>{{ ($first = $invoice->items->first()) ? $first->name : 'Online objednávka' }}</Popis>
             <Vystaveno>{{ $invoice->created_at->format('Y-m-d') }}</Vystaveno>
             @if ( $isInvoice )
-            <DatUcPr>{{ $invoice->created_at->format('Y-m-d') }}</DatUcPr>
+            <DatUcPr>{{ $invoice->delivery_at->format('Y-m-d') }}</DatUcPr>
             @endif
             <Splatno>{{ $invoice->payment_date ? $invoice->payment_date->format('Y-m-d') : '' }}</Splatno>
             @if ( $isInvoice || $invoice->isReturn )
@@ -29,7 +30,7 @@ $isInvoice = in_array($invoice->type, ['invoice', 'advance']);
             <Druh>{{ in_array($invoice->type, ['invoice', 'return']) ? 'N' : ($invoice->type == 'advance' ? 'D' : 'L') }}</Druh>
             <Dobropis>0</Dobropis>
             @if ( $isInvoice )
-            <PredKontac>PRIJMY_D</PredKontac>
+            <PredKontac>{{ $invoice->type == 'invoice' ? 'PRIJMY_D' : 'FV006' }}</PredKontac>
             @endif
             <Uhrada>{{ $invoice->payment_type }}</Uhrada>
             <SazbaDPH1>10</SazbaDPH1>
@@ -37,11 +38,12 @@ $isInvoice = in_array($invoice->type, ['invoice', 'advance']);
             <Proplatit>{{ $isInvoice && $invoice->paid_at ? 0 : $invoice->price_vat }}</Proplatit>
             <Vyuctovano>0</Vyuctovano>
             <SouhrnDPH>
-                <Zaklad0>{{ $isInvoice ? 0 : $invoice->price }}</Zaklad0>
-                <Zaklad5>0</Zaklad5>
-                <Zaklad22>0</Zaklad22>
-                <DPH5>0</DPH5>
-                <DPH22>0</DPH22>
+                @foreach ($summary['withoutTax'] as $tax => $value)
+                <Zaklad{{ $tax }}>{{ $value }}</Zaklad{{ $tax }}>
+                @endforeach
+                @foreach ($summary['tax'] as $tax => $value)
+                <DPH{{ $tax }}>{{ $value }}</DPH{{ $tax }}>
+                @endforeach
             </SouhrnDPH>
             <Celkem>{{ $invoice->price_vat }}</Celkem>
             <Vystavil></Vystavil>

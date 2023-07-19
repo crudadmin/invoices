@@ -12,7 +12,7 @@
     <tr class="p">
         <td class="bb bl" align="right">{{ $tax }} %</td>
         <td class="bb" align="right">{{ priceFormat($summary['withoutTax'][$tax]) }} €</td>
-        <td class="bb" align="right">{{ priceFormat($price - $summary['withoutTax'][$tax]) }} €</td>
+        <td class="bb" align="right">{{ priceFormat($summary['tax'][$tax]) }} €</td>
         <td class="bb br" align="right">{{ priceFormat($price) }} €</td>
     </tr>
     @endforeach
