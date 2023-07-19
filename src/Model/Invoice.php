@@ -343,7 +343,7 @@ class Invoice extends AdminModel
         $invoice = $this->replicate();
         $invoice->type = $type;
         $invoice->proform_id = $this->getKey();
-        $invoice->paid_at = Carbon::now();
+        $invoice->paid_at = $this->paid_at ?: Carbon::now();
         $invoice->payment_date = $this->payment_date < Carbon::now()->setTime(0, 0, 0) ? Carbon::now() : $this->payment_date;
         $invoice->snapshot_sha = null;
         $invoice->notified_at = null;
