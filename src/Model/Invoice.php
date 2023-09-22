@@ -347,6 +347,12 @@ class Invoice extends AdminModel
         $invoice->payment_date = $this->payment_date < Carbon::now()->setTime(0, 0, 0) ? Carbon::now() : $this->payment_date;
         $invoice->snapshot_sha = null;
         $invoice->notified_at = null;
+
+        //Set delivery date as paid date when we create invoice from proform.
+        if ( $this->type == 'proform' ) {
+            $invoice->delivery_at = $invoice->paid_at;
+        }
+
         $invoice->save();
 
         //Clone proform items
