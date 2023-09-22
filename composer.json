@@ -9,12 +9,12 @@
         { "name": "Marek Gogoľ", "email": "info@marekgogol.sk" }
     ],
     "require": {
-        "php": ">=7.0.0",
-        "laravel/framework": "^6|^7|^8|^9",
+        "php": ">=8.0.0",
+        "laravel/framework": "^8|^9|^10",
         "mpdf/mpdf": "^7.0|^8.0.17",
         "phpoffice/phpspreadsheet" : "^1.22",
         "propaganistas/laravel-phone": "^4.0",
-        "crudadmin/crudadmin": "^4.0|dev-master",
+        "crudadmin/crudadmin": "^5.0|^4.0|dev-master",
         "chillerlan/php-qrcode": "^3.2|^4.2",
         "umpirsky/country-list": "^2.0"
     },
