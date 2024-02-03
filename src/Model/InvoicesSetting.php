@@ -50,7 +50,7 @@ class InvoicesSetting extends AdminModel
             ]),
             'Fakturačná adresa' => Group::half([
                 'city' => 'name:Mesto|placeholder:Zadajte mesto|required|max:90',
-                'zipcode' => 'name:PSČ|placeholder:Zadajte PSČ|default:080 01|required|max:90',
+                'zipcode' => 'name:PSČ|placeholder:Zadajte PSČ|required|max:90',
                 'street' => 'name:Ulica|placeholder:Zadajte ulicu|required|max:90',
                 'country' => 'name:Štát|default:Slovenská republika|required|max:90',
             ]),

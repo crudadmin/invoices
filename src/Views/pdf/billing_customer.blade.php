@@ -23,7 +23,9 @@
                 @endforeach
             </table>
         </td>
-        @if ( config('invoices.delivery') )
+        @if ( config('invoices.delivery') && (
+            $invoice->delivery_company_name || $invoice->delivery_street || $invoice->delivery_zipcode || $invoice->delivery_city
+        ) )
         <td width="50%" valign="top" class="--pt0 --pb0">
             <table width="100%" border="0" cellpadding="0" cellspacing="0">
                 <tr><td><small><u>{{ _('Dodacia adresa').':' }}</u></td></tr>
