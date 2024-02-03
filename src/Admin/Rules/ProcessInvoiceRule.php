@@ -25,6 +25,7 @@ class ProcessInvoiceRule extends AdminRule
 
     public function creating(AdminModel $row)
     {
+        $row->addLocale();
         $row->setInvoiceNumber();
 
         if ( ! $row->vs ) {

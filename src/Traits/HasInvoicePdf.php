@@ -122,48 +122,47 @@ trait HasInvoicePdf
      */
     public function generatePDF($auto_save = true, $forceRegenerate = false)
     {
-        //Make sure localization is booted
-        Localization::boot();
+        $this->withLocale(function() use ($auto_save, $forceRegenerate) {
+            $snapshot_sha = $this->getSnapshotSha();
+            $snapshot_sha_short = substr($snapshot_sha, -10);
 
-        $snapshot_sha = $this->getSnapshotSha();
-        $snapshot_sha_short = substr($snapshot_sha, -10);
+            //Generate pdf name
+            $filename = $this->number . '-' . $snapshot_sha_short . '.pdf';
 
-        //Generate pdf name
-        $filename = $this->number . '-' . $snapshot_sha_short . '.pdf';
+            //Check if we can generate new invoice by checking old and new data hash
+            if ( $this->pdf && $this->pdf->exists() && $forceRegenerate === false && $this->snapshot_sha == $snapshot_sha ){
+                return $this;
+            }
 
-        //Check if we can generate new invoice by checking old and new data hash
-        if ( $this->pdf && $this->pdf->exists() && $forceRegenerate === false && $this->snapshot_sha == $snapshot_sha ){
-            return $this;
-        }
+            //Try load all removed relationship rows
+            try {
+                $this->loadDeletedInvoiceAttributes();
+            } catch (Throwable $error){
+                Log::error($error);
+            }
 
-        //Try load all removed relationship rows
-        try {
-            $this->loadDeletedInvoiceAttributes();
-        } catch (Throwable $error){
-            Log::error($error);
-        }
+            //Generate pdf
+            $mpdf = $this->getMpdf();
 
-        //Generate pdf
-        $mpdf = $this->getMpdf();
+            $this->setPdfFooter($mpdf);
 
-        $this->setPdfFooter($mpdf);
+            $mpdf->WriteHTML(
+                $this->getInvoiceTemplate()
+            );
 
-        $mpdf->WriteHTML(
-            $this->getInvoiceTemplate()
-        );
+            //Save pdf into storage
+            $this->getFieldStorage('pdf')->put(
+                $this->getStorageFilePath('pdf', $filename),
+                $mpdf->output(null, 'S')
+            );
 
-        //Save pdf into storage
-        $this->getFieldStorage('pdf')->put(
-            $this->getStorageFilePath('pdf', $filename),
-            $mpdf->output(null, 'S')
-        );
+            $this->pdf = $filename;
+            $this->snapshot_sha = $snapshot_sha;
 
-        $this->pdf = $filename;
-        $this->snapshot_sha = $snapshot_sha;
-
-        if ( $auto_save !== false ) {
-            $this->save();
-        }
+            if ( $auto_save !== false ) {
+                $this->save();
+            }
+        });
 
         return $this;
     }

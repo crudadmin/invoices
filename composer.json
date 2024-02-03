@@ -14,7 +14,7 @@
         "mpdf/mpdf": "^7.0|^8.0.17",
         "phpoffice/phpspreadsheet" : "^1.22",
         "propaganistas/laravel-phone": "^4.0|^5.0",
-        "crudadmin/crudadmin": "^5.0|^4.0|dev-master",
+        "crudadmin/crudadmin": "^5.0|^4.0|dev-master|dev-5.0-dev",
         "chillerlan/php-qrcode": "^3.2|^4.2",
         "umpirsky/country-list": "^2.0"
     },

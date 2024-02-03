@@ -12,6 +12,7 @@ use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceRule;
 use Gogol\Invoices\Model\InvoicesSetting;
+use Gogol\Invoices\Traits\HasInvoiceLocales;
 use Gogol\Invoices\Traits\HasInvoicePdf;
 use Gogol\Invoices\Traits\HasInvoiceQrCode;
 use Gogol\Invoices\Traits\InvoiceProcessTrait;
@@ -19,6 +20,7 @@ use Gogol\Invoices\Traits\InvoiceProcessTrait;
 class Invoice extends AdminModel
 {
     use InvoiceProcessTrait,
+        HasInvoiceLocales,
         HasInvoicePdf;
 
     /*
@@ -159,6 +161,9 @@ class Invoice extends AdminModel
                 ])->inline(),
             ]),
             'notified_at' => 'name:Notifikácia zaslaná dňa|type:datetime|inaccessible',
+            Group::fields([
+                'language' => 'name:Jazyk objednávky|belongsTo:languages|inaccessible'
+            ])->if(Admin::isEnabledLocalization()),
             'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
             'guid' => 'name:GUID|max:50|invisible',
         ];
