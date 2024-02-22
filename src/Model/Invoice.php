@@ -230,7 +230,7 @@ class Invoice extends AdminModel
      */
     public function getTypeNameNumberAttribute()
     {
-        return sprintf('%s č. %s', config('invoices.invoice_types.'.$this->type.'.name', ''), $this->number);
+        return sprintf(_('%s č. %s'), config('invoices.invoice_types.'.$this->type.'.name', ''), $this->number);
     }
 
     /*
