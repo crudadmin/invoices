@@ -12,15 +12,15 @@ use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceRule;
 use Gogol\Invoices\Model\InvoicesSetting;
-use Gogol\Invoices\Traits\HasInvoiceLocales;
 use Gogol\Invoices\Traits\HasInvoicePdf;
 use Gogol\Invoices\Traits\HasInvoiceQrCode;
 use Gogol\Invoices\Traits\InvoiceProcessTrait;
+use Admin\Eloquent\Concerns\HasEntryLocales;
 
 class Invoice extends AdminModel
 {
     use InvoiceProcessTrait,
-        HasInvoiceLocales,
+        HasEntryLocales,
         HasInvoicePdf;
 
     /*
