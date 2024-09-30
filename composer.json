@@ -10,7 +10,6 @@
     ],
     "require": {
         "php": ">=8.0.0",
-        "laravel/framework": "^8|^9|^10",
         "mpdf/mpdf": "^7.0|^8.0.17",
         "phpoffice/phpspreadsheet" : "^1.22",
         "propaganistas/laravel-phone": "^4.0|^5.0",
