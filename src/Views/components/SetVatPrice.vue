@@ -44,10 +44,11 @@ export default {
             if ( typeof value == 'string' )
                 value = value.replace(',', '.');
 
-            if ( this.field_key.substr(-3) == 'vat' )
-                this.$set(this.row, 'price', parseFloat((parseFloat(value)||0) / (1 + (vat / 100))).toFixed(2) )
-            else
-                this.$set(this.row, 'price_vat', parseFloat((parseFloat(value)||0) * (1 + (vat / 100))).toFixed(2) )
+            if ( this.field_key.substr(-3) == 'vat' ) {
+                this.row.price = parseFloat((parseFloat(value)||0) / (1 + (vat / 100))).toFixed(2);
+            } else {
+                this.row.price_vat = parseFloat((parseFloat(value)||0) * (1 + (vat / 100))).toFixed(2);
+            }
         },
     }
 }

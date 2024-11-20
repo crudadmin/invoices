@@ -28,7 +28,7 @@ export default {
 
     methods : {
         setFieldDefaultVat(){
-            Vue.set(this.field, 'default', this.getDefaultVat);
+            this.field.default = this.getDefaultVat;
         }
     }
 }
