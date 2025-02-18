@@ -6,8 +6,15 @@ use Gogol\Invoices\Helpers\Exports\InvoiceExport;
 
 class OmegaExport extends InvoiceExport
 {
-    const VAT_LOWER = 10;
     const VAT_HIGHER = 20;
+
+    public function getOmegaRates()
+    {
+        return config('invoices.omaga.vat_rates', [
+            'lower' => 19,
+            'higher' => 23,
+        ]);
+    }
 
     protected function getInvoiceTaxSum($invoice, $vat, $sumColumn = 'price')
     {
@@ -52,11 +59,11 @@ class OmegaExport extends InvoiceExport
 
         $vat = (int)$item->vat;
 
-        if ( $vat >= self::VAT_HIGHER ){
+        if ( $vat >= $this->getOmegaRates()['higher'] ){
             return 'V';
         } else if ( $vat == 0 ){
             return '0';
-        } else if ( $vat < self::VAT_LOWER ){
+        } else if ( $vat < $this->getOmegaRates()['lower'] ){
             return 'N';
         } else {
             return 'X';

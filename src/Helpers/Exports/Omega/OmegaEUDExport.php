@@ -21,6 +21,9 @@ class OmegaEUDExport extends OmegaExport
             ['R00', 'T00'],
         ];
 
+        $lower = $this->getOmegaRates()['lower'];
+        $higher = $this->getOmegaRates()['higher'];
+
         foreach ($this->invoices as $invoice) {
             //TESTING
             // if ( $invoice->number != 'FV-202200XXXX' ){
@@ -48,14 +51,14 @@ class OmegaEUDExport extends OmegaExport
                 '', //R       kurz banka - exchange rate bank
                 $invoice->price_vat, //S       suma spolu CM - amount in all FC
                 '', //T       suma spolu TM - amount in all DC
-                self::VAT_LOWER, //U       Sadzba Nizsia - TAX rate lower
-                self::VAT_HIGHER, //V       Sadzba Vyssia - TAX rate higher
-                $this->getInvoiceTaxSum($invoice, self::VAT_LOWER), //W       Zaklad Nizsia - VAT basis in lower VAT
-                $this->getInvoiceTaxSum($invoice, self::VAT_HIGHER), //X       Zaklad Vyssia - VAT basis in higher VAT
+                $lower, //U       Sadzba Nizsia - TAX rate lower
+                $higher, //V       Sadzba Vyssia - TAX rate higher
+                $this->getInvoiceTaxSum($invoice, $lower), //W       Zaklad Nizsia - VAT basis in lower VAT
+                $this->getInvoiceTaxSum($invoice, $higher), //X       Zaklad Vyssia - VAT basis in higher VAT
                 '', //Y       Zaklad 0 - VAT basis in null VAT
                 '', //Z       Zaklad Neobsahuje - basis in VAT free
-                $this->getInvoiceTaxSum($invoice, self::VAT_LOWER, 'price_vat') - $this->getInvoiceTaxSum($invoice, self::VAT_LOWER, 'price'), //AA      Suma DPH nizsia - Amount VAT lower
-                $this->getInvoiceTaxSum($invoice, self::VAT_HIGHER, 'price_vat') - $this->getInvoiceTaxSum($invoice, self::VAT_HIGHER, 'price'), //AB      Suma DPH vyssia - Amount VAT higher
+                $this->getInvoiceTaxSum($invoice, $lower, 'price_vat') - $this->getInvoiceTaxSum($invoice, $lower, 'price'), //AA      Suma DPH nizsia - Amount VAT lower
+                $this->getInvoiceTaxSum($invoice, $higher, 'price_vat') - $this->getInvoiceTaxSum($invoice, $higher, 'price'), //AB      Suma DPH vyssia - Amount VAT higher
                 '', //AC      Halierove vyrovnanie - Price correction
                 '', //AD  >>  zaevidoval - registered by
                 '', //AE      konstantny symbol - constant symbol
