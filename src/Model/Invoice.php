@@ -96,7 +96,7 @@ class Invoice extends AdminModel
             'Nastavenia dokladu' => Group::fields([
                 Group::inline([
                     // TODO: hide subjects when there is only one, via javascript.
-                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,:name|sub_component:SetDefaultSubject|readonlyIfNot:id,NULL|required'),
+                    'subject' => 'name:Subjekt|belongsTo:invoices_settings,:name|sub_component:SetDefaultSubject|readonlyIfNot:id,NULL|required',
                     'type' => 'name:Typ dokladu|type:select|'.($row ? '' : 'required').'|index|max:20|readonlyIfNot:id,NULL',
                     Group::inline([
                         'number_manual' => 'name:Manuálne číslo dokladu|type:checkbox|default:0|hidden',
