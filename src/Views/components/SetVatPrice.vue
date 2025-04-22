@@ -11,6 +11,8 @@
             @change="reloadPrices"
             :placeholder="field.name"
             class="form-control"
+            :readonly="field.isReadonly()"
+            :disabled="field.isDisabled()"
         />
     </div>
 </template>
