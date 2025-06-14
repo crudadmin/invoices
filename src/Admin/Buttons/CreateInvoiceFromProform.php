@@ -9,6 +9,8 @@ use Validator;
 
 class CreateInvoiceFromProform extends Button
 {
+    public $reloadAll = true;
+
     /*
      * Here is your place for binding button properties for each row
      */

@@ -7,6 +7,8 @@ use Admin\Eloquent\AdminModel;
 
 class CreateReturnFromInvoice extends Button
 {
+    public $reloadAll = true;
+
     /*
      * Here is your place for binding button properties for each row
      */
