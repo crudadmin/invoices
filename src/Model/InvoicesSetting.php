@@ -10,7 +10,7 @@ class InvoicesSetting extends AdminModel
     /*
      * Model created date, for ordering tables in database and in user interface
      */
-    protected $migration_date = '2019-03-26 20:26:47';
+    protected $migration_date = '2019-03-26 20:02:47';
 
     /*
      * Template name
@@ -26,6 +26,12 @@ class InvoicesSetting extends AdminModel
     protected $sortable = false;
 
     protected $publishable = false;
+
+    protected $settings = [
+        'buttons.create' => 'Nový subjekt',
+        'title.create' => 'Nový fakturačný subjekt',
+        'title.update' => 'Upravujete fakturačný subjekt :name',
+    ];
 
     public function single()
     {

@@ -26,6 +26,8 @@ class Vat extends AdminModel
 
     protected $orderBy = ['vat', 'asc'];
 
+    protected $icon = 'fa-percent';
+
     /*
      * Automatic form and database generation
      * @name - field name

@@ -183,7 +183,8 @@ class Invoice extends AdminModel
 
     private function getSubjectOptions()
     {
-        return Admin::getModel('InvoicesSetting')->select(['invoices_settings.id', 'invoices_settings.name'])
+        return Admin::getModel('InvoicesSetting')
+            ->select(['invoices_settings.id', 'invoices_settings.name'])
             ->when(config('invoices.multi_subjects'), function($query){
                 $query
                     ->addSelect('vats.vat as vat_default_value')
