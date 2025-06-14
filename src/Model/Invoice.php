@@ -61,9 +61,9 @@ class Invoice extends AdminModel
         'autoreset' => false,
         'search.enabled' => true,
         'xls' => true,
-        'buttons.insert' => 'Nový doklad',
+        'buttons.create' => 'Nový doklad',
         'title' => [
-            'insert' => 'Nový doklad',
+            'create' => 'Nový doklad',
             'update' => 'Upravujete doklad č. :formated_number',
         ],
         'grid' => [
@@ -416,21 +416,13 @@ class Invoice extends AdminModel
     {
         $filter = [];
 
-        $subjects = Admin::getModel('InvoicesSetting')->all();
-        if ( count($subjects) >= 2 ) {
-            foreach ($subjects as $subject) {
-                $filter['subject_'.$subject->getKey()] = [
-                    'name' => $subject->name,
-                    'query' => function($query) use ($subject) {
-                        return $query->where('subject_id', $subject->getKey());
-                    },
-                ];
-            }
-        }
-
         foreach (config('invoices.invoice_types') as $key => $type) {
             $filter[$key] = [
+                'color' => $type['color'] ?? null,
                 'name' => $type['name'],
+                'active' => function() use ($key) {
+                    return $this->type == $key;
+                },
                 'query' => function($query) use ($key) {
                     return $query->where('type', $key);
                 },
