@@ -36,7 +36,7 @@ class OmegaEUDExport extends OmegaExport
                 'OF', //C       kod evidencie - tally code
                 $this->getInvoiceNumberSequence($invoice), //D       kod ciselneho radu - sequence code
                 $invoice->number, //E       cislo interne - internal number
-                $invoice->number, //F       externe cislo - external number
+                $invoice->vs, //F       externe cislo - external number
                 $invoice->company_id ? $invoice->company_name : 'Maloobchodný predaj', //G       meno firmy partnera - company name of partner
                 $invoice->company_id, //H       ICO - REG
                 $invoice->company_tax_id, //I       DIC/DU - TAX partner
