@@ -3,9 +3,6 @@
 namespace Gogol\Invoices\Controllers;
 
 use Gogol\Invoices\Model\Invoice;
-use Gogol\Invoices\Model\InvoicesExport;
-use Admin\Helpers\File;
-use Illuminate\Http\Request;
 use Admin;
 
 class InvoiceController extends Controller
@@ -17,12 +14,18 @@ class InvoiceController extends Controller
         return Invoice::where('type', 'invoice')->where('number', $number)->first();
     }
 
-    public function generateInvoicePdf($id)
+    public function generateInvoicePdf($id, $hash = null)
     {
         $invoice = Admin::getModel('Invoice')->findOrFail($id);
 
-        if ( ! ($pdf = $invoice->getPdf(config('invoices.testing_pdf', false))) )
+        if ( ! ($pdf = $invoice->getPdf(config('invoices.testing_pdf', false))) ) {
             abort(404);
+        }
+
+        // Admin is not logged in, redirect to login page
+        if ( !admin() && !($hash && $hash == $invoice->hash) ) {
+            return redirect()->guest(config('admin.authentication.login.path', admin_action('Auth\LoginController@showLoginForm')));
+        }
 
         if ( config('invoices.testing_pdf', false) === true ) {
             return response($pdf->get(), 200, [

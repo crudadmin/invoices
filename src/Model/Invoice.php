@@ -3,24 +3,24 @@
 namespace Gogol\Invoices\Model;
 
 use Admin;
-use Admin\Eloquent\AdminModel;
-use Admin\Fields\Group;
 use Carbon\Carbon;
-use Gogol\Invoices\Admin\Buttons\CreateInvoiceFromProform;
-use Gogol\Invoices\Admin\Buttons\CreateReturnFromInvoice;
-use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
+use Admin\Fields\Group;
+use Admin\Eloquent\AdminModel;
+use Gogol\Invoices\Traits\HasInvoicePdf;
+use Gogol\Invoices\Traits\HasInvoiceHash;
+use Admin\Eloquent\Concerns\HasEntryLocales;
+use Gogol\Invoices\Traits\InvoiceProcessTrait;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceRule;
-use Gogol\Invoices\Model\InvoicesSetting;
-use Gogol\Invoices\Traits\HasInvoicePdf;
-use Gogol\Invoices\Traits\HasInvoiceQrCode;
-use Gogol\Invoices\Traits\InvoiceProcessTrait;
-use Admin\Eloquent\Concerns\HasEntryLocales;
+use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
+use Gogol\Invoices\Admin\Buttons\CreateReturnFromInvoice;
+use Gogol\Invoices\Admin\Buttons\CreateInvoiceFromProform;
 
 class Invoice extends AdminModel
 {
     use InvoiceProcessTrait,
         HasEntryLocales,
+        HasInvoiceHash,
         HasInvoicePdf;
 
     /*
@@ -166,7 +166,8 @@ class Invoice extends AdminModel
                 'language' => 'name:Jazyk objednávky|belongsTo:languages|inaccessible'
             ])->if(Admin::isEnabledLocalization()),
             'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
-            'guid' => 'name:GUID|max:50|invisible',
+            'guid' => 'name:GUID|max:50|inaccessible',
+            'hash' => 'name:Hash|type:string|inaccessible|max:8',
         ];
     }
 
