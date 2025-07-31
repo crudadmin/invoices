@@ -3,7 +3,7 @@
     <tr><td><strong>{{ $settings->name }}</strong></td></tr>
     <tr><td>{{ $settings->street }}</td></tr>
     <tr><td>{{ implode(', ', array_filter([$settings->zipcode, $settings->city])) }}</td></tr>
-    <tr><td>{{ $settings->country }}</td></tr>
+    <tr><td>{{ $settings->country ? $settings->country->name : '' }}</td></tr>
     <tr><td>&nbsp;</tr>
     <tr><td>{{ _('IČO') }}: {{ $settings->company_id }}</td></tr>
     <tr><td>{{ _('DIČ') }}: {{ $settings->tax_id }}</td></tr>

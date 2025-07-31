@@ -58,7 +58,7 @@ class InvoicesSetting extends AdminModel
                 'city' => 'name:Mesto|placeholder:Zadajte mesto|required|max:90',
                 'zipcode' => 'name:PSČ|placeholder:Zadajte PSČ|required|max:90',
                 'street' => 'name:Ulica|placeholder:Zadajte ulicu|required|max:90',
-                'country' => 'name:Štát|default:Slovenská republika|required|max:90',
+                'country' => 'name:Štát|belongsTo:countries,name|defaultByOption:default,1|hidden|required',
             ]),
             Group::fields([
                 'Bankove údaje' => Group::half([
