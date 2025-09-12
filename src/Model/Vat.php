@@ -54,4 +54,14 @@ class Vat extends AdminModel
         SetDefault::class,
     ];
 
+    public function onTableCreate()
+    {
+        foreach([0, 5, 20, 23] as $vat) {
+            $this->create([
+                'name' => $vat . '%',
+                'vat' => $vat,
+                'default' => $vat == 23,
+            ]);
+        }
+    }
 }
