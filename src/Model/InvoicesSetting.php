@@ -38,6 +38,11 @@ class InvoicesSetting extends AdminModel
         return config('invoices.multi_subjects', false) == false;
     }
 
+    public function active()
+    {
+        return config('invoices.enabled', true);
+    }
+
     /*
      * Automatic form and database generation
      * @name - field name

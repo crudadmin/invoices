@@ -56,6 +56,11 @@ class InvoicesExport extends AdminModel
         'title.insert' => 'Nový export',
     ];
 
+    public function active()
+    {
+        return config('invoices.enabled', true);
+    }
+
     public function options()
     {
         return [

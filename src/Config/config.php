@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'enabled' => true,
+
     /*
      * Logo and signature height in invoice
      */

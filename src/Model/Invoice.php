@@ -83,6 +83,11 @@ class Invoice extends AdminModel
         ],
     ];
 
+    public function active()
+    {
+        return config('invoices.enabled', true);
+    }
+
     /*
      * Automatic form and database generation
      * @name - field name
