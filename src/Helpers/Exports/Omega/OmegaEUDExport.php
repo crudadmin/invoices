@@ -21,10 +21,10 @@ class OmegaEUDExport extends OmegaExport
             ['R00', 'T00'],
         ];
 
-        $lower = $this->getOmegaRates()['lower'];
-        $higher = $this->getOmegaRates()['higher'];
-
         foreach ($this->invoices as $invoice) {
+            $rates = $this->getOmegaRates($invoice);
+            $lower = $rates['lower'];
+            $higher = $rates['higher'];
             //TESTING
             // if ( $invoice->number != 'FV-202200XXXX' ){
             //     continue;

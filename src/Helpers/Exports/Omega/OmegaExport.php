@@ -6,14 +6,17 @@ use Gogol\Invoices\Helpers\Exports\InvoiceExport;
 
 class OmegaExport extends InvoiceExport
 {
-    const VAT_HIGHER = 20;
-
-    public function getOmegaRates()
+    public function getOmegaRates($invoice)
     {
-        return config('invoices.omaga.vat_rates', [
-            'lower' => 19,
-            'higher' => 23,
-        ]);
+        $maxVat = $invoice->items->pluck('vat')->map(fn($vat) => (float)$vat)->max();
+
+        $minVat = $invoice->items->pluck('vat')->map(fn($vat) => (float)$vat)->filter(fn($vat) => $vat > 0)->min();
+        $minVat = $minVat == $maxVat ? null : $minVat;
+
+        return [
+            'lower' => $minVat,
+            'higher' => $maxVat,
+        ];
     }
 
     protected function getInvoiceTaxSum($invoice, $vat, $sumColumn = 'price')

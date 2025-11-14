@@ -22,10 +22,12 @@ class OmegaInvoiceExport extends OmegaExport
             ['R00', 'T01'],
         ];
 
-        $lower = $this->getOmegaRates()['lower'];
-        $higher = $this->getOmegaRates()['higher'];
 
         foreach ($this->invoices as $invoice) {
+            $rates = $this->getOmegaRates($invoice);
+            $lower = $rates['lower'];
+            $higher = $rates['higher'];
+
             $rows[] = [
                 'R01', //A hlavicka
                 $invoice->number, //B       cislo dokladu - receipt number
