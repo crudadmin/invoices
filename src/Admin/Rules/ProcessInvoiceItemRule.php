@@ -46,10 +46,12 @@ class ProcessInvoiceItemRule extends AdminRule
 
     private function reloadItemPrice($row)
     {
-        if ( ! $row->price )
+        if ( ! $row->price ) {
             $row->price = calculateWithoutVat($row->price_vat, $row->vat);
+        }
 
-        if ( ! $row->price_vat )
+        if ( ! $row->price_vat ) {
             $row->price_vat = calculateWithVat($row->price, $row->vat);
+        }
     }
 }
