@@ -67,8 +67,8 @@ function getDefaultVatValue($subject = null)
     });
 }
 
-function canRoundSummary()
+function hasVatPriority()
 {
-    return config('invoices.round_summary', true);
+    return config('invoices.vat_summary_priority', true);
 }
 ?>

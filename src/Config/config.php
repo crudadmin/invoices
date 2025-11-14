@@ -56,11 +56,9 @@ return [
     'testing_pdf' => env('INVOICES_PDF_TEST', false),
 
     /*
-     * Does not round decimals for vat price in products. For multiple quantity total price may be different
-     * true => (1.11*1.2 => 1.332)*6=>7.99 in total
-     * false => (1.11*1.2 => 1.33)*6=>7.98 in total
+     * First will be calculated price with VAT, and from this price we will calculate price without VAT
      */
-    'round_summary' => true,
+    'vat_summary_priority' => true,
 
     /*
      * QR Code feature

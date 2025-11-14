@@ -73,9 +73,7 @@ class InvoicesItem extends AdminModel
 
     public function getTotalPriceWithTaxAttribute()
     {
-        return canRoundSummary()
-            ? $this->price_vat * $this->quantity
-            : calculateWithVat($this->price * $this->quantity, $this->vat);
+        return $this->price_vat * $this->quantity;
     }
 
     private function getVatValues()
