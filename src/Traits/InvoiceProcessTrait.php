@@ -58,17 +58,10 @@ trait InvoiceProcessTrait
      */
     public function reloadInvoicePrice()
     {
-        $price = 0;
-        $priceVat = 0;
+        $summary = $this->getPricesSummary();
 
-        foreach ($this->items as $item)
-        {
-            $price += $item->price * $item->quantity;
-            $priceVat += $item->price_vat * $item->quantity;
-        }
-
-        $this->price = $price;
-        $this->price_vat = $priceVat;
+        $this->price = $summary['totalWithoutTax'];
+        $this->price_vat = $summary['totalWithTax'];
     }
 
     /*

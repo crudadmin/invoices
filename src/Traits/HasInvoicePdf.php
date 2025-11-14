@@ -75,7 +75,7 @@ trait HasInvoicePdf
         ])->render();
     }
 
-    public function getInvoiceSummary()
+    public function getPricesSummary()
     {
         $withTax = [];
         $withoutTax = [];
@@ -100,19 +100,30 @@ trait HasInvoicePdf
         ksort($withTax);
 
         $totalWithTax = array_sum($withTax);
-
-        if ( in_array($this->type, ['invoice', 'advance']) && $this->paid_at ){
-            $totalWithTax = 0;
-        } else if ( $this->canSubtractInvoice ){
-            $totalWithTax -= $this->proform->price_vat;
-        }
+        $totalWithoutTax = array_sum($withoutTax);
 
         return [
             'totalWithTax' => $totalWithTax,
+            'totalWithoutTax' => $totalWithoutTax,
             'withTax' => $withTax,
             'withoutTax' => $withoutTax,
             'tax' => $tax,
         ];
+    }
+
+    public function getInvoiceSummary()
+    {
+        $summary = $this->getPricesSummary();
+
+        if ( in_array($this->type, ['invoice', 'advance']) && $this->paid_at ){
+            $summary['totalWithoutTax'] = 0;
+            $summary['totalWithTax'] = 0;
+        } else if ( $this->canSubtractInvoice ){
+            $summary['totalWithoutTax'] -= $this->proform->price;
+            $summary['totalWithTax'] -= $this->proform->price_vat;
+        }
+
+        return $summary;
     }
 
     /**
