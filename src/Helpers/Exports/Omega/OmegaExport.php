@@ -72,12 +72,13 @@ class OmegaExport extends InvoiceExport
         }
 
         $vat = (int)$item->vat;
+        $rates = $this->getOmegaRates();
 
-        if ( $vat >= $this->getOmegaRates()['higher'] ){
+        if ( $vat >= $rates['higher'] ){
             return 'V';
         } else if ( $vat == 0 ){
             return '0';
-        } else if ( $vat < $this->getOmegaRates()['lower'] ){
+        } else if ( $vat < $rates['lower'] ){
             return 'N';
         } else {
             return 'X';

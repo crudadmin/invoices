@@ -145,8 +145,9 @@ class OmegaEUDExport extends OmegaExport
             foreach ($invoice->items()->pluck('vat')->sort()->unique()->values() as $vat) {
                 $rateKeys = [
                   0 => ['V', null],
-                  $lower => ['01', '02'],
-                  $higher => ['03', '04'],
+                  5 => ['01', '02'],
+                  19 => ['01', '02'],
+                  23 => ['03', '04'],
                 ];
 
                 $vatRatesAccounts = [
