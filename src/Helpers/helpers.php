@@ -69,6 +69,6 @@ function getDefaultVatValue($subject = null)
 
 function hasVatPriority()
 {
-    return config('invoices.vat_summary_priority', true);
+    return config('invoices.prices.vat_priority', true);
 }
 ?>

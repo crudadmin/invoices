@@ -60,8 +60,8 @@ trait InvoiceProcessTrait
     {
         $summary = $this->getPricesSummary();
 
-        $this->price = $summary['totalWithoutTax'];
-        $this->price_vat = $summary['totalWithTax'];
+        $this->price = round($summary['totalWithoutTax'], 2);
+        $this->price_vat = round($summary['totalWithTax'], 2);
     }
 
     /*
