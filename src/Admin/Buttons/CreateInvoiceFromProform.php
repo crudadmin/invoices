@@ -23,7 +23,7 @@ class CreateInvoiceFromProform extends Button
         $this->class = $row->proformInvoice ? 'btn-default' : 'btn-primary';
 
         //Button Icon
-        $this->icon = 'fa-file-text-o';
+        $this->icon = 'fa-file-alt';
 
         //
         $this->active = in_array($row->type, ['proform', 'advance']);
