@@ -28,7 +28,7 @@ class OmegaEUDExport extends OmegaExport
             $higher = $rates['higher'];
 
             //TESTING
-            // if ( $invoice->number != 'FV-202200XXXX' ){
+            // if ( !in_array($invoice->number, ['FV-2025007149-', 'FV-2025007659']) ){
             //     continue;
             // }
 
