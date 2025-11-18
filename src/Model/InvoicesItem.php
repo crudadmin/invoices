@@ -79,13 +79,12 @@ class InvoicesItem extends AdminModel
     public function getTotalPriceWithoutVatAttribute()
     {
         if ( hasVatPriority() ) {
-            return roundInvoicePrice(
-                calculateWithoutVat($this->totalPriceWithVat, $this->vat)
-            );
+            $price = calculateWithoutVat($this->totalPriceWithVat, $this->vat);
         } else {
-            return roundInvoicePrice($this->price * $this->quantity);
+            $price = $this->price * $this->quantity;
         }
 
+        return roundInvoicePrice($price);
     }
 
     private function getVatValues()
