@@ -57,7 +57,7 @@ class OmegaEUDExport extends OmegaExport
                 $higher, //V       Sadzba Vyssia - TAX rate higher
                 $this->getInvoiceTaxSum($invoice, $lower), //W       Zaklad Nizsia - VAT basis in lower VAT
                 $this->getInvoiceTaxSum($invoice, $higher), //X       Zaklad Vyssia - VAT basis in higher VAT
-                '', //Y       Zaklad 0 - VAT basis in null VAT
+                $this->getInvoiceTaxSum($invoice, 0), //Y       Zaklad 0 - VAT basis in null VAT
                 '', //Z       Zaklad Neobsahuje - basis in VAT free
                 $this->getInvoiceTaxSum($invoice, $lower, true) - $this->getInvoiceTaxSum($invoice, $lower), //AA      Suma DPH nizsia - Amount VAT lower
                 $this->getInvoiceTaxSum($invoice, $higher, true) - $this->getInvoiceTaxSum($invoice, $higher), //AB      Suma DPH vyssia - Amount VAT higher
@@ -156,7 +156,7 @@ class OmegaEUDExport extends OmegaExport
 
                 // If is medium vat, then for small use additional keys
                 if ( isset($rates['medium']) && $vat == $rates['lower'] ) {
-                    $rateKeys[$vat] = ['01', '02a'];
+                    $rateKeys[$vat] = ['01a', '02a'];
                 }
 
                 $vatRatesAccounts = [
