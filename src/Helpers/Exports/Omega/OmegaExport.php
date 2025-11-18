@@ -19,12 +19,14 @@ class OmegaExport extends InvoiceExport
         ];
     }
 
-    protected function getInvoiceTaxSum($invoice, $vat, $sumColumn = 'price')
+    protected function getInvoiceTaxSum($invoice, $vat, $withVat = false)
     {
+        $sumColumn = $withVat ? 'totalPriceWithVat' : 'totalPriceWithoutVat';
+
         return $invoice->items->filter(function($item) use ($vat) {
             return $item->vat == $vat;
         })->sum(function($item) use ($sumColumn) {
-            return $item->{$sumColumn} * $item->quantity;
+            return $item->{$sumColumn};
         });
     }
 

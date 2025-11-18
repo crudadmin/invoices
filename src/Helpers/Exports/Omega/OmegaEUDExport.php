@@ -57,8 +57,8 @@ class OmegaEUDExport extends OmegaExport
                 $this->getInvoiceTaxSum($invoice, $higher), //X       Zaklad Vyssia - VAT basis in higher VAT
                 '', //Y       Zaklad 0 - VAT basis in null VAT
                 '', //Z       Zaklad Neobsahuje - basis in VAT free
-                $this->getInvoiceTaxSum($invoice, $lower, 'price_vat') - $this->getInvoiceTaxSum($invoice, $lower, 'price'), //AA      Suma DPH nizsia - Amount VAT lower
-                $this->getInvoiceTaxSum($invoice, $higher, 'price_vat') - $this->getInvoiceTaxSum($invoice, $higher, 'price'), //AB      Suma DPH vyssia - Amount VAT higher
+                $this->getInvoiceTaxSum($invoice, $lower, true) - $this->getInvoiceTaxSum($invoice, $lower), //AA      Suma DPH nizsia - Amount VAT lower
+                $this->getInvoiceTaxSum($invoice, $higher, true) - $this->getInvoiceTaxSum($invoice, $higher), //AB      Suma DPH vyssia - Amount VAT higher
                 '', //AC      Halierove vyrovnanie - Price correction
                 '', //AD  >>  zaevidoval - registered by
                 '', //AE      konstantny symbol - constant symbol

@@ -71,9 +71,21 @@ class InvoicesItem extends AdminModel
         ];
     }
 
-    public function getTotalPriceWithTaxAttribute()
+    public function getTotalPriceWithVatAttribute()
     {
-        return $this->price_vat * $this->quantity;
+        return roundInvoicePrice($this->price_vat * $this->quantity);
+    }
+
+    public function getTotalPriceWithoutVatAttribute()
+    {
+        if ( hasVatPriority() ) {
+            return roundInvoicePrice(
+                calculateWithoutVat($this->totalPriceWithVat, $this->vat)
+            );
+        } else {
+            return roundInvoicePrice($this->price * $this->quantity);
+        }
+
     }
 
     private function getVatValues()

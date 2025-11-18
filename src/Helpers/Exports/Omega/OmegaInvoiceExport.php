@@ -42,8 +42,8 @@ class OmegaInvoiceExport extends OmegaExport
                 null, //K       Zaklad Neobsahuje - basis in VAT free
                 $lower, //L       Sadzba Nizsia - TAX rate lower
                 $higher, //M       Sadzba Vyssia - TAX rate higher
-                $this->getInvoiceTaxSum($invoice, $lower, 'price_vat') - $this->getInvoiceTaxSum($invoice, $lower, 'price'), //N       Suma DPH nizsia - Amount VAT lower
-                $this->getInvoiceTaxSum($invoice, $higher, 'price_vat') - $this->getInvoiceTaxSum($invoice, $higher, 'price'), //O       Suma DPH vyssia - Amount VAT higher
+                $this->getInvoiceTaxSum($invoice, $lower, true) - $this->getInvoiceTaxSum($invoice, $lower), //N       Suma DPH nizsia - Amount VAT lower
+                $this->getInvoiceTaxSum($invoice, $higher, true) - $this->getInvoiceTaxSum($invoice, $higher), //O       Suma DPH vyssia - Amount VAT higher
                 null, //P       Halierove vyrovnanie - Price correction
                 $invoice->price_vat, //Q       Suma spolu CM - Amount in all in foreign currency
                 $this->getInvoiceType($invoice), //R   >>  typ dokladu

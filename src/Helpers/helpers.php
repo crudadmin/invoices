@@ -1,7 +1,12 @@
 <?php
 
 function priceFormat($number){
-    return number_format($number, 2, '.', ' ');
+    return number_format(roundInvoicePrice($number), 2, '.', ' ');
+}
+
+function roundInvoicePrice($number)
+{
+    return round($number, 2);
 }
 
 function calculateWithoutVat($number, $vat)

@@ -13,7 +13,7 @@
             <td class="bb">{{ $item->quantity }}</td>
             <td class="bb" align="right">{{ priceFormat($item->price) }} €</td>
             <td class="bb" align="right">{{ $item->vat }} %</td>
-            <td class="bb br" align="right">{{ priceFormat($item->totalPriceWithTax) }} €</td>
+            <td class="bb br" align="right">{{ priceFormat($item->totalPriceWithVat) }} €</td>
         </tr>
     @endforeach
     @if ( $invoice->canSubtractInvoice && ($invoice->proform?->type == 'advance' || $summary['totalWithTax'] > 0) )
