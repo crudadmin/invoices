@@ -89,13 +89,7 @@ trait HasInvoicePdf
             }
 
             $withTax[$item->vat] += $item->totalPriceWithVat;
-
-            //Round order item price by configuration
-            if ( hasVatPriority() ) {
-                $withoutTax[$item->vat] += calculateWithoutVat($item->totalPriceWithVat, $item->vat);
-            } else {
-                $withoutTax[$item->vat] += $item->price * $item->quantity;
-            }
+            $withoutTax[$item->vat] += $item->totalPriceWithoutVat;
         }
 
         foreach ($withTax as $taxValue => $value) {
