@@ -24,8 +24,9 @@ class OmegaEUDExport extends OmegaExport
         foreach ($this->invoices as $invoice) {
             $summary = $invoice->getPricesSummary();
             $rates = $this->getOmegaRates($invoice);
-            $lower = $rates['lower'];
+            $lower = $rates['medium'] ?? $rates['lower'];
             $higher = $rates['higher'];
+
             //TESTING
             // if ( $invoice->number != 'FV-202200XXXX' ){
             //     continue;
@@ -100,6 +101,9 @@ class OmegaEUDExport extends OmegaExport
                 '', //BN      Kód štátu prevádzky OSS
                 '', //BO      Kvartál pre zaradenie do OSS
                 '', //BP      Rok pre zaradenie do OSS
+                isset($rates['medium']) ? $rates['lower'] : '',
+                isset($rates['medium']) ? $this->getInvoiceTaxSum($invoice, $rates['lower']) : '', //Zaklad nizsia 2
+                isset($rates['medium']) ? $this->getInvoiceTaxSum($invoice, $rates['lower'], true) - $this->getInvoiceTaxSum($invoice, $rates['lower']) : '', //Sadzba nizsia 2
             ];
 
             $rows[] = [
@@ -149,6 +153,11 @@ class OmegaEUDExport extends OmegaExport
                   19 => ['01', '02'],
                   23 => ['03', '04'],
                 ];
+
+                // If is medium vat, then for small use additional keys
+                if ( isset($rates['medium']) && $vat == $rates['lower'] ) {
+                    $rateKeys[$vat] = ['01', '02a'];
+                }
 
                 $vatRatesAccounts = [
                     5 => 205,

@@ -20,10 +20,16 @@ class OmegaExport extends InvoiceExport
                         ->filter(fn($vat) => $vat > 0)
                         ->min();
 
+        $mediumVat = $invoice->items->pluck('vat')
+            ->map(fn($vat) => (float)$vat)
+            ->filter(fn($vat) => $vat > $lowerVat && $vat < $higherVat)
+            ->max();
+
         $lowerVat = $lowerVat == $higherVat ? null : $lowerVat;
 
         return [
             'lower' => $lowerVat,
+            'medium' => $mediumVat,
             'higher' => $higherVat,
         ];
     }
