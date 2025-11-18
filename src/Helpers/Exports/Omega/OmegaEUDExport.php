@@ -22,6 +22,7 @@ class OmegaEUDExport extends OmegaExport
         ];
 
         foreach ($this->invoices as $invoice) {
+            $summary = $invoice->getPricesSummary();
             $rates = $this->getOmegaRates($invoice);
             $lower = $rates['lower'];
             $higher = $rates['higher'];
@@ -141,85 +142,101 @@ class OmegaEUDExport extends OmegaExport
                 '', // IDCislo odpocitavaneho dokladu
             ];
 
-            $rows[] = [
-                'R02',
-                '0',
-                '',
-                '',
-                '604',
-                '030',
-                $invoice->price,
-                $invoice->price,
-                $invoice->company_name, // text polozky - text of item
-                '03',
-                '',
-                '',
-                'X',
-                '(Nedefinované)',
-                'X',
-                '(Nedefinované)',
-                'X',
-                '(Nedefinované)',
-                'X',
-                '(Nedefinované)',
-                '',
-                '',
-                '',
-                '',
-                '',
-                $invoice->company_id ? 'A1' : 'D2',
-                '',
-                '',
-                '',
-                '0.0000',
-                '0',
-                '',
-                '',
-                '', // ID pracovníka
-                '', // Úhrada opačným znamienkom - Opposite sign payment
-                '', // IDCislo uhradzaneho dokladu
-                '', // IDCislo odpocitavaneho dokladu
-            ];
+            foreach ($invoice->items()->pluck('vat')->sort()->unique()->values() as $vat) {
+                $rateKeys = [
+                  0 => ['V', null],
+                  $lower => ['01', '02'],
+                  $higher => ['03', '04'],
+                ];
 
-            $rows[] = [
-                'R02',
-                '0',
-                '',
-                '',
-                '343',
-                '220',
-                $invoice->price_vat - $invoice->price,
-                $invoice->price_vat - $invoice->price,
-                'Základná sadzba DPH - DPH',
-                '04',
-                '',
-                '',
-                'X',
-                '(Nedefinované)',
-                'X',
-                '(Nedefinované)',
-                'X',
-                '(Nedefinované)',
-                'X',
-                '(Nedefinované)',
-                '',
-                '',
-                '',
-                '',
-                '',
-                $invoice->company_id ? 'A1' : 'D2',
-                '',
-                '',
-                '',
-                '0.0000',
-                '0',
-                '',
-                '',
-                '', // ID pracovníka
-                '', // Úhrada opačným znamienkom - Opposite sign payment
-                '', // IDCislo uhradzaneho dokladu
-                '', // IDCislo odpocitavaneho dokladu
-            ];
+                $vatRatesAccounts = [
+                    5 => 205,
+                    19 => 219,
+                    23 => 223,
+                ];
+
+                $rows[] = [
+                    'R02',
+                    '0',
+                    '',
+                    '',
+                    '604',
+                    '030',
+                    $summary['withoutTax'][$vat],
+                    $summary['withoutTax'][$vat],
+                    $invoice->company_name, // text polozky - text of item
+                    $rateKeys[$vat][0],
+                    '',
+                    '',
+                    'X',
+                    '(Nedefinované)',
+                    'X',
+                    '(Nedefinované)',
+                    'X',
+                    '(Nedefinované)',
+                    'X',
+                    '(Nedefinované)',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    $invoice->company_id ? 'A1' : 'D2',
+                    '',
+                    '',
+                    '',
+                    '0.0000',
+                    '0',
+                    '',
+                    '',
+                    '', // ID pracovníka
+                    '', // Úhrada opačným znamienkom - Opposite sign payment
+                    '', // IDCislo uhradzaneho dokladu
+                    '', // IDCislo odpocitavaneho dokladu
+                ];
+
+                if ( $vat > 0 ) {
+                    $rows[] = [
+                        'R02',
+                        '0',
+                        '',
+                        '',
+                        '343',
+                        $vatRatesAccounts[$vat],
+                        $summary['tax'][$vat],
+                        $summary['tax'][$vat],
+                        $vat.'% - Sadzba DPH - DPH',
+                        $rateKeys[$vat][1],
+                        '',
+                        '',
+                        'X',
+                        '(Nedefinované)',
+                        'X',
+                        '(Nedefinované)',
+                        'X',
+                        '(Nedefinované)',
+                        'X',
+                        '(Nedefinované)',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        $invoice->company_id ? 'A1' : 'D2',
+                        '',
+                        '',
+                        '',
+                        '0.0000',
+                        '0',
+                        '',
+                        '',
+                        '', // ID pracovníka
+                        '', // Úhrada opačným znamienkom - Opposite sign payment
+                        '', // IDCislo uhradzaneho dokladu
+                        '', // IDCislo odpocitavaneho dokladu
+                    ];
+                }
+            }
         }
 
         return $rows;

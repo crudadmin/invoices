@@ -6,16 +6,25 @@ use Gogol\Invoices\Helpers\Exports\InvoiceExport;
 
 class OmegaExport extends InvoiceExport
 {
+    const higherVat = 23;
+
     public function getOmegaRates($invoice)
     {
-        $maxVat = $invoice->items->pluck('vat')->map(fn($vat) => (float)$vat)->max();
+        $higherVat = $invoice->items->pluck('vat')
+                        ->map(fn($vat) => (float)$vat)
+                        ->filter(fn($vat) => $vat >= self::higherVat)
+                        ->max();
 
-        $minVat = $invoice->items->pluck('vat')->map(fn($vat) => (float)$vat)->filter(fn($vat) => $vat > 0)->min();
-        $minVat = $minVat == $maxVat ? null : $minVat;
+        $lowerVat = $invoice->items->pluck('vat')
+                        ->map(fn($vat) => (float)$vat)
+                        ->filter(fn($vat) => $vat > 0)
+                        ->min();
+
+        $lowerVat = $lowerVat == $higherVat ? null : $lowerVat;
 
         return [
-            'lower' => $minVat,
-            'higher' => $maxVat,
+            'lower' => $lowerVat,
+            'higher' => $higherVat,
         ];
     }
 
