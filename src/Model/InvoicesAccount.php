@@ -59,6 +59,7 @@ class InvoicesAccount extends AdminModel
             'Automatická synchronizácia platieb' => Group::fields([
                 'bank' => 'name:Banka|type:select',
                 'token' => 'name:Token|encrypted|type:password',
+                'last_sync_at' => 'name:Posledná synchronizácia|type:datetime|column_visible',
             ])->add('hidden'),
         ];
     }
@@ -84,7 +85,7 @@ class InvoicesAccount extends AdminModel
      *
      * @return void
      */
-    public function syncAccount()
+    public function syncAccount($cmd = null)
     {
         $bank = $this->bank;
 
@@ -93,6 +94,10 @@ class InvoicesAccount extends AdminModel
         }
 
         $importer = new $classname($this);
+
+        if ( $cmd ) {
+            $importer->setCommand($cmd);
+        }
 
         $importer->sync();
     }

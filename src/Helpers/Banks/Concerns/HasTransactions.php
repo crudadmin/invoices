@@ -3,6 +3,7 @@
 namespace Gogol\Invoices\Helpers\Banks\Concerns;
 
 use Admin;
+use Exception;
 use Carbon\Carbon;
 use Gogol\Invoices\Events\InvoicePaid;
 
@@ -15,17 +16,25 @@ trait HasTransactions
         $unpaidInvoices = $this->getUnpaidInvoices();
 
         if ( $unpaidInvoices->isEmpty() ) {
-            return;
+            return false;
         }
 
         $from = new Carbon($unpaidInvoices->min('created_at'));
         $to = now();
 
-        $transactions = $this->getTransactions($from, $to);
+        try {
+            $transactions = $this->getTransactions($from, $to);
+        } catch (Exception $e) {
+            $this->error('Error getting transactions for account ' . $this->account->name . ': ' . $e->getMessage());
+
+            return false;
+        }
 
         $unpaidInvoices->each(function($invoice) use ($transactions) {
             $this->findInvoiceTransaction($invoice, $transactions);
         });
+
+        return true;
     }
 
     private function getUnpaidInvoices()

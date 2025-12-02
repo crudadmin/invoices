@@ -37,8 +37,14 @@ abstract class BankAccount
     {
         $this->log('Synchronization started.');
 
-        $this->transactions = $this->syncUnpaidInvoices();
+        if ( $this->syncUnpaidInvoices() === true ) {
+            $this->account->update([
+                'last_sync_at' => now()
+            ]);
 
-        $this->log('Transactions synchronized successfully.');
+            $this->log('Transactions synchronized successfully.');
+        } else {
+            $this->log('Transactions synchronization failed or skipped.');
+        }
     }
 }

@@ -31,7 +31,7 @@ class SyncBankTransactions extends Command
         $accounts = InvoicesAccount::whereNotNull('token')->get();
 
         $accounts->each(function($account) {
-            $account->syncAccount();
+            $account->syncAccount($this);
         });
 
         $this->line('Bank accounts transactions has been successfuly synced');
