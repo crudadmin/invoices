@@ -86,5 +86,12 @@ return [
          * This fixes big differences in final price with many (10+) quantities of the same product, when base no vat price is rounded.
          */
         'vat_priority' => true,
-    ]
+    ],
+
+    'banks' => [
+        'fio' => [
+            'name' => 'FIO Banka (SK)',
+            'import' => \Gogol\Invoices\Helpers\Banks\Fio\FioBank::class,
+        ],
+    ],
 ];

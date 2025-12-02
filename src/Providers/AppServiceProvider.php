@@ -3,9 +3,10 @@
 namespace Gogol\Invoices\Providers;
 
 use Admin;
-use Gogol\Invoices\Commands\ImportCountries;
 use Illuminate\Foundation\Http\Kernel;
+use Gogol\Invoices\Commands\ImportCountries;
 use Admin\Providers\AdminHelperServiceProvider;
+use Gogol\Invoices\Commands\SyncBankTransactions;
 
 class AppServiceProvider extends AdminHelperServiceProvider
 {
@@ -39,6 +40,12 @@ class AppServiceProvider extends AdminHelperServiceProvider
         $this->registerProviders([
             ViewServiceProvider::class
         ]);
+
+        $this->app['config']->set('logging.channels.bank_accounts', [
+            'driver' => 'single',
+            'path' => storage_path('logs/bank_accounts.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ]);
     }
 
     /**
@@ -63,6 +70,7 @@ class AppServiceProvider extends AdminHelperServiceProvider
 
         $this->commands([
             ImportCountries::class,
+            SyncBankTransactions::class,
         ]);
     }
 }

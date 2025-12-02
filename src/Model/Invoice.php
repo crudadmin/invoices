@@ -169,13 +169,17 @@ class Invoice extends AdminModel
                     ])->name('Doručovacia adresa')->add('hidden')->id('delivery') : [],
                 ])->inline(),
             ]),
-            'notified_at' => 'name:Notifikácia zaslaná dňa|type:datetime|inaccessible',
+            // Metadata fields
             Group::fields([
-                'language' => 'name:Jazyk objednávky|belongsTo:languages|inaccessible'
-            ])->if(Admin::isEnabledLocalization()),
-            'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
-            'guid' => 'name:GUID|max:50|inaccessible',
-            'hash' => 'name:Hash|type:string|inaccessible|max:8',
+                'paid_amount' => 'name:Zaplatená suma|type:decimal',
+                'notified_at' => 'name:Notifikácia zaslaná dňa|type:datetime|inaccessible',
+                Group::fields([
+                    'language' => 'name:Jazyk objednávky|belongsTo:languages|inaccessible'
+                ])->if(Admin::isEnabledLocalization()),
+                'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
+                'guid' => 'name:GUID|max:50|inaccessible',
+                'hash' => 'name:Hash|type:string|inaccessible|max:8',
+            ])->add('inaccessible'),
         ];
     }
 
@@ -233,7 +237,7 @@ class Invoice extends AdminModel
      */
     public function getTypeNameAttribute()
     {
-        return _(config('invoices.invoice_types.'.$this->type.'.name', ''));
+        return config('invoices.invoice_types.'.$this->type.'.name', '');
     }
 
     /*

@@ -30,6 +30,16 @@ class InvoicesAccount extends AdminModel
 
     protected $reversed = true;
 
+    protected $settings = [
+        'grid.default' => 'full',
+    ];
+
+    protected $options = [
+        'bank' => [
+            'fio' => 'FIO Banka',
+        ],
+    ];
+
     /*
      * Automatic form and database generation
      * @name - field name
@@ -46,6 +56,10 @@ class InvoicesAccount extends AdminModel
                 'iban' => 'name:IBAN|max:90|required',
                 'swift' => 'name:Swift|max:90|required',
             ]),
+            'Automatická synchronizácia platieb' => Group::fields([
+                'bank' => 'name:Banka|type:select',
+                'token' => 'name:Token|encrypted|type:password',
+            ])->add('hidden'),
         ];
     }
 
@@ -63,5 +77,23 @@ class InvoicesAccount extends AdminModel
                 $setting->accounts()->attach($account->getKey());
             });
         });
+    }
+
+    /**
+     * Run account synchronization for unpaid invoices
+     *
+     * @return void
+     */
+    public function syncAccount()
+    {
+        $bank = $this->bank;
+
+        if ( !($classname = config('invoices.banks.' . $bank.'.import')) ){
+            return;
+        }
+
+        $importer = new $classname($this);
+
+        $importer->sync();
     }
 }
