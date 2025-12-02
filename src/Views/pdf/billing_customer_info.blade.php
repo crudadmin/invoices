@@ -1,5 +1,5 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0" class="--padding">
-    @if ( $settings->account || $settings->iban )
+    @if ( $settings->account?->number || $settings->account?->iban )
     <tr><td>&nbsp;</td></tr>
     @endif
     @if ( $invoice->payment_method )

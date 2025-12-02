@@ -1,14 +1,14 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0" class="--padding">
-    @if ( $settings->account || $settings->iban )
+    @if ( $settings->account?->number || $settings->account?->iban )
         <tr><td><strong>{{ _('Účet dodávateľa') }}</strong></td></tr>
-        @if ( $settings->account )
-        <tr><td>{{ _('Čislo účtu') }}: {{ $settings->account }}</td></tr>
+        @if ( $settings->account?->number )
+        <tr><td>{{ _('Čislo účtu') }}: {{ $settings->account->number }}</td></tr>
         @endif
-        @if ( $settings->iban )
-        <tr><td>{{ _('IBAN') }}: {{ $settings->iban }}</td></tr>
+        @if ( $settings->account?->iban )
+        <tr><td>{{ _('IBAN') }}: {{ $settings->account?->iban }}</td></tr>
         @endif
-        @if ( $settings->swift )
-        <tr><td>{{ _('SWIFT Kód') }}: {{ $settings->swift }}</td></tr>
+        @if ( $settings->account?->swift )
+        <tr><td>{{ _('SWIFT Kód') }}: {{ $settings->account?->swift }}</td></tr>
         @endif
         <tr><td>&nbsp;</td></tr>
     @endif

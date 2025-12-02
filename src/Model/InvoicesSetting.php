@@ -2,8 +2,10 @@
 
 namespace Gogol\Invoices\Model;
 
-use Admin\Eloquent\AdminModel;
 use Admin\Fields\Group;
+use Admin\Eloquent\AdminModel;
+use Gogol\Invoices\Model\InvoicesAccount;
+use Gogol\Invoices\Model\InvoicesSettingsAccountPivot;
 
 class InvoicesSetting extends AdminModel
 {
@@ -67,9 +69,7 @@ class InvoicesSetting extends AdminModel
             ]),
             Group::fields([
                 'Bankove údaje' => Group::half([
-                    'account' => 'name:Č. účtu|placeholder:0123456789/0000|max:90|required',
-                    'iban' => 'name:IBAN|max:90|required',
-                    'swift' => 'name:Swift|max:90|required',
+                    'accounts' => 'name:Bankové účty|belongsToMany:invoices_accounts,:name - :iban|canAdd|canList',
                 ]),
                 'Kontaktné údaje' => Group::half([
                     'email' => 'name:Email|email',
@@ -104,7 +104,7 @@ class InvoicesSetting extends AdminModel
 
     public function getAccountNumberAttribute()
     {
-        $account = explode('/', str_replace(' ', '', preg_replace('/\-|\||\.|\_/', '/', $this->account)));
+        $account = explode('/', str_replace(' ', '', preg_replace('/\-|\||\.|\_/', '/', $this->account?->number ?: '')));
 
         //Sort by value length
         usort($account, function($a, $b) {
@@ -134,5 +134,10 @@ class InvoicesSetting extends AdminModel
         }
 
         return $this->hasVat;
+    }
+
+    public function account()
+    {
+        return $this->hasOneThrough(InvoicesAccount::class, InvoicesSettingsAccountPivot::class, 'invoices_setting_id', 'id', 'id', 'invoices_account_id');
     }
 }
