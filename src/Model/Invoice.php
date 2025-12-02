@@ -427,7 +427,38 @@ class Invoice extends AdminModel
 
     public function getFilterStates()
     {
-        $filter = [];
+        $filter = [
+            'paid' => [
+                'color' => 'green',
+                'name' => 'Zaplatené',
+                'active' => function() {
+                    return $this->paid_at !== null;
+                },
+                'query' => function($query) {
+                    return $query->whereNotNull('paid_at');
+                },
+            ],
+            'wrong_amount' => [
+                'color' => 'orange',
+                'name' => 'Nesprávna úhrada',
+                'active' => function() {
+                    return $this->paid_amount && $this->paid_amount !== $this->price_vat;
+                },
+                'query' => function($query) {
+                    return $query->where('paid_amount', '>', 0)->whereColumn('paid_amount', '!=', 'price_vat');
+                },
+            ],
+            'unpaid' => [
+                'color' => 'red',
+                'name' => 'Nezaplatené',
+                'active' => function() {
+                    return $this->paid_at === null;
+                },
+                'query' => function($query) {
+                    return $query->whereNull('paid_at');
+                },
+            ],
+        ];
 
         foreach (config('invoices.invoice_types') as $key => $type) {
             $filter[$key] = [
