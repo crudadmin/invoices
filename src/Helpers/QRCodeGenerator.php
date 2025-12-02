@@ -82,12 +82,14 @@ class QRCodeGenerator
                 '',                                     // REFERENCNA HODNOTA PRIJMATELA
                 '',                                     // POZNAMKA
                 '1',
-                $invoice->subject->account?->iban,             // IBAN
+                str_replace(' ', '', $invoice->subject->account?->iban),             // IBAN
                 $invoice->subject->account?->swift,            // SWIFT
                 '0',
                 '0',
+                $invoice->subject?->name,
             ))
         ));
+
         $d = strrev(hash("crc32b", $d, TRUE)) . $d;
         $x = proc_open($xzDriverPath." '--format=raw' '--lzma1=lc=3,lp=0,pb=2,dict=128KiB' '-c' '-'", [0 => ["pipe", "r"], 1 => ["pipe", "w"]], $p);
         fwrite($p[0], $d);

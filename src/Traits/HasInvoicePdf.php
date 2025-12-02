@@ -2,13 +2,11 @@
 
 namespace Gogol\Invoices\Traits;
 
-use Admin\Helpers\File;
 use Log;
 use Throwable;
 use Mpdf\Mpdf;
 use Gogol\Invoices\Helpers\QRCodeGenerator;
 use chillerlan\QRCode\QROptions;
-use Localization;
 
 trait HasInvoicePdf
 {
