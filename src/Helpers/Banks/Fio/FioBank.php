@@ -15,8 +15,16 @@ class FioBank extends BankAccount
         ]);
     }
 
+    public function limitFrom($from)
+    {
+        // Limit max 90 days ago, because Fio API has limit for 90 days
+        return max($from, now()->subDays(90));
+    }
+
     public function getTransactions($from, $to)
     {
+        $from = $this->limitFrom($from);
+
         $url = 'https://fioapi.fio.cz/v1/rest/periods/'.$this->account->token.'/'.$from->format('Y-m-d').'/'.$to->format('Y-m-d').'/transactions.json';
 
         $response = $this->get($url);

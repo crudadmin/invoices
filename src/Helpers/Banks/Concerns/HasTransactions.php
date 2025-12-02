@@ -16,11 +16,14 @@ trait HasTransactions
         $unpaidInvoices = $this->getUnpaidInvoices();
 
         if ( $unpaidInvoices->isEmpty() ) {
+            $this->log('No unpaid invoices found to sync');
             return false;
         }
 
         $from = new Carbon($unpaidInvoices->min('created_at'));
         $to = now();
+
+        $this->log('Found ' . $unpaidInvoices->count() . ' unpaid invoices to sync from date ' . $from->format('Y-m-d'));
 
         try {
             $transactions = $this->getTransactions($from, $to);
@@ -34,7 +37,8 @@ trait HasTransactions
             $this->findInvoiceTransaction($invoice, $transactions);
         });
 
-        return true;
+        // Update last sync date
+        $this->account->update([ 'last_sync_at' => now() ]);
     }
 
     private function getUnpaidInvoices()
