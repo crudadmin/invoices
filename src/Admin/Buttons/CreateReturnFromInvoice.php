@@ -9,6 +9,8 @@ class CreateReturnFromInvoice extends Button
 {
     public $reloadAll = true;
 
+    public $type = 'action';
+
     /*
      * Here is your place for binding button properties for each row
      */

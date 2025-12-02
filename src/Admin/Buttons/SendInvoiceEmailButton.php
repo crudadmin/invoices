@@ -14,7 +14,7 @@ class SendInvoiceEmailButton extends Button
     public function __construct(AdminModel $row)
     {
         //Name of button on hover
-        $this->name = _('Odoslať doklad na email');
+        $this->name = _('Odoslať na email');
 
         //Button classes
         $this->class = 'btn-default';
@@ -31,7 +31,7 @@ class SendInvoiceEmailButton extends Button
         if ( $row->items->count() == 0 )
             return $this->error(_('Doklad neobsahuje žiadné položky k vygenerovaniu PDF.'));
 
-        return $this->title(_('Naozaj si prajete odoslať doklad na email?'))
+        return $this->title(_('Zadajte príjemcu dokladu'))
                     ->component('AskForSendInvoice', [
                         'email' => $row->email,
                     ]);
