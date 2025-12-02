@@ -2,7 +2,7 @@
     <div>
         <div class="form-group">
             <label>Email</label>
-            <input type="email" v-model="email" class="form-control">
+            <input type="email" v-model="email" class="form-control" placeholder="example@example.com">
         </div>
 
         <div class="form-group">
