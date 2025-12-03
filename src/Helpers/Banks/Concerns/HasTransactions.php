@@ -97,15 +97,21 @@ trait HasTransactions
 
         $totalPaidAmount = $pairedTransactions->sum('amount');
 
-        // Exact sum match
-        if ( $totalPaidAmount == $invoice->price_vat ) {
-            event(new InvoicePaid($invoice, $pairedTransactions));
+        try {
+            // Exact sum match
+            if ( $totalPaidAmount == $invoice->price_vat ) {
+                event(new InvoicePaid($invoice, $pairedTransactions));
 
-            $this->log('Invoice ' . $invoice->number . ' paid with exact sum match.');
-        } else {
-            event(new InvoicePaidWrongly($invoice, $pairedTransactions, $invoice->price_vat, $totalPaidAmount));
+                $this->log('Invoice ' . $invoice->number . ' paid with exact sum match.');
+            } else {
+                event(new InvoicePaidWrongly($invoice, $pairedTransactions, $invoice->price_vat, $totalPaidAmount));
 
-            $this->log('Invoice ' . $invoice->number . ' paid with different sum match. Expected: ' . $invoice->price_vat . ' Paid: ' . $totalPaidAmount);
+                $this->log('Invoice ' . $invoice->number . ' paid with different sum match. Expected: ' . $invoice->price_vat . ' Paid: ' . $totalPaidAmount);
+            }
+        } catch (Exception $e) {
+            report($e);
+
+            $this->error($e->getMessage());
         }
     }
 }
