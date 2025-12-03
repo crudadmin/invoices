@@ -47,9 +47,18 @@ class FioBank extends BankAccount
                 ];
             }, $transactions);
         } catch (Exception $e) {
-            $message = (string)$e->getResponse()->getBody();
-
-            throw new Exception($message ? $message : $e->getMessage());
+            $this->fioBankAutoError($e);
         }
+    }
+
+    private function fioBankAutoError($e)
+    {
+        if ( $e->getCode() == 409 ) {
+            throw new Exception(_('Prekročeny limit požiadaviek na API Fio. Skúste znova o 30 sekúnd.'));
+        }
+
+        $message = (string)$e->getResponse()->getBody();
+
+        throw new Exception($message ? $message : $e->getMessage());
     }
 }
