@@ -5,6 +5,7 @@ namespace Gogol\Invoices\Model;
 use Admin\Fields\Group;
 use Admin\Eloquent\AdminModel;
 use Gogol\Invoices\Model\InvoicesSetting;
+use Gogol\Invoices\Admin\Buttons\SyncBankTransactionsButton;
 
 class InvoicesAccount extends AdminModel
 {
@@ -29,6 +30,12 @@ class InvoicesAccount extends AdminModel
     protected $icon = 'fa-bank';
 
     protected $reversed = true;
+
+    protected $publishable = false;
+
+    protected $buttons = [
+        SyncBankTransactionsButton::class,
+    ];
 
     protected $settings = [
         'grid.default' => 'full',
@@ -83,9 +90,11 @@ class InvoicesAccount extends AdminModel
     /**
      * Run account synchronization for unpaid invoices
      *
+     * @param  mixed $cmd
+     * @param  bool $syncAll
      * @return void
      */
-    public function syncAccount($cmd = null)
+    public function syncAccount($cmd = null, $syncAll = false)
     {
         $bank = $this->bank;
 
@@ -99,6 +108,12 @@ class InvoicesAccount extends AdminModel
             $importer->setCommand($cmd);
         }
 
+        // Set sync all transactions flag
+        $importer->setSyncAllTransactions($syncAll);
+
+        // Run synchronization
         $importer->sync();
+
+        return $importer;
     }
 }

@@ -11,13 +11,32 @@ trait HasTransactions
 {
     protected $transactions = [];
 
+    protected $syncAllTransactions = false;
+
+    /**
+     * Set transactions sync all flag
+     *
+     * @param  bool $syncAll
+     * @return self
+     */
+    public function setSyncAllTransactions($syncAll = false)
+    {
+        $this->syncAllTransactions = $syncAll;
+
+        return $this;
+    }
+
+    /**
+     * Sync unpaid invoices transactions
+     *
+     * @return void
+     */
     public function syncUnpaidInvoices()
     {
         $unpaidInvoices = $this->getUnpaidInvoices();
 
         if ( $unpaidInvoices->isEmpty() ) {
-            $this->log('No unpaid invoices found to sync');
-            return false;
+            return $this->log('No unpaid invoices found to sync');
         }
 
         $from = new Carbon($unpaidInvoices->min('created_at'));
@@ -28,9 +47,7 @@ trait HasTransactions
         try {
             $transactions = $this->getTransactions($from, $to);
         } catch (Exception $e) {
-            $this->error('Error getting transactions for account ' . $this->account->name . ': ' . $e->getMessage());
-
-            return false;
+            return $this->error($this->account->name . ': ' . $e->getMessage());
         }
 
         $unpaidInvoices->each(function($invoice) use ($transactions) {
@@ -39,8 +56,15 @@ trait HasTransactions
 
         // Update last sync date
         $this->account->update([ 'last_sync_at' => now() ]);
+
+        return true;
     }
 
+    /**
+     * Receive unpaid invoices
+     *
+     * @return void
+     */
     private function getUnpaidInvoices()
     {
         $subjects = $this->account->invoicesSettings;
@@ -57,6 +81,13 @@ trait HasTransactions
         return $unpaidInvoices;
     }
 
+    /**
+     * Pair transactionss with invoice
+     *
+     * @param  mixed $invoice
+     * @param  mixed $transactions
+     * @return void
+     */
     private function findInvoiceTransaction($invoice, $transactions)
     {
         $pairedTransactions = collect($transactions)->where('vs', $invoice->vs);

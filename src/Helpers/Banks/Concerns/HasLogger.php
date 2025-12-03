@@ -8,6 +8,8 @@ trait HasLogger
 {
     protected static $command;
 
+    public $errors = [];
+
     public static function setCommand($command)
     {
         self::$command = $command;
@@ -22,10 +24,14 @@ trait HasLogger
         }
 
         Log::channel('bank_accounts')->info($message);
+
+        return $this;
     }
 
     public function error($message)
     {
+        $this->errors[] = $message;
+
         $message = '['.class_basename($this).':'.$this->account->name.'] ' . $message;
 
         if ( self::$command ) {
@@ -33,5 +39,7 @@ trait HasLogger
         }
 
         Log::channel('bank_accounts')->error($message);
+
+        return $this;
     }
 }

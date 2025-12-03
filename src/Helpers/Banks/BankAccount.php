@@ -36,5 +36,7 @@ abstract class BankAccount
     public function sync()
     {
         $this->syncUnpaidInvoices();
+
+        return $this;
     }
 }
