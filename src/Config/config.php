@@ -94,4 +94,9 @@ return [
             'import' => \Gogol\Invoices\Helpers\Banks\Fio\FioBank::class,
         ],
     ],
+
+    'mail' => [
+        // Send email to invoice owner after successfuly received payment on proform
+        'auto_mail_after_payment' => true,
+    ],
 ];

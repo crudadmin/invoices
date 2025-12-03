@@ -72,7 +72,7 @@ class InvoicesSetting extends AdminModel
                     'accounts' => 'name:Bankové účty|belongsToMany:invoices_accounts,:name - :iban|canAdd|canList',
                 ]),
                 'Kontaktné údaje' => Group::half([
-                    'email' => 'name:Email|email',
+                    'email' => 'name:Email|email|required',
                     'phone' => 'name:Tel. číslo',
                 ]),
             ])->add('hidden'),

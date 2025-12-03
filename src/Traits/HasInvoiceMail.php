@@ -40,4 +40,9 @@ trait HasInvoiceMail
     {
         return sprintf(_('%s č. %s'), config('invoices.invoice_types.'.$this->type.'.name', ''), $this->number);
     }
+
+    public function getPaidMessageAttribute()
+    {
+        return sprintf(_('Prijali sme platbu vo výške %s k dokladu č. %s, v prílohe zasielame ostrú faktúru.'), priceFormat($this->paid_amount).' €', $this->number);
+    }
 }

@@ -34,10 +34,8 @@ class InvoicePaidListener
             $finalInvoice = $proform->createInvoice();
 
             // Send email to client
-            if ( $finalInvoice->email ) {
-                $message = sprintf(_('Prijali sme platbu vo výške %s k proforme %s, v prílohe zasielame ostrú faktúru.'), priceFormat($invoice->paid_amount).' €', $invoice->number);
-
-                $finalInvoice->sendEmail($finalInvoice->email, $message);
+            if ( config('invoices.mail.auto_mail_after_payment', false) && $finalInvoice->email ) {
+                $finalInvoice->sendEmail($finalInvoice->email, $finalInvoice->paidMessage);
             }
         }
     }
