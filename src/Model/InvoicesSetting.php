@@ -96,8 +96,7 @@ class InvoicesSetting extends AdminModel
                 ]),
             ])->add('hidden'),
             'Nastavenia emailu' => Group::half([
-                'email_message' => 'name:Správa v emaili',
-                'email_greeting' => 'name:Pozdrav|required',
+                'email_greeting' => 'name:Pozdrav v pätičke emailu',
             ])->add('hidden'),
         ];
     }

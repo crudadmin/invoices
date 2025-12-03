@@ -1,8 +1,6 @@
 @component('mail::message')
 # {{ sprintf(_('Dobrý deň %s,'), $invoice->company_name) }}
 
-{{ $settings->email_message }}
-
 @if ( !empty($message) )
 @component('mail::panel')
 {{ $message }}
