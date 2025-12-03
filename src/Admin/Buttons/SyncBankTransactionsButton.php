@@ -43,7 +43,7 @@ class SyncBankTransactionsButton extends Button
         $importer = $row->syncAccount(null, $canSyncAll);
 
         if ( count($importer->errors) > 0 ) {
-            return $this->title(_('Pri synchronizácii došlo k chybe'))->error(implode('<br>', $importer->errors));
+            return $this->title(_('Pri synchronizácii došlo k chybe'))->error(__('Skúste neskôr prosím. Alebo preverte nastavenia banky.') . '<br><br>' . implode('<br>', $importer->errors));
         }
 
         return $this->message(_('Platby boli úspešne synchronizované.'));

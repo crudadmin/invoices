@@ -47,7 +47,7 @@ trait HasTransactions
         try {
             $transactions = $this->getTransactions($from, $to);
         } catch (Exception $e) {
-            return $this->error($this->account->name . ': ' . $e->getMessage());
+            return $this->error($e->getMessage());
         }
 
         $unpaidInvoices->each(function($invoice) use ($transactions) {
