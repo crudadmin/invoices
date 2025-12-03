@@ -37,9 +37,4 @@ class DownloadInvoiceButton extends Button
 
         return $this->open($url);
     }
-
-    public function fireMultiple($rows)
-    {
-        return $this->error(_('Pre stiahnutie viacerých dokladov, použite export dokladov.'));
-    }
 }

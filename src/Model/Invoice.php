@@ -12,6 +12,7 @@ use Admin\Eloquent\Concerns\HasEntryLocales;
 use Gogol\Invoices\Traits\InvoiceProcessTrait;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
 use Gogol\Invoices\Admin\Rules\ProcessInvoiceRule;
+use Gogol\Invoices\Admin\Buttons\SetInvoicePaidButton;
 use Gogol\Invoices\Admin\Buttons\DownloadInvoiceButton;
 use Gogol\Invoices\Admin\Buttons\SendInvoiceEmailButton;
 use Gogol\Invoices\Admin\Buttons\CreateReturnFromInvoice;
@@ -52,6 +53,7 @@ class Invoice extends AdminModel
         CreateInvoiceFromProform::class,
         CreateReturnFromInvoice::class,
         SendInvoiceEmailButton::class,
+        SetInvoicePaidButton::class,
     ];
 
     protected $casts = [
