@@ -38,6 +38,8 @@ class InvoicesAccount extends AdminModel
     ];
 
     protected $settings = [
+        'title.create' => 'Nový bankový účet',
+        'title.update' => 'Upravujete bankový účet :name',
         'grid.default' => 'full',
     ];
 
