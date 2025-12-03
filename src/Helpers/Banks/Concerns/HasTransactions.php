@@ -72,7 +72,7 @@ trait HasTransactions
         $unpaidInvoices = Admin::getModel('Invoice')
                 ->select('id', 'number', 'price_vat', 'type', 'vs', 'created_at')
                 ->whereIn('subject_id', $subjects->pluck('id'))
-                ->whereIn('type', ['invoice', 'proform'])
+                ->whereIn('type', ['invoice', 'proform', 'return'])
                 ->whereNull('paid_at')
                 // Dont sync invoices from previous years
                 ->whereDate('created_at', '>=', now()->addYears(-1)->startOfYear())

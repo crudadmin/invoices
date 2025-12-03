@@ -427,7 +427,7 @@ class Invoice extends AdminModel
 
     public function getFilterStates()
     {
-        $filter = [
+        return [
             'paid' => [
                 'color' => 'green',
                 'name' => 'Zaplatené',
@@ -459,21 +459,6 @@ class Invoice extends AdminModel
                 },
             ],
         ];
-
-        foreach (config('invoices.invoice_types') as $key => $type) {
-            $filter[$key] = [
-                'color' => $type['color'] ?? null,
-                'name' => $type['name'],
-                'active' => function() use ($key) {
-                    return $this->type == $key;
-                },
-                'query' => function($query) use ($key) {
-                    return $query->where('type', $key);
-                },
-            ];
-        }
-
-        return $filter;
     }
 
     public function getCanSubtractInvoiceAttribute()

@@ -12,7 +12,7 @@ class SyncBankTransactions extends Command
      *
      * @var string
      */
-    protected $signature = 'invoices:bank-accounts-sync {--all : Sync all transactions}';
+    protected $signature = 'invoices:bank-accounts-sync {--account= : Sync specific account} {--all : Sync all transactions}';
 
     /**
      * The console command description.
@@ -30,7 +30,9 @@ class SyncBankTransactions extends Command
     {
         $this->info('Synchronization started.');
 
-        $accounts = InvoicesAccount::whereNotNull('token')->get();
+        $accounts = InvoicesAccount::whereNotNull('token')->when($this->option('account'), function($query) {
+            $query->where('id', $this->option('account'));
+        })->get();
 
         $syncAll = $this->option('all') ? true : false;
 
