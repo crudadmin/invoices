@@ -28,6 +28,8 @@ class SyncBankTransactions extends Command
      */
     public function handle()
     {
+        $this->info('Synchronization started.');
+
         $accounts = InvoicesAccount::whereNotNull('token')->get();
 
         $accounts->each(function($account) {
