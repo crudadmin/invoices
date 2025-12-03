@@ -32,12 +32,13 @@ class SendInvoiceEmail extends Mailable
      */
     public function build()
     {
-        $mail = $this->markdown('invoices::mail.invoice_email', [
-                        'invoice' => $this->invoice,
-                        'message' => $this->message,
-                        'settings' => $this->invoice->subject,
-                    ])
-                    ->subject($this->invoice->typeNameNumber);
+        $mail = $this
+            ->subject($this->invoice->typeNameNumber)
+            ->markdown('invoices::mail.invoice_email', [
+                'invoice' => $this->invoice,
+                'message' => $this->message,
+                'settings' => $this->invoice->subject,
+            ]);
 
         if ( $pdf = $this->invoice->getPdf() ) {
             $mail->attachData($pdf->get(), $pdf->filename);

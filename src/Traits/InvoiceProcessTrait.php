@@ -3,8 +3,6 @@
 namespace Gogol\Invoices\Traits;
 
 use Carbon\Carbon;
-use Gogol\Invoices\Mail\SendInvoiceEmail;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
 trait InvoiceProcessTrait
@@ -116,27 +114,6 @@ trait InvoiceProcessTrait
         if ( ! $this->payment_date ) {
             $this->payment_date = Carbon::now()->addDays($this->subject->payment_term ?: 0);
         }
-    }
-
-    /*
-     * Send email with invoice on given/saved email adress
-     */
-    public function sendEmail($email = null, $message = null)
-    {
-        Mail::to($email ?: $this->email)->send(new SendInvoiceEmail($this, $message));
-
-        //Save that email has been sent
-        $this->setNotified();
-    }
-
-    /*
-     * Check given email as sent
-     */
-    public function setNotified()
-    {
-        $this->update([
-            'notified_at' => Carbon::now(),
-        ]);
     }
 
     /*

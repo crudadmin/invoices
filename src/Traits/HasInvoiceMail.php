@@ -1,0 +1,35 @@
+<?php
+
+namespace Gogol\Invoices\Traits;
+
+use Gogol\Invoices\Mail\SendInvoiceEmail;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+
+trait HasInvoiceMail
+{
+    /**
+     * Send email with invoice on given/saved email adress
+     *
+     * @param  mixed $email
+     * @param  mixed $message
+     * @return void
+     */
+    public function sendEmail($email = null, $message = null)
+    {
+        Mail::to($email ?: $this->email)->send(new SendInvoiceEmail($this, $message));
+
+        //Save that email has been sent
+        $this->setNotified();
+    }
+
+    /*
+     * Check given email as sent
+     */
+    public function setNotified()
+    {
+        $this->update([
+            'notified_at' => Carbon::now(),
+        ]);
+    }
+}
