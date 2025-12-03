@@ -62,8 +62,9 @@ class CreateInvoiceFromProform extends Button
         $invoice = $row->createInvoice();
 
         //Send invoice on email
-        if ( $this->canSendEmail() )
+        if ( $this->canSendEmail() ) {
             $invoice->sendEmail(request('email'), request('message'));
+        }
 
         return $this->title(_('Faktúra bola úspešne vygenerovaná').($this->canSendEmail() ? (' '._('a odoslaná na email')) : '').'!')
                     ->message($this->getDownloadResponse($invoice));

@@ -21,5 +21,25 @@ class InvoicePaidListener
             'paid_at' => $transactions->last()['date'],
             'paid_amount' => $transactions->sum('amount'),
         ]);
+
+        if ( $invoice->isProform ) {
+            $proform = $invoice->fresh();
+
+            // Invoice generated already
+            if ( $proform->proformInvoice()->count() > 0 ) {
+                return;
+            }
+
+            // Generate final invoice
+            $finalInvoice = $proform->createInvoice();
+
+            // Send email to client
+            if ( $finalInvoice->email ) {
+                $finalInvoice->sendEmail(
+                    $finalInvoice->email,
+                    sprintf(_('Prijali sme platbu k proforme %s, v prílohe zasielame ostru faktúru.'), $invoice->number)
+                );
+            }
+        }
     }
 }
