@@ -432,7 +432,7 @@ class Invoice extends AdminModel
         return [
             'paid' => [
                 'color' => 'green',
-                'name' => 'Zaplatené',
+                'name' => _('Uhradené'),
                 'active' => function() {
                     return $this->paid_at !== null;
                 },
@@ -442,7 +442,7 @@ class Invoice extends AdminModel
             ],
             'wrong_amount' => [
                 'color' => 'orange',
-                'name' => 'Nesprávna úhrada',
+                'name' => _('Nesprávna úhrada'),
                 'active' => function() {
                     return $this->paid_amount && $this->paid_amount !== $this->price_vat;
                 },
@@ -450,14 +450,14 @@ class Invoice extends AdminModel
                     return $query->where('paid_amount', '>', 0)->whereColumn('paid_amount', '!=', 'price_vat');
                 },
             ],
-            'unpaid' => [
+            'payment_due' => [
                 'color' => 'red',
-                'name' => 'Nezaplatené',
+                'name' => _('Po splatnosti'),
                 'active' => function() {
-                    return $this->paid_at === null;
+                    return $this->paid_at === null && $this->payment_date < now()->startOfDay();
                 },
                 'query' => function($query) {
-                    return $query->whereNull('paid_at');
+                    return $query->isPaymentDue();
                 },
             ],
         ];
@@ -466,5 +466,10 @@ class Invoice extends AdminModel
     public function getCanSubtractInvoiceAttribute()
     {
         return $this->type == 'invoice' && in_array($this->proform?->type, ['advance', 'proform']) && $this->proform->paid_at;
+    }
+
+    public function scopeIsPaymentDue($query)
+    {
+        return $query->whereNull('paid_at')->where('payment_date', '<', now());
     }
 }
