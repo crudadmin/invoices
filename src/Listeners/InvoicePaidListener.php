@@ -23,7 +23,7 @@ class InvoicePaidListener
         ]);
 
         if ( $invoice->isProform ) {
-            $proform = $invoice->fresh();
+            $proform = $invoice;
 
             // Invoice generated already
             if ( $proform->proformInvoice()->count() > 0 ) {

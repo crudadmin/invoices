@@ -6,6 +6,7 @@ use Admin;
 use Exception;
 use Carbon\Carbon;
 use Gogol\Invoices\Events\InvoicePaid;
+use Gogol\Invoices\Events\InvoicePaidWrongly;
 
 trait HasTransactions
 {
@@ -70,7 +71,6 @@ trait HasTransactions
         $subjects = $this->account->invoicesSettings;
 
         $unpaidInvoices = Admin::getModel('Invoice')
-                ->select('id', 'number', 'price_vat', 'type', 'vs', 'created_at')
                 ->whereIn('subject_id', $subjects->pluck('id'))
                 ->whereIn('type', ['invoice', 'proform', 'return'])
                 ->whereNull('paid_at')
@@ -103,11 +103,9 @@ trait HasTransactions
 
             $this->log('Invoice ' . $invoice->number . ' paid with exact sum match.');
         } else {
-            $this->log('Invoice ' . $invoice->number . ' paid with different sum match. Expected: ' . $invoice->price_vat . ' Paid: ' . $totalPaidAmount);
+            event(new InvoicePaidWrongly($invoice, $pairedTransactions, $invoice->price_vat, $totalPaidAmount));
 
-            $invoice->update([
-                'paid_amount' => $totalPaidAmount,
-            ]);
+            $this->log('Invoice ' . $invoice->number . ' paid with different sum match. Expected: ' . $invoice->price_vat . ' Paid: ' . $totalPaidAmount);
         }
     }
 }
