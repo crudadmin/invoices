@@ -40,6 +40,10 @@ class SendInvoiceEmail extends Mailable
                 'settings' => $this->invoice->subject,
             ]);
 
+        if ( $replyTo = $this->invoice->subject->email ) {
+            $mail->replyTo($replyTo);
+        }
+
         if ( $pdf = $this->invoice->getPdf() ) {
             $mail->attachData($pdf->get(), $pdf->filename);
         }
