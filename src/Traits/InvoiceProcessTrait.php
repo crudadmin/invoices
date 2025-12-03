@@ -157,6 +157,16 @@ trait InvoiceProcessTrait
 
         $this->vs = $number;
     }
+
+    /**
+     * Determine if invoice can subtract proform invoice
+     *
+     * @return void
+     */
+    public function getCanSubtractInvoiceAttribute()
+    {
+        return $this->type == 'invoice' && in_array($this->proform?->type, ['advance', 'proform']) && $this->proform->paid_at;
+    }
 }
 
 ?>

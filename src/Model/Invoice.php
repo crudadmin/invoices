@@ -310,20 +310,6 @@ class Invoice extends AdminModel
         return $this->belongsTo(Invoice::class, 'id', 'return_id');
     }
 
-    /**
-     * Get pdf file of invoice
-     * If pdf is not actual or generater, then regenerate pdf and re-save filename into db
-     *
-     * @param  boolean $regenerate force regeneration of PDF
-     */
-    public function getPdf($forceRegenerate = false)
-    {
-        //Regenerate invoice if needed
-        $this->generatePDF(true, $forceRegenerate);
-
-        return $this->pdf;
-    }
-
     public function make(string $type, $data = null)
     {
         $data['type'] = $type;
@@ -455,11 +441,6 @@ class Invoice extends AdminModel
                 },
             ],
         ];
-    }
-
-    public function getCanSubtractInvoiceAttribute()
-    {
-        return $this->type == 'invoice' && in_array($this->proform?->type, ['advance', 'proform']) && $this->proform->paid_at;
     }
 
     public function scopeIsPaymentDue($query)

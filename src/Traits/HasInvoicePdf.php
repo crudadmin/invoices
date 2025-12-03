@@ -10,6 +10,20 @@ use chillerlan\QRCode\QROptions;
 
 trait HasInvoicePdf
 {
+    /**
+     * Get pdf file of invoice
+     * If pdf is not actual or generater, then regenerate pdf and re-save filename into db
+     *
+     * @param  boolean $regenerate force regeneration of PDF
+     */
+    public function getPdf($forceRegenerate = false)
+    {
+        //Regenerate invoice if needed
+        $this->generatePDF(true, $forceRegenerate);
+
+        return $this->pdf;
+    }
+
     /*
      * Return snapshot in sha1 of actual invoice
      */
