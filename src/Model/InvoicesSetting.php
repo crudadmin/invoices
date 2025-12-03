@@ -95,7 +95,7 @@ class InvoicesSetting extends AdminModel
                     'signature_height' => 'name:Výška podpisu (px)|type:integer|required|default:180',
                 ]),
             ])->add('hidden'),
-            'Nastavenia emailu' => Group::half([
+            'Nastavenia emailovej komunikácie' => Group::half([
                 'email_greeting' => 'name:Pozdrav v pätičke emailu',
             ])->add('hidden'),
         ];
