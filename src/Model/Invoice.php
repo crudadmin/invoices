@@ -8,6 +8,7 @@ use Admin\Fields\Group;
 use Admin\Eloquent\AdminModel;
 use Gogol\Invoices\Traits\HasInvoicePdf;
 use Gogol\Invoices\Traits\HasInvoiceHash;
+use Gogol\Invoices\Traits\HasInvoiceMail;
 use Admin\Eloquent\Concerns\HasEntryLocales;
 use Gogol\Invoices\Traits\InvoiceProcessTrait;
 use Gogol\Invoices\Admin\Layouts\InvoiceComponent;
@@ -22,6 +23,7 @@ class Invoice extends AdminModel
 {
     use InvoiceProcessTrait,
         HasEntryLocales,
+        HasInvoiceMail,
         HasInvoiceHash,
         HasInvoicePdf;
 
@@ -240,14 +242,6 @@ class Invoice extends AdminModel
     public function getTypeNameAttribute()
     {
         return config('invoices.invoice_types.'.$this->type.'.name', '');
-    }
-
-    /*
-     * Return typename with number
-     */
-    public function getTypeNameNumberAttribute()
-    {
-        return sprintf(_('%s č. %s'), config('invoices.invoice_types.'.$this->type.'.name', ''), $this->number);
     }
 
     /*

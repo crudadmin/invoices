@@ -33,7 +33,7 @@ class SendInvoiceEmail extends Mailable
     public function build()
     {
         $mail = $this
-            ->subject($this->invoice->typeNameNumber)
+            ->subject($this->invoice->emailSubject)
             ->markdown('invoices::mail.invoice_email', [
                 'invoice' => $this->invoice,
                 'message' => $this->message,

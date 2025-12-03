@@ -32,4 +32,12 @@ trait HasInvoiceMail
             'notified_at' => Carbon::now(),
         ]);
     }
+
+    /*
+     * Return typename with number
+     */
+    public function getEmailSubjectAttribute()
+    {
+        return sprintf(_('%s č. %s'), config('invoices.invoice_types.'.$this->type.'.name', ''), $this->number);
+    }
 }
