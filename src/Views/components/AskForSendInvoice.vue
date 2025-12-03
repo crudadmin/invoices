@@ -19,7 +19,7 @@ export default {
     data(){
         return {
             email : this.data.email,
-            message : null,
+            message : this.data.message,
         }
     },
 

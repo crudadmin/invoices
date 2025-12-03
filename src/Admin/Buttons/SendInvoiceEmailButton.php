@@ -34,6 +34,7 @@ class SendInvoiceEmailButton extends Button
         return $this->title(_('Zadajte príjemcu dokladu'))
                     ->component('AskForSendInvoice', [
                         'email' => $row->email,
+                        'message' => sprintf(_('Zasielam Vám doklad č. %s.'), $row->number)
                     ]);
     }
 
