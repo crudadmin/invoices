@@ -3,7 +3,6 @@
 namespace Gogol\Invoices\Model;
 
 use Admin;
-use Carbon\Carbon;
 use Admin\Fields\Group;
 use Admin\Eloquent\AdminModel;
 use Gogol\Invoices\Traits\HasInvoicePdf;
@@ -324,7 +323,7 @@ class Invoice extends AdminModel
         }
 
         if ( !($data['delivery_at'] ?? null) ){
-            $data['delivery_at'] = Carbon::now();
+            $data['delivery_at'] = now();
         }
 
         //Remove uneccessary columns from invoice
@@ -345,8 +344,9 @@ class Invoice extends AdminModel
         $invoice = $this->replicate();
         $invoice->type = $type;
         $invoice->proform_id = $this->getKey();
-        $invoice->paid_at = $this->paid_at ?: Carbon::now();
-        $invoice->payment_date = $this->payment_date < Carbon::now()->setTime(0, 0, 0) ? Carbon::now() : $this->payment_date;
+        $invoice->paid_at = $this->paid_at ?: now();
+        $invoice->paid_amount = $this->paid_amount; //Copy from original invoice
+        $invoice->payment_date = $this->payment_date < now()->startOfDay() ? now() : $this->payment_date;
         $invoice->snapshot_sha = null;
         $invoice->notified_at = null;
 
@@ -367,7 +367,7 @@ class Invoice extends AdminModel
 
         //Change paid status after generating proform
         if ( ! $this->paid_at ) {
-            $this->update(['paid_at' => Carbon::now()]);
+            $this->update([ 'paid_at' => $invoice->paid_at ?: now() ]);
         }
 
         return $invoice;
@@ -389,7 +389,7 @@ class Invoice extends AdminModel
         $invoice->return_id = $this->getKey();
         $invoice->setNewVs($this->getRawOriginal('number'));
         $invoice->paid_at = null;
-        $invoice->payment_date = Carbon::now()->addDays($this->subject->payment_term);
+        $invoice->payment_date = now()->addDays($this->subject->payment_term);
         $invoice->price = -$invoice->price;
         $invoice->price_vat = -$invoice->price_vat;
         $invoice->snapshot_sha = null;
