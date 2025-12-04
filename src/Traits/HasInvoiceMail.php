@@ -43,6 +43,6 @@ trait HasInvoiceMail
 
     public function getPaidMessageAttribute()
     {
-        return sprintf(_('Prijali sme platbu vo výške %s k dokladu č. %s, v prílohe zasielame ostrú faktúru.'), priceFormat($this->paid_amount).' €', $this->number);
+        return sprintf(_('Ďakujeme, práve sme prijali platbu vo výške %s. V prílohe Vám zasielame ostrú faktúru.'), priceFormat($this->paid_amount ?: $this->price_vat).' €', $this->number);
     }
 }
