@@ -3,7 +3,7 @@
 namespace Gogol\Invoices\Providers;
 
 use Admin;
-use Illuminate\Foundation\Http\Kernel;
+use Illuminate\Console\Scheduling\Schedule;
 use Gogol\Invoices\Commands\ImportCountries;
 use Admin\Providers\AdminHelperServiceProvider;
 use Gogol\Invoices\Commands\SyncBankTransactions;
@@ -46,6 +46,8 @@ class AppServiceProvider extends AdminHelperServiceProvider
             'path' => storage_path('logs/bank_accounts.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ]);
+
+        $this->registerSchedules();
     }
 
     /**
@@ -72,5 +74,14 @@ class AppServiceProvider extends AdminHelperServiceProvider
             ImportCountries::class,
             SyncBankTransactions::class,
         ]);
+    }
+
+    public function registerSchedules()
+    {
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            foreach ( config('invoices.banks.scheduler', []) as $time ) {
+                $schedule->command('invoices:bank-accounts-sync')->dailyAt($time);
+            }
+        });
     }
 }

@@ -100,7 +100,7 @@ class InvoicesAccount extends AdminModel
     {
         $bank = $this->bank;
 
-        if ( !($classname = config('invoices.banks.' . $bank.'.import')) ){
+        if ( !($classname = config('invoices.banks.providers.' . $bank.'.import')) ){
             return;
         }
 
