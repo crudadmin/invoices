@@ -24,7 +24,7 @@ class InvoicePaidWronglyListener
             return;
         }
 
-        if ( $invoice->subject->email ) {
+        if ( $invoice->subject->email && $invoice->created_at->isAfter(now()->subYear()) ) {
             Mail::to($invoice->subject->email)->send(
                 new SendWrongPaymentEmail($invoice, $event->expectedAmount, $event->paidAmount)
             );
