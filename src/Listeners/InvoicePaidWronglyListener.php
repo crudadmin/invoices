@@ -17,7 +17,6 @@ class InvoicePaidWronglyListener
     public function handle(InvoicePaidWrongly $event)
     {
         $invoice = $event->getInvoice();
-        $transactions = $event->getTransactions();
 
         // It was already set as paid wrongly, skip email notificaiton.
         if ( $invoice->paid_amount ) {
