@@ -14,21 +14,28 @@ class InvoicePaid
 
     public $invoice;
     public $transactions;
+    public $paidAmount;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($invoice, $transactions)
+    public function __construct($invoice, $transactions, $paidAmount)
     {
         $this->invoice = $invoice;
         $this->transactions = $transactions;
+        $this->paidAmount = $paidAmount;
     }
 
     public function getInvoice() : Invoice
     {
         return $this->invoice;
+    }
+
+    public function getPaidAmount() : float
+    {
+        return $this->paidAmount;
     }
 
     public function getTransactions() : Collection

@@ -100,7 +100,7 @@ trait HasTransactions
         try {
             // Exact sum match
             if ( $totalPaidAmount == $invoice->price_vat ) {
-                event(new InvoicePaid($invoice, $pairedTransactions));
+                event(new InvoicePaid($invoice, $pairedTransactions, $totalPaidAmount));
 
                 $this->log('Invoice ' . $invoice->number . ' paid with exact sum match.');
             } else {
