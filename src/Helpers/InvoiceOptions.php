@@ -42,6 +42,16 @@ class InvoiceOptions
     }
 
     /**
+     * Returns subject logo
+     *
+     * @return void
+     */
+    public function getLogo()
+    {
+        return $this->subject?->logo;
+    }
+
+    /**
      * Returns mail greeting
      *
      * @return void
