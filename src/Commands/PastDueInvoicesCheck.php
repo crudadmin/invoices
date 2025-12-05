@@ -38,6 +38,9 @@ class PastDueInvoicesCheck extends Command
                         ->whereNotNull('email')
                         ->whereNull('paid_at')
                         ->whereNull('notifications_at->past_due')
+                        ->with([
+                            'subject',
+                        ])
                         // Check invoices only from last month
                         ->where('payment_date', '>=', now()->subMonth())
                         // Check invoices only before days before payment date
