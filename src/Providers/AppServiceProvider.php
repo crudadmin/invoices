@@ -14,7 +14,10 @@ class AppServiceProvider extends AdminHelperServiceProvider
     ];
 
     protected $facades = [
-
+        'InvoiceOptions' => [
+            'facade' => \Gogol\Invoices\Facades\InvoiceOptionsFacade::class,
+            'class' => ['admin.invoices', \Gogol\Invoices\Helpers\InvoiceOptions::class],
+        ],
     ];
 
     protected $routeMiddleware = [

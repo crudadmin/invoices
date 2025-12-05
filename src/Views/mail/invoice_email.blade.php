@@ -26,5 +26,5 @@
     {{ _('Zobraziť doklad') }}
 @endcomponent
 
-{{ $settings->email_greeting }}<br>
+@include('invoices::mail.partials.greeting');
 @endcomponent

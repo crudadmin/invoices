@@ -2,8 +2,9 @@
 
 namespace Gogol\Invoices\Traits;
 
-use Gogol\Invoices\Mail\SendInvoiceEmail;
 use Illuminate\Support\Facades\Mail;
+use Gogol\Invoices\Mail\SendInvoiceEmail;
+use InvoiceOptions;
 
 trait HasInvoiceMail
 {
@@ -14,6 +15,8 @@ trait HasInvoiceMail
      */
     public function withInvoiceMail($callback)
     {
+        InvoiceOptions::setSubject($this->subject);
+
         $this->withLocale(function() use ($callback) {
             if ( is_callable($callback) ) {
                 $callback($this);
