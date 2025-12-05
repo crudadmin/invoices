@@ -435,7 +435,7 @@ class Invoice extends AdminModel
                     return $this->paid_amount && $this->paid_amount !== $this->price_vat;
                 },
                 'query' => function($query) {
-                    return $query->where('paid_amount', '>', 0)->whereColumn('paid_amount', '!=', 'price_vat');
+                    return $query->where('paid_amount', '>', 0)->whereColumn('paid_amount', '!=', 'price_vat')->whereNull('paid_at');
                 },
             ],
             'payment_due' => [
