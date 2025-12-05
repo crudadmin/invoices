@@ -23,6 +23,9 @@ class SendInvoiceEmail extends Mailable
     {
         $this->invoice = $row;
         $this->message = $message;
+
+        //Set default subject
+        $this->subject = $this->invoice->emailSubject;
     }
 
     /**
@@ -33,7 +36,6 @@ class SendInvoiceEmail extends Mailable
     public function build()
     {
         $mail = $this
-            ->subject($this->invoice->emailSubject)
             ->markdown('invoices::mail.invoice_email', [
                 'invoice' => $this->invoice,
                 'message' => $this->message,

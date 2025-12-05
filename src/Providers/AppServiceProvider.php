@@ -4,9 +4,7 @@ namespace Gogol\Invoices\Providers;
 
 use Admin;
 use Illuminate\Console\Scheduling\Schedule;
-use Gogol\Invoices\Commands\ImportCountries;
 use Admin\Providers\AdminHelperServiceProvider;
-use Gogol\Invoices\Commands\SyncBankTransactions;
 
 class AppServiceProvider extends AdminHelperServiceProvider
 {
@@ -41,6 +39,12 @@ class AppServiceProvider extends AdminHelperServiceProvider
             ViewServiceProvider::class
         ]);
 
+        $this->app['config']->set('logging.channels.invoices', [
+            'driver' => 'single',
+            'path' => storage_path('logs/invoices.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ]);
+
         $this->app['config']->set('logging.channels.bank_accounts', [
             'driver' => 'single',
             'path' => storage_path('logs/bank_accounts.log'),
@@ -71,8 +75,9 @@ class AppServiceProvider extends AdminHelperServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../Routes/routes.php');
 
         $this->commands([
-            ImportCountries::class,
-            SyncBankTransactions::class,
+            \Gogol\Invoices\Commands\ImportCountries::class,
+            \Gogol\Invoices\Commands\SyncBankTransactions::class,
+            \Gogol\Invoices\Commands\PastDueInvoicesCheck::class,
         ]);
     }
 
@@ -81,6 +86,10 @@ class AppServiceProvider extends AdminHelperServiceProvider
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             foreach ( config('invoices.banks.scheduler', []) as $time ) {
                 $schedule->command('invoices:bank-accounts-sync')->dailyAt($time);
+            }
+
+            if ( config('invoices.mail.past_due_invoice.enabled', false) ) {
+                $schedule->command('invoices:past-due-invoice')->dailyAt(config('invoices.mail.past_due_invoice.at', '15:00'));
             }
         });
     }

@@ -3,7 +3,7 @@
 namespace Gogol\Invoices\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Invoice\InvoicesAccount;
+use Admin;
 
 class SyncBankTransactions extends Command
 {
@@ -30,7 +30,7 @@ class SyncBankTransactions extends Command
     {
         $this->info('Synchronization started.');
 
-        $accounts = InvoicesAccount::whereNotNull('token')->when($this->argument('account'), function($query, $id) {
+        $accounts = Admin::getModel('InvoicesAccount')->whereNotNull('token')->when($this->argument('account'), function($query, $id) {
             $query->where('id', $id);
         })->get();
 

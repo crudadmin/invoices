@@ -102,5 +102,12 @@ return [
     'mail' => [
         // Send email to invoice owner after successfuly received payment on proform
         'auto_mail_after_payment' => true,
+
+        // Send email 1 day before invoice is past due
+        'past_due_invoice' => [
+            'enabled' => true,
+            'days_before' => 1,
+            'at' => '15:00',
+        ],
     ],
 ];

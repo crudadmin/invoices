@@ -175,13 +175,14 @@ class Invoice extends AdminModel
             // Metadata fields
             Group::fields([
                 'paid_amount' => 'name:Zaplatená suma|type:decimal',
-                'notified_at' => 'name:Notifikácia zaslaná dňa|type:datetime|inaccessible',
+                'notified_at' => 'name:Notifikácia zaslaná dňa|type:datetime',
                 Group::fields([
-                    'language' => 'name:Jazyk objednávky|belongsTo:languages|inaccessible'
+                    'language' => 'name:Jazyk objednávky|belongsTo:languages'
                 ])->if(Admin::isEnabledLocalization()),
                 'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
-                'guid' => 'name:GUID|max:50|inaccessible',
-                'hash' => 'name:Hash|type:string|inaccessible|max:8',
+                'guid' => 'name:GUID|max:50',
+                'hash' => 'name:Hash|type:string|max:8',
+                'notifications_at' => 'name:Odoslané notifikácie|type:json'
             ])->add('inaccessible'),
         ];
     }
