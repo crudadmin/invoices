@@ -88,6 +88,11 @@ class PastDueInvoicesCheck extends Command
 
             try {
                 Mail::to($subject->email)->send(new SendOwnerPastDueInvoices($invoices));
+
+                // Save that email has been sent
+                foreach ($invoices as $invoice) {
+                    $invoice->setNotified('past_due_owner');
+                }
             } catch (Exception $e) {
                 report($e);
 
