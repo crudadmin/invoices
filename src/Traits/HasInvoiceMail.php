@@ -32,25 +32,29 @@ trait HasInvoiceMail
      */
     public function sendEmail($email = null, $message = null)
     {
-        $mail = new SendInvoiceEmail($this, $message);
+        $this->withInvoiceMail(function() use ($email, $message) {
+            $mail = new SendInvoiceEmail($this, $message);
 
-        Mail::to($email ?: $this->email)->send($mail);
+            Mail::to($email ?: $this->email)->send($mail);
 
-        //Save that email has been sent
-        $this->setNotified();
+            //Save that email has been sent
+            $this->setNotified();
+        });
     }
 
     public function sendPastDueEmail($email = null, $message = null)
     {
-        $message = $message ?: $this->pastDueMessage;
+        $this->withInvoiceMail(function() use ($email, $message) {
+            $message = $message ?: $this->pastDueMessage;
 
-        $mail = new SendInvoiceEmail($this, $message);
-        $mail = $mail->subject($this->pastDueEmailSubject);
+            $mail = new SendInvoiceEmail($this, $message);
+            $mail = $mail->subject($this->pastDueEmailSubject);
 
-        Mail::to($email ?: $this->email)->send($mail);
+            Mail::to($email ?: $this->email)->send($mail);
 
-        //Save that email has been sent
-        $this->setNotified('past_due');
+            //Save that email has been sent
+            $this->setNotified('past_due');
+        });
     }
 
     /*
