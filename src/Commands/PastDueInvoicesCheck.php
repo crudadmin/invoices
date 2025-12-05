@@ -5,6 +5,8 @@ namespace Gogol\Invoices\Commands;
 use Admin;
 use Exception;
 use Illuminate\Console\Command;
+use Gogol\Invoices\Mail\SendOwnerPastDueInvoices;
+use Illuminate\Support\Facades\Mail;
 
 class PastDueInvoicesCheck extends Command
 {
@@ -32,10 +34,16 @@ class PastDueInvoicesCheck extends Command
         $this->info('Checking for past due invoices started.');
 
         $this->notifyClientsWithPastDueInvoices();
+        $this->notifyOwnersWithPastDueInvoices();
 
         $this->line('Checking for past due invoices completed');
     }
 
+    /**
+     * Send emails to invoice owners to notify them about past due invoices
+     *
+     * @return void
+     */
     protected function notifyClientsWithPastDueInvoices()
     {
         $daysBefore = config('invoices.mail.past_due_invoice.days_before', 1);
@@ -48,6 +56,8 @@ class PastDueInvoicesCheck extends Command
             })
             ->get();
 
+        $this->info('Sending past due email to ' . $invoices->count() . ' clients');
+
         foreach ($invoices as $invoice) {
             try {
                 $invoice->sendPastDueEmail($invoice->email);
@@ -59,7 +69,40 @@ class PastDueInvoicesCheck extends Command
         }
     }
 
-    protected function getInvoicesWithPastDueQuery($daysBefore)
+    /**
+     * Send emails to invoice owners to notify them about past due invoices
+     *
+     * @return void
+     */
+    protected function notifyOwnersWithPastDueInvoices()
+    {
+        $invoices = $this->getInvoicesWithPastDueQuery(-1)
+            ->whereNull('notifications_at->past_due_owner')
+            ->whereHas('subject', function($query) {
+                $query->where('email_past_due_owner', true)->whereNotNull('email');
+            })
+            ->get();
+
+        foreach ($invoices->groupBy('subject_id') as $subjectId => $invoices) {
+            $subject = $invoices[0]->subject;
+
+            try {
+                Mail::to($subject->email)->send(new SendOwnerPastDueInvoices($invoices));
+            } catch (Exception $e) {
+                report($e);
+
+                $this->error('Error sending past due email to owner ' . $subject->email . ': ' . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Returns invoices with past due query
+     *
+     * @param  mixed $daysBefore
+     * @return void
+     */
+    private function getInvoicesWithPastDueQuery($daysBefore)
     {
         return Admin::getModel('Invoice')
                 ->whereIn('type', ['invoice', 'proform'])
