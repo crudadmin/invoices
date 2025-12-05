@@ -93,9 +93,8 @@ class PastDueInvoicesCheck extends Command
         $this->log('Sending ' . $invoices->count() . ' past due invoices to ' . $invoices->pluck('subject_id')->unique()->count() . ' owners');
 
         foreach ($invoices->groupBy('subject_id') as $subjectId => $invoices) {
-
-            try {
-                $invoices[0]->withInvoiceMail(function() use ($invoices) {
+            $invoices[0]->withInvoiceMail(function() use ($invoices) {
+                try {
                     $subject = $invoices[0]->subject;
 
                     Mail::to($subject->email)->send(new SendOwnerPastDueInvoices($invoices));
@@ -104,13 +103,12 @@ class PastDueInvoicesCheck extends Command
                     foreach ($invoices as $invoice) {
                         $invoice->setNotified('past_due_owner');
                     }
-                });
+                } catch (Exception $e) {
+                    report($e);
 
-            } catch (Exception $e) {
-                report($e);
-
-                $this->error('Error sending past due email to owner ' . $subject->email . ': ' . $e->getMessage());
-            }
+                    $this->error('Error sending past due email to owner ' . $subject->email . ': ' . $e->getMessage());
+                }
+            });
         }
     }
 

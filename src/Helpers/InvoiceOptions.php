@@ -26,7 +26,7 @@ class InvoiceOptions
      *
      * @return void
      */
-    public static function getSubject()
+    public function getSubject()
     {
         return $this->subject;
     }
@@ -49,6 +49,16 @@ class InvoiceOptions
     public function getLogo()
     {
         return $this->subject?->logo;
+    }
+
+    /**
+     * Returns subject invoice color
+     *
+     * @return void
+     */
+    public function getColor()
+    {
+        return $this->subject?->invoice_color;
     }
 
     /**
