@@ -4,6 +4,7 @@ namespace Gogol\Invoices\Commands;
 
 use Illuminate\Console\Command;
 use Admin;
+use Illuminate\Support\Facades\Log;
 
 class SyncBankTransactions extends Command
 {
@@ -29,6 +30,8 @@ class SyncBankTransactions extends Command
     public function handle()
     {
         $this->info('Synchronization started.');
+
+        Log::channel('invoices')->info('Synchronization of bank accounts started.');
 
         $accounts = Admin::getModel('InvoicesAccount')->whereNotNull('token')->when($this->argument('account'), function($query, $id) {
             $query->where('id', $id);
