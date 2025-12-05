@@ -112,6 +112,12 @@ trait HasTransactions
                     if ( $transaction['note'] && $transaction['note'] == $invoice->vs ) {
                         return true;
                     }
+
+                    // Try to pair with note, when price is same and note contains vs
+                    // eg: /VS/2024052064/SS/KS/0308
+                    if ( $transaction['note'] && strpos($transaction['note'], '/'.$invoice->vs.'/') !== false ) {
+                        return true;
+                    }
                 }
             }
 
