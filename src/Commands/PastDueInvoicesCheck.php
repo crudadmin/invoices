@@ -38,6 +38,9 @@ class PastDueInvoicesCheck extends Command
                         ->whereNotNull('email')
                         ->whereNull('paid_at')
                         ->whereNull('notifications_at->past_due')
+                        ->whereHas('subject', function($query) {
+                            $query->where('email_past_due_client', true);
+                        })
                         ->with([
                             'subject',
                         ])

@@ -95,8 +95,14 @@ class InvoicesSetting extends AdminModel
                     'signature_height' => 'name:Výška podpisu (px)|type:integer|required|default:180',
                 ]),
             ])->add('hidden'),
-            'Nastavenia emailovej komunikácie' => Group::half([
-                'email_greeting' => 'name:Pozdrav v pätičke emailu',
+            'Notifikácie a upozornenia' => Group::half([
+                'Notifikovať pred koncom splatnosti faktúry' => Group::inline([
+                    'email_past_due_client' => 'name:Notifikovať odberateľa|type:checkbox|default:1',
+                    'email_past_due_owner' => 'name:Zaslať kópiu aj mne|type:checkbox|default:1',
+                ])->if(config('invoices.mail.past_due_invoice.enabled')),
+                'Emailová komunikácia' => Group::inline([
+                    'email_greeting' => 'name:Pozdrav v pätičke emailu',
+                ]),
             ])->add('hidden'),
         ];
     }

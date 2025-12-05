@@ -49,6 +49,8 @@ class InvoicesAccount extends AdminModel
         ],
     ];
 
+    protected $hasEncryptedHashes = false;
+
     /*
      * Automatic form and database generation
      * @name - field name
@@ -67,7 +69,7 @@ class InvoicesAccount extends AdminModel
             ]),
             'Automatická synchronizácia platieb' => Group::fields([
                 'bank' => 'name:Banka|type:select',
-                'token' => 'name:Token|encrypted|type:password',
+                'token' => 'name:Token|encrypted|component:TokenField|required_with:bank',
                 'last_sync_at' => 'name:Posledná synchronizácia|type:datetime|column_visible',
             ])->add('hidden'),
         ];
