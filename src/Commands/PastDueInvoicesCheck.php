@@ -83,6 +83,8 @@ class PastDueInvoicesCheck extends Command
             })
             ->get();
 
+        $this->info('Sending ' . $invoices->count() . ' past due invoices to ' . $invoices->pluck('subject_id')->unique()->count() . ' owners');
+
         foreach ($invoices->groupBy('subject_id') as $subjectId => $invoices) {
 
             try {
