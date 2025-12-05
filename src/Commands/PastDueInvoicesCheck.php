@@ -84,15 +84,19 @@ class PastDueInvoicesCheck extends Command
             ->get();
 
         foreach ($invoices->groupBy('subject_id') as $subjectId => $invoices) {
-            $subject = $invoices[0]->subject;
 
             try {
-                Mail::to($subject->email)->send(new SendOwnerPastDueInvoices($invoices));
+                $invoices[0]->withInvoiceMail(function() use ($invoices) {
+                    $subject = $invoices[0]->subject;
 
-                // Save that email has been sent
-                foreach ($invoices as $invoice) {
-                    $invoice->setNotified('past_due_owner');
-                }
+                    Mail::to($subject->email)->send(new SendOwnerPastDueInvoices($invoices));
+
+                    // Save that email has been sent
+                    foreach ($invoices as $invoice) {
+                        $invoice->setNotified('past_due_owner');
+                    }
+                });
+
             } catch (Exception $e) {
                 report($e);
 

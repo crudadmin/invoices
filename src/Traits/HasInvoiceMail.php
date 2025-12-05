@@ -8,6 +8,22 @@ use Illuminate\Support\Facades\Mail;
 trait HasInvoiceMail
 {
     /**
+     * Callback before every invoice email is being sent
+     *
+     * @return void
+     */
+    public function withInvoiceMail($callback)
+    {
+        $this->withLocale(function() use ($callback) {
+            if ( is_callable($callback) ) {
+                $callback($this);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
      * Send email with invoice on given/saved email adress
      *
      * @param  mixed $email
