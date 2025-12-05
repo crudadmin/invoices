@@ -62,18 +62,14 @@ trait HasInvoiceMail
      */
     public function setNotified($key = 'notification')
     {
-        if ( !$this->notified_at ) {
-            $this->notified_at = now();
-        }
-
-        $notificationsAt = $this->notifications_at ?? [];
+        $notificationsAt = $this->notified_at ?? [];
 
         // Mark notification type
         if ( !isset($notificationsAt[$key]) ) {
-            $notificationsAt[$key] = now();
+            $notificationsAt[$key] = now()->format('Y-m-d H:i:s');
         }
 
-        $this->notifications_at = $notificationsAt;
+        $this->notified_at = $notificationsAt;
 
         $this->save();
     }

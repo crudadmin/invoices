@@ -175,14 +175,13 @@ class Invoice extends AdminModel
             // Metadata fields
             Group::fields([
                 'paid_amount' => 'name:Zaplatená suma|type:decimal',
-                'notified_at' => 'name:Notifikácia zaslaná dňa|type:datetime',
                 Group::fields([
                     'language' => 'name:Jazyk objednávky|belongsTo:languages'
                 ])->if(Admin::isEnabledLocalization()),
                 'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
                 'guid' => 'name:GUID|max:50',
                 'hash' => 'name:Hash|type:string|max:8',
-                'notifications_at' => 'name:Odoslané notifikácie|type:json'
+                'notified_at' => 'name:Odoslané notifikácie|type:json'
             ])->add('inaccessible'),
         ];
     }
@@ -227,7 +226,8 @@ class Invoice extends AdminModel
 
     public function setAdminRowsAttributes($attributes)
     {
-        $attributes['notified'] = '<i style="color: '.($this->notified_at ? 'green' : 'red').'" class="fa fa-'.($this->notified_at ? 'check' : 'times').'"></i>';
+        $isNotified = isset(($this->notified_at['notification']);
+        $attributes['notified'] = '<i style="color: '.$isNotified ? 'green' : 'red').'" class="fa fa-'.$isNotified ? 'check' : 'times').'"></i>';
 
         $attributes['pdf'] = '<a href="'.action('\Gogol\Invoices\Controllers\InvoiceController@generateInvoicePdf', $this->getKey()).'" target="_blank">'._('Zobraziť doklad').'</a>';
 
@@ -349,7 +349,7 @@ class Invoice extends AdminModel
         $invoice->paid_amount = $this->paid_amount; //Copy from original invoice
         $invoice->payment_date = $this->payment_date < now()->startOfDay() ? now() : $this->payment_date;
         $invoice->snapshot_sha = null;
-        $invoice->notified_at = null;
+        $invoice->notified_at = [];
 
         //Set delivery date as paid date when we create invoice from proform.
         if ( $this->type == 'proform' ) {
@@ -394,7 +394,7 @@ class Invoice extends AdminModel
         $invoice->price = -$invoice->price;
         $invoice->price_vat = -$invoice->price_vat;
         $invoice->snapshot_sha = null;
-        $invoice->notified_at = null;
+        $invoice->notified_at = [];
         $invoice->save();
 
         //Clone proform items

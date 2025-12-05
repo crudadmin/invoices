@@ -57,7 +57,7 @@ class PastDueInvoicesCheck extends Command
 
         $invoices = $this->getInvoicesWithPastDueQuery($daysBefore)
             ->whereNotNull('email')
-            ->whereNull('notifications_at->past_due')
+            ->whereNull('notified_at->past_due')
             ->whereHas('subject', function($query) {
                 $query->where('email_past_due_client', true);
             })
@@ -84,7 +84,7 @@ class PastDueInvoicesCheck extends Command
     protected function notifyOwnersWithPastDueInvoices()
     {
         $invoices = $this->getInvoicesWithPastDueQuery(-1)
-            ->whereNull('notifications_at->past_due_owner')
+            ->whereNull('notified_at->past_due_owner')
             ->whereHas('subject', function($query) {
                 $query->where('email_past_due_owner', true)->whereNotNull('email');
             })
