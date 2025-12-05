@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Gogol\Invoices\Mail\SendOwnerPastDueInvoices;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class PastDueInvoicesCheck extends Command
 {
@@ -39,6 +40,12 @@ class PastDueInvoicesCheck extends Command
         $this->line('Checking for past due invoices completed');
     }
 
+    protected function log($message)
+    {
+        $this->info($message);
+        Log::channel('invoices')->info($message);
+    }
+
     /**
      * Send emails to invoice owners to notify them about past due invoices
      *
@@ -56,7 +63,7 @@ class PastDueInvoicesCheck extends Command
             })
             ->get();
 
-        $this->info('Sending past due email to ' . $invoices->count() . ' clients');
+        $this->log('Sending past due email to ' . $invoices->count() . ' clients');
 
         foreach ($invoices as $invoice) {
             try {
@@ -83,7 +90,7 @@ class PastDueInvoicesCheck extends Command
             })
             ->get();
 
-        $this->info('Sending ' . $invoices->count() . ' past due invoices to ' . $invoices->pluck('subject_id')->unique()->count() . ' owners');
+        $this->log('Sending ' . $invoices->count() . ' past due invoices to ' . $invoices->pluck('subject_id')->unique()->count() . ' owners');
 
         foreach ($invoices->groupBy('subject_id') as $subjectId => $invoices) {
 
