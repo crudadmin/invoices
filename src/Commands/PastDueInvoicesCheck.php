@@ -31,24 +31,22 @@ class PastDueInvoicesCheck extends Command
     {
         $this->info('Checking for past due invoices started.');
 
+        $this->notifyClientsWithPastDueInvoices();
+
+        $this->line('Checking for past due invoices completed');
+    }
+
+    protected function notifyClientsWithPastDueInvoices()
+    {
         $daysBefore = config('invoices.mail.past_due_invoice.days_before', 1);
 
-        $invoices = Admin::getModel('Invoice')
-                        ->whereIn('type', ['invoice', 'proform'])
-                        ->whereNotNull('email')
-                        ->whereNull('paid_at')
-                        ->whereNull('notifications_at->past_due')
-                        ->whereHas('subject', function($query) {
-                            $query->where('email_past_due_client', true);
-                        })
-                        ->with([
-                            'subject',
-                        ])
-                        // Check invoices only from last month
-                        ->where('payment_date', '>=', now()->subMonth())
-                        // Check invoices only before days before payment date
-                        ->where('payment_date', '<=', now()->addDays($daysBefore)->startOfDay())
-                        ->get();
+        $invoices = $this->getInvoicesWithPastDueQuery($daysBefore)
+            ->whereNotNull('email')
+            ->whereNull('notifications_at->past_due')
+            ->whereHas('subject', function($query) {
+                $query->where('email_past_due_client', true);
+            })
+            ->get();
 
         foreach ($invoices as $invoice) {
             try {
@@ -59,7 +57,17 @@ class PastDueInvoicesCheck extends Command
                 $this->error('Error sending past due email for invoice ' . $invoice->number . ': ' . $e->getMessage());
             }
         }
+    }
 
-        $this->line('Checking for past due invoices completed');
+    protected function getInvoicesWithPastDueQuery($daysBefore)
+    {
+        return Admin::getModel('Invoice')
+                ->whereIn('type', ['invoice', 'proform'])
+                ->whereNull('paid_at')
+                ->with([ 'subject' ])
+                // Check invoices only from last month
+                ->where('payment_date', '>=', now()->subMonth())
+                // Check invoices only before days before payment date
+                ->where('payment_date', '<=', now()->addDays($daysBefore)->startOfDay());
     }
 }
