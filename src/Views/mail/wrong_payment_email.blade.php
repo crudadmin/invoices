@@ -14,5 +14,5 @@
     {{ _('Zobraziť doklad') }}
 @endcomponent
 
-@include('invoices::mail.partials.greeting');
+@include('invoices::mail.partials.greeting')
 @endcomponent

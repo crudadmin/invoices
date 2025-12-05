@@ -48,8 +48,8 @@ class InvoiceOptions
      */
     public function getGreeting()
     {
-        if ( $this->subject ) {
-            return _('S pozdravom').', <br>'.$this->subject->name;
+        if ( $name = $this->getName() ) {
+            return _('S pozdravom').', <br>'.$name;
         }
 
         return _('S pozdravom');
