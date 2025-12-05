@@ -89,7 +89,34 @@ trait HasTransactions
      */
     private function findInvoiceTransaction($invoice, $transactions)
     {
-        $pairedTransactions = collect($transactions)->where('vs', $invoice->vs);
+        $pairedTransactions = collect($transactions)->filter(function($transaction) use ($invoice) {
+            // Try to pair with vs
+            if ( $transaction['vs'] && $transaction['vs'] == $invoice->vs ) {
+                return true;
+            }
+
+            // Try to pair with different criterios
+            // a) when amount is same
+            // b) payment duration from creation is less than X days
+            // c) invoice number or note is same as vs
+            if ( $transaction['amount'] == $invoice->price_vat ) {
+                $daysDurationBetweenPayment = abs($invoice->payment_date->diffInDays($transaction['date']));
+
+                if ( $daysDurationBetweenPayment <= 30 ) {
+                    // Try to pair with invoice number, when price is same
+                    if ( $transaction['vs'] && $transaction['vs'] == $invoice->getRawOriginal('number') ) {
+                        return true;
+                    }
+
+                    // Try to pair with note, when price is same
+                    if ( $transaction['note'] && $transaction['note'] == $invoice->vs ) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        });
 
         // No transactions found for invoice
         if ( $pairedTransactions->isEmpty() ) {

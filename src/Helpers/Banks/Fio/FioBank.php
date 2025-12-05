@@ -44,6 +44,7 @@ class FioBank extends BankAccount
                     'vs' => $transaction['column5']['value'] ?? null,
                     'amount' => $transaction['column1']['value'],
                     'currency_code' => $transaction['column14']['value'],
+                    'note' => $transaction['column16']['value'] ?? null,
                 ];
             }, $transactions);
         } catch (Exception $e) {

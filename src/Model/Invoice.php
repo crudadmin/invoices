@@ -424,7 +424,13 @@ class Invoice extends AdminModel
             ],
             'wrong_amount' => [
                 'color' => 'orange',
-                'name' => _('Nesprávna úhrada'),
+                'name' => function() {
+                    if ( $this->paid_amount ) {
+                        return sprintf(_('Prijatá suma %s'), priceFormat($this->paid_amount).' €');
+                    }
+
+                    return _('Nesprávna úhrada');
+                },
                 'active' => function() {
                     return $this->paid_amount && $this->paid_amount !== $this->price_vat;
                 },
