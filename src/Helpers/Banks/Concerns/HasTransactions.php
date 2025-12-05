@@ -74,6 +74,7 @@ trait HasTransactions
                 ->whereIn('subject_id', $subjects->pluck('id'))
                 ->whereIn('type', ['invoice', 'proform', 'return'])
                 ->whereNull('paid_at')
+                ->with([ 'subject' ])
                 ->get();
 
         return $unpaidInvoices;

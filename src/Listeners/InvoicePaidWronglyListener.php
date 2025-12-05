@@ -24,9 +24,17 @@ class InvoicePaidWronglyListener
         }
 
         if ( $invoice->subject->email && $invoice->created_at->isAfter(now()->subYear()) ) {
-            Mail::to($invoice->subject->email)->send(
-                new SendWrongPaymentEmail($invoice, $event->expectedAmount, $event->paidAmount)
-            );
+            $invoice->withInvoiceMail(function() use ($invoice, $event) {
+                try {
+                    Mail::to($invoice->subject->email)->send(
+                        new SendWrongPaymentEmail($invoice, $event->expectedAmount, $event->paidAmount)
+                    );
+                } catch (Exception $e) {
+                    report($e);
+
+                    $this->error('Error sending wrong payment email to ' . $invoice->subject->email . ': ' . $e->getMessage());
+                }
+            });
         }
 
         $invoice->update([

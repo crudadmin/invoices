@@ -68,6 +68,7 @@ class Invoice extends AdminModel
         'form.actions' => true,
         'xls' => true,
         'buttons.create' => 'Nový doklad',
+        'filter.single' => true,
         'title' => [
             'create' => 'Nový doklad',
             'update' => 'Upravujete doklad č. :formated_number',
