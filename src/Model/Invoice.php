@@ -181,7 +181,7 @@ class Invoice extends AdminModel
                 'snapshot_sha' => 'name:SHA Dát fakúry|max:50|invisible',
                 'guid' => 'name:GUID|max:50',
                 'hash' => 'name:Hash|type:string|max:8',
-                'notified_at' => 'name:Odoslané notifikácie|type:json'
+                'notified_at' => 'name:Odoslané notifikácie|type:json',
             ])->add('inaccessible'),
         ];
     }
@@ -226,8 +226,8 @@ class Invoice extends AdminModel
 
     public function setAdminRowsAttributes($attributes)
     {
-        $isNotified = isset(($this->notified_at['notification']);
-        $attributes['notified'] = '<i style="color: '.$isNotified ? 'green' : 'red').'" class="fa fa-'.$isNotified ? 'check' : 'times').'"></i>';
+        $isNotified = isset($this->notified_at['notification']);
+        $attributes['notified'] = '<i style="color: '.($isNotified ? 'green' : 'red').'" class="fa fa-'.($isNotified ? 'check' : 'times').'"></i>';
 
         $attributes['pdf'] = '<a href="'.action('\Gogol\Invoices\Controllers\InvoiceController@generateInvoicePdf', $this->getKey()).'" target="_blank">'._('Zobraziť doklad').'</a>';
 
