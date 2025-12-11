@@ -104,6 +104,13 @@ trait HasInvoicePdf
             $withoutTax[$item->vat] += $item->totalPriceWithoutVat;
         }
 
+        // Adjust total summary without tax
+        if ( hasVatPriority() ) {
+            foreach ($withTax as $taxValue => $value) {
+                $withoutTax[$taxValue] = roundInvoicePrice(calculateWithoutVat($withTax[$taxValue], $taxValue));
+            }
+        }
+
         foreach ($withTax as $taxValue => $value) {
             $tax[$taxValue] = $value - $withoutTax[$taxValue];
         }
@@ -113,13 +120,15 @@ trait HasInvoicePdf
         $totalWithTax = array_sum($withTax);
         $totalWithoutTax = array_sum($withoutTax);
 
-        return [
+        $array = [
             'totalWithTax' => $totalWithTax,
             'totalWithoutTax' => $totalWithoutTax,
             'withTax' => $withTax,
             'withoutTax' => $withoutTax,
             'tax' => $tax,
         ];
+
+        return $array;
     }
 
     public function getInvoiceSummary()
