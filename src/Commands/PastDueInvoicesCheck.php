@@ -32,6 +32,10 @@ class PastDueInvoicesCheck extends Command
      */
     public function handle()
     {
+        if ( config('invoices.mail.past_due_invoice.enabled', false) !== true ) {
+            return $this->error('Past due invoices notification is disabled');
+        }
+
         $this->info('Checking for past due invoices started.');
 
         $this->notifyClientsWithPastDueInvoices();

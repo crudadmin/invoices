@@ -105,7 +105,7 @@ return [
 
         // Send email 1 day before invoice is past due
         'past_due_invoice' => [
-            'enabled' => true,
+            'enabled' => false,
             'days_before' => 1,
             'at' => '15:00',
         ],
