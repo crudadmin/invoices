@@ -97,8 +97,8 @@ class InvoicesSetting extends AdminModel
             ])->add('hidden'),
             'Notifikácie a upozornenia' => Group::half([
                 'Notifikovať pred koncom splatnosti faktúry' => Group::inline([
-                    'email_past_due_client' => 'name:Notifikovať odberateľa|type:checkbox|default:1',
-                    'email_past_due_owner' => 'name:Zaslať kópiu aj mne|type:checkbox|default:1',
+                    'email_past_due_client' => 'name:Notifikovať odberateľa|type:checkbox|default:0',
+                    'email_past_due_owner' => 'name:Zaslať kópiu aj mne|type:checkbox|default:0',
                 ])->if(config('invoices.mail.past_due_invoice.enabled')),
             ])->add('hidden'),
         ];
