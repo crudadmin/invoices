@@ -60,7 +60,6 @@ export default {
         decimalSettings(){
             let defaultDecimals = parseInt((this.field.decimal_length||'').split(',')[1])||2,
                 settings = {
-                    round_without_vat : this.model.getSettings('decimals.round_without_vat', true),
                     places : this.model.getSettings('decimals.places', defaultDecimals),
                     rounding : this.model.getSettings('decimals.rounding', defaultDecimals),
                 };
@@ -103,12 +102,6 @@ export default {
         },
         recalculateWithoutVatPrice(e){
             let rounding = this.decimalSettings.rounding;
-
-
-            //If decimal rounding is disabled, we want save one more decimal here.
-            if ( this.decimalSettings.round_without_vat === false ){
-                rounding++;
-            }
 
             this.field.value = _.round(e.target.value / (1 + (this.vat / 100)), rounding);
         },
