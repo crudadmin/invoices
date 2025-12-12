@@ -3,15 +3,36 @@
         <div class="row">
             <div class="col-md-4">
                 <label>{{ field.name }} <span class="required" v-if="required">*</span></label>
-                <input type="number" step="any" :name="field_key" :value="valueOrDefault" @keyup="changeNoVatPrice" class="form-control" :readonly="disabled || readonly">
+                <input
+                    type="number"
+                    step="any"
+                    :name="field_key"
+                    :value="valueOrDefault"
+                    @keyup="changeNoVatPrice"
+                    class="form-control"
+                    :readonly="disabled || readonly">
             </div>
             <div class="col-md-4">
                 <label>{{ __('DPH') }}</label>
-                <input type="number" :step="inputStep" :value="vatSize" disabled class="form-control">
+                <input
+                    type="number"
+                    :step="inputStep"
+                    :value="vatSize"
+                    disabled
+                    class="form-control">
             </div>
             <div class="col-md-4">
                 <label>{{ __('Cena s DPH') }}</label>
-                <input type="number" :step="inputStep" :name="field_key+'_vat'" :value="vatPrice" @keyup="changeVatPrice" @change="recalculateWithoutVatPrice" class="form-control" :readonly="disabled || readonly">
+                <input
+                    type="number"
+                    :step="inputStep"
+                    :name="field_key+'_vat'"
+                    :value="vatPrice"
+                    @keyup="onPriceVatKeyUp($event); console.log('keyup', $event.target.value)"
+                    @keyup.enter="onPriceVatChange($event); console.log('enter', $event.target.value)"
+                    @change="onPriceVatChange($event); console.log('change', $event.target.value)"
+                    class="form-control"
+                    :readonly="disabled || readonly">
             </div>
         </div>
     </div>
@@ -78,13 +99,11 @@ export default {
 
     methods: {
         changeNoVatPrice(e){
-            this.field.value = e.target.value;
+            this.field.setValue(e.target.value);
         },
-        changeVatPrice : _.debounce(function(e){
-            this.recalculateWithoutVatPrice(e);
-        }, 1500),
         recalculateWithoutVatPrice(e){
             let rounding = this.decimalSettings.rounding;
+
 
             //If decimal rounding is disabled, we want save one more decimal here.
             if ( this.decimalSettings.round_without_vat === false ){
@@ -107,7 +126,20 @@ export default {
             return this.model.fields[field] ? field : 'vat_id';
         },
         onVatChange(){
-            this.$watch('row.'+this.getVatFieldKey(), this.changeVatValue);
+            this.model.fields[this.getVatFieldKey()].on('change', this.changeVatValue);
+        },
+        onPriceVatKeyUp(){
+            this._onPriceVatKeyUp =_.debounce(function(e){
+                this.recalculateWithoutVatPrice(e);
+            }, 1500);
+        },
+        onPriceVatChange(e){
+            // Cancel debounce
+            this.$nextTick(() => {
+                this._onPriceVatKeyUp?.cancel();
+            });
+
+            this.recalculateWithoutVatPrice(e);
         },
         changeVatValue(vatValue){
             if ( this.hasStaticFieldVat() ) {
