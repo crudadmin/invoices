@@ -103,6 +103,9 @@ return [
         // Send email to invoice owner after successfuly received payment on proform
         'auto_mail_after_payment' => true,
 
+        // Automatically set subject to invoice owner email according to subject settings
+        'auto_subject' => false,
+
         // Send email 1 day before invoice is past due
         'past_due_invoice' => [
             'enabled' => false,

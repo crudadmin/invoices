@@ -42,7 +42,8 @@ class SendInvoiceEmail extends Mailable
                 'settings' => $this->invoice->subject,
             ]);
 
-        if ( $name = $this->invoice->subject?->name ) {
+        // Set auto invoice subject
+        if ( config('invoices.mail.auto_subject', false) && $name = $this->invoice->subject?->name ) {
             $mail->from(config('mail.from.address'), $name);
         }
 
