@@ -106,6 +106,9 @@ return [
         // Automatically set subject to invoice owner email according to subject settings
         'auto_subject' => false,
 
+        // Show invoice summary in email
+        'invoice_summary' => false,
+
         // Send email 1 day before invoice is past due
         'past_due_invoice' => [
             'enabled' => false,

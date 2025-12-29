@@ -4,6 +4,7 @@
 @if ( !empty($message) )
 {!! $message !!}
 
+@if ( config('invoices.mail.invoice_summary', false) )
 @component('mail::panel')
 <table width="100%" style="margin: 10px 0;">
     <tr>
@@ -20,6 +21,7 @@
     </tr>
 </table>
 @endcomponent
+@endif
 @endif
 
 @component('mail::button', ['url' => $invoice->pdf])
