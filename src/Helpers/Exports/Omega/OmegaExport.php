@@ -36,13 +36,15 @@ class OmegaExport extends InvoiceExport
 
     protected function getInvoiceTaxSum($invoice, $vat, $withVat = false)
     {
-        $sumColumn = $withVat ? 'totalPriceWithVat' : 'totalPriceWithoutVat';
-
-        return $invoice->items->filter(function($item) use ($vat) {
+        $price = $invoice->items->filter(function($item) use ($vat) {
             return $item->vat == $vat;
-        })->sum(function($item) use ($sumColumn) {
-            return $item->{$sumColumn};
-        });
+        })->sum('totalPriceWithVat');
+
+        if ( $withVat === false ) {
+            return roundInvoicePrice(calculateWithoutVat($price, $vat));
+        }
+
+        return $price;
     }
 
     public function getCsvString()
