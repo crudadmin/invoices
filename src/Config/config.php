@@ -109,6 +109,9 @@ return [
         // Show invoice summary in email
         'invoice_summary' => false,
 
+        // Attach PDF to email
+        'attach_pdf' => true,
+
         // Send email 1 day before invoice is past due
         'past_due_invoice' => [
             'enabled' => false,
