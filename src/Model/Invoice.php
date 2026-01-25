@@ -65,6 +65,7 @@ class Invoice extends AdminModel
         'increments' => false,
         'autoreset' => false,
         'search.enabled' => true,
+        'search.autosave' => true,
         'form.actions' => true,
         'xls' => true,
         'buttons.create' => 'Nový doklad',
