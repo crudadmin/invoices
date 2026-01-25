@@ -15,16 +15,9 @@ class ProcessInvoiceRule extends AdminRule
      */
     public $frontend = true;
 
-    /*
-     * Firing callback on create row
-     */
-    public function fire(AdminModel $row)
-    {
-        $row->setPaymentDate();
-    }
-
     public function creating(AdminModel $row)
     {
+        $row->setPaymentDate();
         $row->addLocale();
         $row->setInvoiceNumber();
 
@@ -35,6 +28,7 @@ class ProcessInvoiceRule extends AdminRule
 
     public function updating(AdminModel $row)
     {
+        $row->setPaymentDate();
         $this->checkCreationYearChange($row);
     }
 
