@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 trait HasInvoiceHash
 {
-    public function generateHash()
+    public function generateHash($save = false)
     {
         if ( $hash = ($this->attributes['hash'] ?? null) ) {
             return $hash;
@@ -15,7 +15,10 @@ trait HasInvoiceHash
         $max = (int)($this->getFieldParam('hash', 'max') ?: 32);
 
         $hash = $this->hash = strtolower(Str::random($max));
-        $this->save();
+
+        if ( $save === true ) {
+            $this->save();
+        }
 
         return $hash;
     }
