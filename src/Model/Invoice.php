@@ -301,7 +301,7 @@ class Invoice extends AdminModel
      */
     public function proformInvoice()
     {
-        return $this->belongsTo(Invoice::class, 'id', 'proform_id')->whereIn('type', ['invoice', 'advance']);
+        return $this->belongsTo($this::class, 'id', 'proform_id')->whereIn('type', ['invoice', 'advance']);
     }
 
     /*
@@ -309,7 +309,7 @@ class Invoice extends AdminModel
      */
     public function returnInvoice()
     {
-        return $this->belongsTo(Invoice::class, 'id', 'return_id');
+        return $this->belongsTo($this::class, 'id', 'return_id');
     }
 
     public function make(string $type, $data = null)
