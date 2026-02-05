@@ -28,6 +28,16 @@ class Vat extends AdminModel
 
     protected $icon = 'fa-percent';
 
+    protected $settings = [
+        'title.insert' => 'Nová sadzba',
+        'title.update' => ':name',
+        'increments' => true,
+    ];
+
+    protected $rules = [
+        SetDefault::class,
+    ];
+
     /*
      * Automatic form and database generation
      * @name - field name
@@ -43,16 +53,6 @@ class Vat extends AdminModel
             'default' => 'name:Predvolená DPH|type:checkbox|title:Bude platit pre zľavy, a všetký ceny bez definovanej DPH.',
         ];
     }
-
-    protected $settings = [
-        'title.insert' => 'Nová sadzba',
-        'title.update' => ':name',
-        'increments' => true,
-    ];
-
-    protected $rules = [
-        SetDefault::class,
-    ];
 
     public function onTableCreate()
     {

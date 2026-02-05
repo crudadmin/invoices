@@ -24,6 +24,17 @@ class PaymentsMethod extends AdminModel
 
     protected $icon = 'fa-money';
 
+    protected $settings = [
+        'grid.default' => 'medium',
+        'title.update' => ':name',
+        'title.create' => 'Nová platobná metóda',
+        'buttons.create' => 'Nová platobná metóda',
+    ];
+
+    protected $rules = [
+        SetDefault::class,
+    ];
+
     /*
      * Automatic form and database generation
      * @name - field name
@@ -38,15 +49,4 @@ class PaymentsMethod extends AdminModel
             'default' => 'name:Predvolená možnosť platby|type:checkbox|title:Bude automatický vyplnená pri tvorbe novej faktúry.',
         ];
     }
-
-    protected $settings = [
-        'grid.default' => 'medium',
-        'title.update' => ':name',
-        'title.create' => 'Nová platobná metóda',
-        'buttons.create' => 'Nová platobná metóda',
-    ];
-
-    protected $rules = [
-        SetDefault::class,
-    ];
 }
