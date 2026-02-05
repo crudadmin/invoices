@@ -28,6 +28,16 @@ class Country extends AdminModel
 
     protected $reversed = true;
 
+    protected $settings = [
+        'title.insert' => 'Nová krajina',
+        'title.update' => ':name',
+        'columns.id.hidden' => true,
+    ];
+
+    protected $rules = [
+        SetDefault::class,
+    ];
+
     /*
      * Automatic form and database generation
      * @name - field name
@@ -43,16 +53,6 @@ class Country extends AdminModel
             'default' => 'name:Predvolená krajina|type:checkbox',
         ];
     }
-
-    protected $settings = [
-        'title.insert' => 'Nová krajina',
-        'title.update' => ':name',
-        'columns.id.hidden' => true,
-    ];
-
-    protected $rules = [
-        SetDefault::class,
-    ];
 
     public function setCodeAttribute($code)
     {
