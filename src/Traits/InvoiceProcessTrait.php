@@ -4,9 +4,35 @@ namespace Gogol\Invoices\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
+use Admin;
 
 trait InvoiceProcessTrait
 {
+    public function subject()
+    {
+        return $this->belongsToAlwaysVisible(Admin::getModel('InvoicesSetting'));
+    }
+
+    public function country()
+    {
+        return $this->belongsToAlwaysVisible(Admin::getModel('Country'));
+    }
+
+    public function payment_method()
+    {
+        return $this->belongsToAlwaysVisible(Admin::getModel('PaymentsMethod'));
+    }
+
+    /*
+     * For invoice set relations as always visible.
+     */
+    private function belongsToAlwaysVisible($model)
+    {
+        return $this->belongsTo($model)->withTrashed()->when($model->isPublishableAllowed(), function($query){
+            $query->withUnpublished();
+        });
+    }
+
     /*
      * Set unique rule for variable symbol field
      */
