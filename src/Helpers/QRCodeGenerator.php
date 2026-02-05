@@ -3,7 +3,6 @@
 namespace Gogol\Invoices\Helpers;
 
 use chillerlan\QRCode\QRCode;
-use chillerlan\QRCode\QROptions;
 use Throwable;
 use Log;
 
@@ -27,18 +26,21 @@ class QRCodeGenerator
 
     public function generate()
     {
-        $qrType = strtolower(config('invoices.qrcode_type') ?: '');
+        $countryCode = strtolower($this->invoice->subject?->country?->code ?: '');
 
-        if (
-            config('invoices.qrcode', true) !== true
-            || !array_key_exists($qrType, $this->qrGenerators)
-        ){
+        // Check if QR code is enabled
+        if ( config('invoices.qrcode', true) == false ) {
+            return false;
+        }
+
+        // Check if country is supported
+        if ( !$countryCode || ($methodName = $this->qrGenerators[$countryCode] ?? false) == false ){
             return;
         }
 
         //IF extensions are not available
         try {
-            if ( !($data = $this->{$this->qrGenerators[$qrType]}($this->invoice)) ) {
+            if ( !($data = $this->{$methodName}($this->invoice)) ) {
                 return;
             }
         } catch(Throwable $error){

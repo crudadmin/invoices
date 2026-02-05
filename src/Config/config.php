@@ -62,12 +62,6 @@ return [
     'qrcode_width' => 100,
 
     /*
-     * SK => paybysquare
-     * CZ => CZ Format
-     */
-    'qrcode_type' => 'sk',
-
-    /*
      * Multiple subjects support
      */
     'multi_subjects' => false,
