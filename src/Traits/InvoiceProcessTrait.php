@@ -10,25 +10,21 @@ trait InvoiceProcessTrait
 {
     public function subject()
     {
-        return $this->belongsToAlwaysVisible(Admin::getModel('InvoicesSetting'));
+        return $this->belongsTo(($model = Admin::getModel('InvoicesSetting')))->when($model->isPublishableAllowed(), function($query){
+            $query->withUnpublished();
+        });
     }
 
     public function country()
     {
-        return $this->belongsToAlwaysVisible(Admin::getModel('Country'));
+        return $this->belongsTo(($model = Admin::getModel('Country')))->when($model->isPublishableAllowed(), function($query){
+            $query->withUnpublished();
+        });
     }
 
     public function payment_method()
     {
-        return $this->belongsToAlwaysVisible(Admin::getModel('PaymentsMethod'));
-    }
-
-    /*
-     * For invoice set relations as always visible.
-     */
-    private function belongsToAlwaysVisible($model)
-    {
-        return $this->belongsTo($model)->withTrashed()->when($model->isPublishableAllowed(), function($query){
+        return $this->belongsTo(($model = Admin::getModel('PaymentsMethod')))->when($model->isPublishableAllowed(), function($query){
             $query->withUnpublished();
         });
     }
