@@ -165,13 +165,6 @@ trait HasInvoicePdf
                 return $this;
             }
 
-            //Try load all removed relationship rows
-            try {
-                $this->loadDeletedInvoiceAttributes();
-            } catch (Throwable $error){
-                Log::error($error);
-            }
-
             //Generate pdf
             $mpdf = $this->getMpdf();
 
@@ -226,29 +219,6 @@ trait HasInvoicePdf
         }
 
         return $rows;
-    }
-
-    private function loadDeletedInvoiceAttributes()
-    {
-        foreach ($this->getFields() as $key => $field) {
-            if ( $this->hasFieldParam($key, 'belongsTo') == false ){
-                continue;
-            }
-
-            $relation = trim_end($key, '_id');
-
-            if (
-                $this->{$key} //Exists row id
-                && !$this->{$relation} //Row is not found, probably has been deleted
-                && @$this->getRelation($relation) //Relations builder must exists
-            ){
-                $this->load([
-                    $relation => function($query){
-                        $query->withTrashed()->withUnpublished();
-                    },
-                ]);
-            }
-        }
     }
 
     public function getInvoiceQrCodeOptions()
